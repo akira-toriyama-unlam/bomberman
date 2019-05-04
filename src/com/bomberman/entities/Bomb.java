@@ -6,27 +6,32 @@ import java.util.TimerTask;
 public class Bomb extends Entity {
 
 	public static final int BOMB_RANGE = 1;
-	private static boolean canOver = true;
-	
 	public static final int TIME_TO_EXPLOIT = 2000;
 
-	public Bomb(int x, int y, GameMap map) {
-		super(x, y, true, map, canOver);
-	}
+	private ExplosionListener listener;
 
+
+	public Bomb(int x, int y, GameMap map, ExplosionListener listener) {
+		super(x, y, true, map,true);
+		this.listener = listener;
+		this.exploit();
+	}
+	
+	
 	public void exploit() {
 		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(getTimerTask(), 0, TIME_TO_EXPLOIT);
-		map.exploitEntitesInBombRange(this);
+		timer.scheduleAtFixedRate(getTimerTask(this,map,listener), 0, TIME_TO_EXPLOIT);
+		
 	}
 
-	private TimerTask getTimerTask() {
+	private TimerTask getTimerTask(Bomb bomb, GameMap map,ExplosionListener listener) {
 		return new TimerTask() {
 			@Override
 			public void run() {
 				destroy();
+				map.exploitEntitesInBombRange(bomb);
+				listener.update(); // Notify player.
 			}
 		};
 	}
-
 }

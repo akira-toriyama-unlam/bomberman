@@ -48,9 +48,9 @@ public class GameMap {
 
 		destroyEntity(bomb.x - Bomb.BOMB_RANGE, bomb.y); // destroy entity at left if it is possible
 		destroyEntity(bomb.x + Bomb.BOMB_RANGE, bomb.y); // destroy entity at right if it is possible
-		destroyEntity(bomb.x, bomb.y - Bomb.BOMB_RANGE); // destroy entity below if it is possible
-		destroyEntity(bomb.x, bomb.y + Bomb.BOMB_RANGE); // destroy entity above if it is possible
-
+		destroyEntity(bomb.x , bomb.y - Bomb.BOMB_RANGE); // destroy entity below if it is possible
+		destroyEntity(bomb.x , bomb.y + Bomb.BOMB_RANGE); // destroy entity above if it is possible
+		this.objects.remove(bomb);
 	}
 
 	private void destroyEntity(int x, int y) {
@@ -61,6 +61,7 @@ public class GameMap {
 				exploitEntitesInBombRange((Bomb) entity);
 			} else {
 				entity.destroy();
+				objects.remove(entity);
 			}
 		}
 	}
