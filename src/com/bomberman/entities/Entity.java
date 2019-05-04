@@ -8,23 +8,15 @@ public abstract class Entity {
 	protected boolean canBeDestroyed; //TODO: Remove this attribute and create 2 new entities.
 	protected GameMap map;
 	protected boolean canOver = false;
-	
+
 	public Entity(int x, int y, boolean canBeDestroyed, GameMap map, boolean canOver) {
 		this.x = x;
 		this.y = y;
 		this.destroyed = false;
 		this.canBeDestroyed = canBeDestroyed;
-		this.map = map; 
+		this.map = map;
 		this.canOver = canOver;
 	}
-	
-	
-
-	public boolean isDestroyed() {
-		return destroyed;
-	}
-
-
 
 	@Override
 	public int hashCode() {
@@ -64,13 +56,17 @@ public abstract class Entity {
 	public void destroy() {
 		this.destroyed = true;
 	}
-	
+
 	public int getY() {
 		return this.y;
 	}
-	
+
 	public int getX() {
 		return this.x;
+	}
+
+	public boolean isDestroyed() {
+		return this.destroyed;
 	}
 
 }
