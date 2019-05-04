@@ -1,11 +1,12 @@
 package com.bomberman.entities;
+import com.bomberman.entities.Direction;
 
 public class Player extends Entity implements ExplosionListener {
 
 	private boolean alive;
 
 	public Player(int x, int y, GameMap map) {
-		super(x, y, true, map);
+		super(x, y, true, map, true);
 		this.alive = true;
 	}
 
@@ -15,8 +16,25 @@ public class Player extends Entity implements ExplosionListener {
 	}
 
 	public void move(Direction direction) {
-		if (this.map.canMove(x, y, direction)) {
-			// TODO add logic to move
+		
+		if (this.map.canMove(this.x, this.y, direction)) {
+//			// TODO add logic to move
+	
+			switch (direction) { 
+				case UP:
+					this.y++;
+					break;
+				case DOWN:
+					this.y--;
+					break;
+				case LEFT:
+					this.x--;
+					break;
+				case RIGHT:
+					this.x++;
+					break;
+			}
+//			
 		}
 	}
 
@@ -29,6 +47,8 @@ public class Player extends Entity implements ExplosionListener {
 	public boolean isAlive() {
 		return alive;
 	}
+	
+
 
 	@Override
 	public void update() {
