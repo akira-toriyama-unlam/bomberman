@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameMap {
-	
+
 	protected String name;
 	protected List<Entity> objects;
 	protected int width;
@@ -19,16 +19,16 @@ public class GameMap {
 
 	public boolean canMove(int x, int y, Direction direction) {
 		switch (direction) {
-			case RIGHT:
-				return x + 1 > width && !this.objects.stream().anyMatch(o -> o.x == x + 1 && o.y == y);
-			case LEFT:
-				return x - 1 < 0 && !this.objects.stream().anyMatch(o -> o.x == x - 1 && o.y == y);
-			case UP:
-				return y + 1 > height && !this.objects.stream().anyMatch(o -> o.x == x && o.y == y + 1);
-			case DOWN:
-				return y - 1 < 0 && !this.objects.stream().anyMatch(o -> o.x == x && o.y == y - 1);
-			default:
-				return false;
+		case RIGHT:
+			return x + 1 < width && !this.objects.stream().anyMatch(o -> o.x == x + 1 && o.y == y);
+		case LEFT:
+			return x - 1 >= 0 && !this.objects.stream().anyMatch(o -> o.x == x - 1 && o.y == y);
+		case UP:
+			return y + 1 < height && !this.objects.stream().anyMatch(o -> o.x == x && o.y == y + 1);
+		case DOWN:
+			return y - 1 >= 0 && !this.objects.stream().anyMatch(o -> o.x == x && o.y == y - 1);
+		default:
+			return false;
 		}
 	}
 
@@ -41,17 +41,17 @@ public class GameMap {
 	}
 
 	public void exploitEntitesInBombRange(Bomb bomb) {
-		
-		destroyEntity(bomb.x - Bomb.BOMB_RANGE, bomb.y); // destroy entity at left if it is possible 
+
+		destroyEntity(bomb.x - Bomb.BOMB_RANGE, bomb.y); // destroy entity at left if it is possible
 		destroyEntity(bomb.x + Bomb.BOMB_RANGE, bomb.y); // destroy entity at right if it is possible
-		destroyEntity(bomb.x , bomb.y - Bomb.BOMB_RANGE); // destroy entity below if it is possible
-		destroyEntity(bomb.x , bomb.y + Bomb.BOMB_RANGE); // destroy entity above if it is possible
-		
+		destroyEntity(bomb.x, bomb.y - Bomb.BOMB_RANGE); // destroy entity below if it is possible
+		destroyEntity(bomb.x, bomb.y + Bomb.BOMB_RANGE); // destroy entity above if it is possible
+
 	}
-	
+
 	private void destroyEntity(int x, int y) {
-		Entity entity = getAtPosition(x , y);
-		if(entity != null) {
+		Entity entity = getAtPosition(x, y);
+		if (entity != null) {
 			if (entity.canBeDestroyed) {
 				entity.destroy();
 			}
