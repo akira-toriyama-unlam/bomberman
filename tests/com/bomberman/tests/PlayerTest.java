@@ -69,7 +69,7 @@ public class PlayerTest {
 		GameMap m = new GameMap("mapTest", 50, 50);
 		Player p = new Player(0, 0, m);
 		Tile t = new Tile(0,1,false,m,false);
-		
+		m.addObject(t);
 		p.move(Direction.UP);
 		
 		Assert.assertEquals(p.getY(),0);
@@ -83,6 +83,7 @@ public class PlayerTest {
 		GameMap m = new GameMap("mapTest", 50, 50);
 		Player p = new Player(0, 1, m);
 		Tile t = new Tile(0,-1,false,m, true);
+		m.addObject(t);
 		
 		p.move(Direction.DOWN);
 		
