@@ -21,6 +21,12 @@ public class Player extends Entity {
 		}
 	}
 
+	@Override
+	public void destroy() {
+		super.destroy();
+		this.alive = false;
+	}
+
 	public boolean isAlive() {
 		return alive;
 	}
