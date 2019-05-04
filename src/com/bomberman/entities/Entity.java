@@ -15,6 +15,20 @@ public abstract class Entity {
 		this.canBeDestroyed = canBeDestroyed;
 		this.map = map;
 	}
+	
+	
+
+	public boolean isDestroyed() {
+		return destroyed;
+	}
+
+
+
+	public void setDestroyed(boolean destroyed) {
+		this.destroyed = destroyed;
+	}
+
+
 
 	public void destroy() {
 		this.destroyed = true;

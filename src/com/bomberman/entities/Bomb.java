@@ -11,28 +11,28 @@ public class Bomb extends Entity {
 
 	private ExplosionListener listener;
 
-	public Bomb(int x, int y, GameMap map) {
+	public Bomb(int x, int y, GameMap map, ExplosionListener listener) {
 		super(x, y, true, map);
+		this.listener = listener;
+		this.exploit();
 	}
+	
+	
 
 	public void exploit() {
 		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(getTimerTask(), 0, TIME_TO_EXPLOIT);
-		map.exploitEntitesInBombRange(this);
-		this.listener.update(); // Notify player.
+		timer.scheduleAtFixedRate(getTimerTask(this,map,listener), 0, TIME_TO_EXPLOIT);
+		
 	}
 
-	private TimerTask getTimerTask() {
+	private TimerTask getTimerTask(Bomb bomb, GameMap map,ExplosionListener listener) {
 		return new TimerTask() {
 			@Override
 			public void run() {
 				destroy();
+				map.exploitEntitesInBombRange(bomb);
+				listener.update(); // Notify player.
 			}
 		};
 	}
-
-	public void addEventListener(ExplosionListener listener) {
-		this.listener = listener;
-	}
-
 }

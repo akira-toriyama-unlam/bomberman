@@ -10,9 +10,8 @@ public class Player extends Entity implements ExplosionListener {
 	}
 
 	public void placeBomb(GameMap gameMap) {
-		Bomb bomb = new Bomb(x, y, gameMap);
+		Bomb bomb = new Bomb(x, y, gameMap,this);
 		gameMap.addObject(bomb);
-		bomb.addEventListener(this);
 	}
 
 	public void move(Direction direction) {
