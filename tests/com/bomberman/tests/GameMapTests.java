@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.bomberman.entities.Bomb;
 import com.bomberman.entities.Direction;
 import com.bomberman.entities.Entity;
 import com.bomberman.entities.GameMap;
@@ -89,8 +90,31 @@ public class GameMapTests {
 	 */
 
 	@Test
-	public void shouldDestroyEntitiesIfTheyExists() {
+	public void shouldDestroyChainedBombsIfTheyExists() {
+		Bomb b1 = new Bomb(0, 0, map);
+		Bomb b2 = new Bomb(1, 0, map);
+		Bomb b3 = new Bomb(2, 0, map);
+		Bomb b4 = new Bomb(3, 0, map);
 
+		map.exploitEntitesInBombRange(b1);
+		Assert.assertEquals(true, b2.isDestroyed());
+		Assert.assertEquals(true, b3.isDestroyed());
+		Assert.assertEquals(true, b4.isDestroyed());
+	}
+
+	@Test
+	public void shouldDestroyNeighboorElementsIfTheyExists() {
+		Bomb b1 = new Bomb(4, 4, map);
+		Bomb b2 = new Bomb(5, 4, map);
+		Bomb b3 = new Bomb(3, 4, map);
+		Player p1 = new Player(4, 5, map);
+		Player p2 = new Player(4, 3, map);
+
+		map.exploitEntitesInBombRange(b1);
+		Assert.assertEquals(true, b2.isDestroyed());
+		Assert.assertEquals(true, b3.isDestroyed());
+		Assert.assertEquals(true, p1.isDestroyed());
+		Assert.assertEquals(true, p2.isDestroyed());
 	}
 
 	/**

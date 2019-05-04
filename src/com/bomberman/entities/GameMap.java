@@ -55,8 +55,11 @@ public class GameMap {
 
 	private void destroyEntity(int x, int y) {
 		Entity entity = getAtPosition(x, y);
-		if (entity != null) {
-			if (entity.canBeDestroyed) {
+		if (entity != null && entity.canBeDestroyed) {
+			if (entity instanceof Bomb && !entity.isDestroyed()) {
+				entity.destroy();
+				exploitEntitesInBombRange((Bomb) entity);
+			} else {
 				entity.destroy();
 			}
 		}
