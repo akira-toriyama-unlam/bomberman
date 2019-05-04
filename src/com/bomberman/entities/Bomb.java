@@ -6,11 +6,12 @@ import java.util.TimerTask;
 public class Bomb extends Entity {
 
 	public static final int BOMB_RANGE = 1;
+	private static boolean canOver = true;
 	
 	public static final int TIME_TO_EXPLOIT = 2000;
 
 	public Bomb(int x, int y, GameMap map) {
-		super(x, y, true, map);
+		super(x, y, true, map, canOver);
 	}
 
 	public void exploit() {

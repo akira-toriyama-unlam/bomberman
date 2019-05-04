@@ -20,13 +20,17 @@ public class GameMap {
 	public boolean canMove(int x, int y, Direction direction) {
 		switch (direction) {
 		case RIGHT:
-			return x + 1 < width && !this.objects.stream().anyMatch(o -> o.x == x + 1 && o.y == y);
+			return x + 1 < width && !this.objects.stream()
+					.anyMatch(o -> (o.x == x + 1 && o.y == y) && (o.x == x + 1 && o.y == y && !o.canOver));
 		case LEFT:
-			return x - 1 >= 0 && !this.objects.stream().anyMatch(o -> o.x == x - 1 && o.y == y);
+			return x - 1 >= 0 && !this.objects.stream()
+					.anyMatch(o -> (o.x == x - 1 && o.y == y) && (o.x == x - 1 && o.y == y && !o.canOver));
 		case UP:
-			return y + 1 < height && !this.objects.stream().anyMatch(o -> o.x == x && o.y == y + 1);
+			return y + 1 < height && !this.objects.stream()
+					.anyMatch(o -> (o.x == x && o.y == y + 1) && (o.x == x && o.y == y + 1 && !o.canOver));
 		case DOWN:
-			return y - 1 >= 0 && !this.objects.stream().anyMatch(o -> o.x == x && o.y == y - 1);
+			return y - 1 >= 0 && !this.objects.stream()
+					.anyMatch(o -> (o.x == x && o.y == y - 1) && (o.x == x && o.y == y - 1 && !o.canOver));
 		default:
 			return false;
 		}
