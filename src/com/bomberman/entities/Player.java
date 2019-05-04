@@ -1,6 +1,6 @@
 package com.bomberman.entities;
 
-public class Player extends Entity {
+public class Player extends Entity implements ExplosionListener {
 
 	private boolean alive;
 
@@ -12,7 +12,7 @@ public class Player extends Entity {
 	public void placeBomb(GameMap gameMap) {
 		Bomb bomb = new Bomb(x, y, gameMap);
 		gameMap.addObject(bomb);
-		bomb.exploit();
+		bomb.addEventListener(this);
 	}
 
 	public void move(Direction direction) {
@@ -29,6 +29,11 @@ public class Player extends Entity {
 
 	public boolean isAlive() {
 		return alive;
+	}
+
+	@Override
+	public void update() {
+		// Bomb has no longer exists, this Player can use a new bomb.
 	}
 
 }
