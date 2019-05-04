@@ -40,6 +40,10 @@ public class GameMap {
 		this.objects.add(obj);
 	}
 
+	public List<Entity> getObjects() {
+		return this.objects;
+	}
+
 	public Entity getAtPosition(int x, int y) {
 		return this.objects.stream().filter(o -> o.x == x && o.y == y).findFirst().orElse(null);
 	}
@@ -48,8 +52,8 @@ public class GameMap {
 
 		destroyEntity(bomb.x - Bomb.BOMB_RANGE, bomb.y); // destroy entity at left if it is possible
 		destroyEntity(bomb.x + Bomb.BOMB_RANGE, bomb.y); // destroy entity at right if it is possible
-		destroyEntity(bomb.x , bomb.y - Bomb.BOMB_RANGE); // destroy entity below if it is possible
-		destroyEntity(bomb.x , bomb.y + Bomb.BOMB_RANGE); // destroy entity above if it is possible
+		destroyEntity(bomb.x, bomb.y - Bomb.BOMB_RANGE); // destroy entity below if it is possible
+		destroyEntity(bomb.x, bomb.y + Bomb.BOMB_RANGE); // destroy entity above if it is possible
 		this.objects.remove(bomb);
 	}
 
