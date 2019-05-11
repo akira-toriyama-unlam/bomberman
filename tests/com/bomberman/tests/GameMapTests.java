@@ -87,18 +87,19 @@ public class GameMapTests {
 
 	/**
 	 * Start exploitEntitiesInBombRange
-	 * @throws InterruptedException 
+	 * 
+	 * @throws InterruptedException
 	 */
 
 	@Test
-	public void shouldDestroyChainedBombsIfTheyExists(){
-		Bomb b1 = new Bomb(0, 0, map, new Player(0,0,map));
+	public void shouldDestroyChainedBombsIfTheyExists() {
+		Bomb b1 = new Bomb(0, 0, map, new Player(0, 0, map));
 		map.addObject(b1);
-		Bomb b2 = new Bomb(1, 0, map,new Player(1,0,map));
+		Bomb b2 = new Bomb(1, 0, map, new Player(1, 0, map));
 		map.addObject(b2);
-		Bomb b3 = new Bomb(2, 0, map,new Player(2,0,map));
+		Bomb b3 = new Bomb(2, 0, map, new Player(2, 0, map));
 		map.addObject(b3);
-		Bomb b4 = new Bomb(3, 0, map,new Player(3,0,map));
+		Bomb b4 = new Bomb(3, 0, map, new Player(3, 0, map));
 		map.addObject(b4);
 		map.exploitEntitesInBombRange(b1);
 		Assert.assertEquals(true, b2.isDestroyed());
@@ -107,12 +108,12 @@ public class GameMapTests {
 	}
 
 	@Test
-	public void shouldDestroyNeighboorElementsIfTheyExists(){
-		Bomb b1 = new Bomb(4, 4, map,new Player(4,4,map));
+	public void shouldDestroyNeighboorElementsIfTheyExists() {
+		Bomb b1 = new Bomb(4, 4, map, new Player(4, 4, map));
 		map.addObject(b1);
-		Bomb b2 = new Bomb(5, 4, map,new Player(5,4,map));
+		Bomb b2 = new Bomb(5, 4, map, new Player(5, 4, map));
 		map.addObject(b2);
-		Bomb b3 = new Bomb(3, 4, map,new Player(3,4,map));
+		Bomb b3 = new Bomb(3, 4, map, new Player(3, 4, map));
 		map.addObject(b3);
 		Player p1 = new Player(4, 5, map);
 		map.addObject(p1);

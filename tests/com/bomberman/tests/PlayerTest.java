@@ -166,7 +166,7 @@ public class PlayerTest {
 	public void shouldCanPlaceAnotherBombAfterWaitForExplosion() throws InterruptedException {
 		p = new Player(50, 50, m);
 		p.placeBomb(m);
-		Thread.sleep(2200);
+		// Thread.sleep(2200);
 		p.placeBomb(m);
 		Assert.assertEquals(1, m.getObjects().size());
 	}

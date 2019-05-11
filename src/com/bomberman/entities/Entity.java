@@ -5,7 +5,7 @@ public abstract class Entity {
 	protected int x;
 	protected int y;
 	protected boolean destroyed;
-	protected boolean canBeDestroyed; //TODO: Remove this attribute and create 2 new entities.
+	protected boolean canBeDestroyed; // TODO: Remove this attribute and create 2 new entities.
 	protected GameMap map;
 	protected boolean canOver = false;
 
@@ -27,8 +27,6 @@ public abstract class Entity {
 		return result;
 	}
 
-
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -45,13 +43,9 @@ public abstract class Entity {
 		return true;
 	}
 
-
-
 	public void setDestroyed(boolean destroyed) {
 		this.destroyed = destroyed;
 	}
-
-
 
 	public void destroy() {
 		this.destroyed = true;
