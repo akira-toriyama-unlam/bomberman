@@ -16,21 +16,29 @@ public class GameMap {
 		this.width = width;
 		this.height = height;
 	}
-
-	public boolean canMove(int x, int y, Direction direction) {
+	
+	public String getName() {
+		return this.name;
+	}
+	
+	public boolean canMove(double x, double y, Direction direction) {
 		switch (direction) {
 		case RIGHT:
-			return x + 1 < width && !this.objects.stream()
-					.anyMatch(o -> (o.x == x + 1 && o.y == y) && (o.x == x + 1 && o.y == y && !o.canOver));
+			return !((x + 0.1) > (width - 80))
+					&& !this.objects.stream().anyMatch
+					(o -> (o.x <= (x+40) && x < o.x && (o.y+40) > y && (y + 40) > o.y )
+							);
 		case LEFT:
-			return x - 1 >= 0 && !this.objects.stream()
-					.anyMatch(o -> (o.x == x - 1 && o.y == y) && (o.x == x - 1 && o.y == y && !o.canOver));
+			return !((x - 0.1 - 40) < 0)
+			&& !this.objects.stream().anyMatch
+			(o -> ((o.x+40) >= x && x > o.x && (o.y+40) > y && (y + 40) > (o.y) )
+					);
 		case UP:
-			return y + 1 < height && !this.objects.stream()
-					.anyMatch(o -> (o.x == x && o.y == y + 1) && (o.x == x && o.y == y + 1 && !o.canOver));
+			return !((y - 0.1 - 40) < 0)
+					&& !this.objects.stream().anyMatch(o -> (o.x <= x && (o.x + 40) >= x && y >= (o.y) && y <= (o.y + 40)));
 		case DOWN:
-			return y - 1 >= 0 && !this.objects.stream()
-					.anyMatch(o -> (o.x == x && o.y == y - 1) && (o.x == x && o.y == y - 1 && !o.canOver));
+			return !((y + 0.1) > (height-100))
+					&& !this.objects.stream().anyMatch(o -> (o.x <= x && (o.x + 40) >= x && (y+40) >= (o.y) && (y + 40) <= (o.y + 40)));
 		default:
 			return false;
 		}
@@ -44,7 +52,7 @@ public class GameMap {
 		return this.objects;
 	}
 
-	public Entity getAtPosition(int x, int y) {
+	public Entity getAtPosition(double x, double y) {
 		return this.objects.stream().filter(o -> o.x == x && o.y == y).findFirst().orElse(null);
 	}
 
@@ -57,7 +65,7 @@ public class GameMap {
 		this.objects.remove(bomb);
 	}
 
-	private void destroyEntity(int x, int y) {
+	private void destroyEntity(double x, double y) {
 		Entity entity = getAtPosition(x, y);
 		if (entity != null && entity.canBeDestroyed) {
 			if (entity instanceof Bomb && !entity.isDestroyed()) {
@@ -69,5 +77,5 @@ public class GameMap {
 			}
 		}
 	}
-
+	
 }

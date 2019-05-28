@@ -1,5 +1,8 @@
 package com.bomberman.entities;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class Bomb extends Entity {
 
 	public static final int BOMB_RANGE = 1;
@@ -7,9 +10,17 @@ public class Bomb extends Entity {
 
 	private ExplosionListener listener;
 
-	public Bomb(int x, int y, GameMap map, ExplosionListener listener) {
+	public Bomb(double x, double y, GameMap map, ExplosionListener listener) {
 		super(x, y, true, map, true);
 		this.listener = listener;
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			
+			@Override
+			public void run() {
+				exploit();
+			}
+		}, 3000);
 		// this.exploit();
 	}
 
@@ -23,12 +34,4 @@ public class Bomb extends Entity {
 
 	}
 
-	/*
-	 * private TimerTask getTimerTask(Bomb bomb, GameMap map, ExplosionListener
-	 * listener) { return new TimerTask() {
-	 * 
-	 * @Override public void run() {
-	 * 
-	 * } }; }
-	 */
 }
