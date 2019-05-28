@@ -2,14 +2,14 @@ package com.bomberman.entities;
 
 public abstract class Entity {
 
-	protected int x;
-	protected int y;
+	protected double x;
+	protected double y;
 	protected boolean destroyed;
 	protected boolean canBeDestroyed; // TODO: Remove this attribute and create 2 new entities.
 	protected GameMap map;
 	protected boolean canOver = false;
 
-	public Entity(int x, int y, boolean canBeDestroyed, GameMap map, boolean canOver) {
+	public Entity(double x, double y, boolean canBeDestroyed, GameMap map, boolean canOver) {
 		this.x = x;
 		this.y = y;
 		this.destroyed = false;
@@ -22,8 +22,12 @@ public abstract class Entity {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + x;
-		result = prime * result + y;
+		result = prime * result + ((map == null) ? 0 : map.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(x);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(y);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		return result;
 	}
 
@@ -36,9 +40,14 @@ public abstract class Entity {
 		if (getClass() != obj.getClass())
 			return false;
 		Entity other = (Entity) obj;
-		if (x != other.x)
+		if (map == null) {
+			if (other.map != null)
+				return false;
+		} else if (!map.equals(other.map))
 			return false;
-		if (y != other.y)
+		if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x))
+			return false;
+		if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y))
 			return false;
 		return true;
 	}
@@ -51,11 +60,11 @@ public abstract class Entity {
 		this.destroyed = true;
 	}
 
-	public int getY() {
+	public double getY() {
 		return this.y;
 	}
 
-	public int getX() {
+	public double getX() {
 		return this.x;
 	}
 
