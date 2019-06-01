@@ -1,3 +1,6 @@
 package com.bomberman.entities;
 
-public interface Destructible {}
+public interface Destructible {
+	
+	void destroy();
+}

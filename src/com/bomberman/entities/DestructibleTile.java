@@ -7,4 +7,7 @@ public class DestructibleTile extends Tile implements Destructible {
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
+	public void destroy() {}
+
 }

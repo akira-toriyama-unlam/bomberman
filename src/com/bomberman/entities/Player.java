@@ -57,7 +57,6 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 
 	@Override
 	public void destroy() {
-		super.destroy();
 		this.alive = false;
 	}
 
