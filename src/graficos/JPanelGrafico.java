@@ -29,7 +29,7 @@ public class JPanelGrafico extends JPanel {
 
 	
 	public JPanelGrafico() {
-		this.map = new GameMap("Bomberman - Programación Avanzada Unlam 2019", 600, 460);
+		this.map = new GameMap("Bomberman - ProgramaciÃ³n Avanzada Unlam 2019", 600, 460);
 		this.player = new Player(40, 40, this.map);
 		this.playerEnemy = new Player(520,360,this.map);
 		
@@ -86,6 +86,7 @@ public class JPanelGrafico extends JPanel {
 		int width = this.getSize().width;
 		int height = this.getSize().height;
  
+
 		if (this.background != null) {
 			g.drawImage(this.background, 0, 0, width, height, null);
 		}
@@ -108,7 +109,7 @@ public class JPanelGrafico extends JPanel {
 		if(!playerEnemy.isDestroyed()) {
 			g.drawImage(enemy.getImage(), (int)playerEnemy.getX(), (int)playerEnemy.getY(), 30, 30, null);	
 		}
-		
+
 	}
 	
 	public Player getBomberman() {

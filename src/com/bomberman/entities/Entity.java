@@ -8,8 +8,8 @@ public abstract class Entity {
 	protected boolean canBeDestroyed; // TODO: Remove this attribute and create 2 new entities.
 	protected GameMap map;
 	protected boolean canOver = false;
-	
-	public Entity(double x, double y, boolean canBeDestroyed, GameMap map, boolean canOver) {
+
+  public Entity(double x, double y, boolean canBeDestroyed, GameMap map, boolean canOver) {
 		this.x = x;
 		this.y = y;
 		this.destroyed = false;

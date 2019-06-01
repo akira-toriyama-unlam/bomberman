@@ -11,7 +11,7 @@ public class GameMap {
 	protected int height;
 	protected int widthBomberman = 28;
 	protected int widthTile = 40;
-	protected int errorMovimiento = 2; // es un entero para que da un error de margen para que el bomberman no se tilde justo en los límites de cada ladrillo
+	protected int errorMovimiento = 2; // es un entero para que da un error de margen para que el bomberman no se tilde justo en los lï¿½mites de cada ladrillo
 
 	public GameMap(String name, int width, int height) {
 		this.name = name;
