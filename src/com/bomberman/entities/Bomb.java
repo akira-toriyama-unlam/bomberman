@@ -4,7 +4,7 @@ package com.bomberman.entities;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Bomb extends Entity {
+public class Bomb extends Entity implements Destructible {
 
 	public static final int BOMB_RANGE = 1;
 	public static final int TIME_TO_EXPLOIT = 2000;
@@ -12,7 +12,7 @@ public class Bomb extends Entity {
 	private ExplosionListener listener;
 
 	public Bomb(double x, double y, GameMap map, ExplosionListener listener) {
-		super(x, y, true, map, true);
+		super(x, y, map, true);
 		this.listener = listener;
 		Timer timer = new Timer();
 		timer.schedule(new TimerTask() {

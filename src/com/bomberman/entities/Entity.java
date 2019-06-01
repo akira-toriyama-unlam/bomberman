@@ -5,15 +5,13 @@ public abstract class Entity {
 	protected double x;
 	protected double y;
 	protected boolean destroyed;
-	protected boolean canBeDestroyed; // TODO: Remove this attribute and create 2 new entities.
 	protected GameMap map;
 	protected boolean canOver = false;
 
-  public Entity(double x, double y, boolean canBeDestroyed, GameMap map, boolean canOver) {
+  public Entity(double x, double y, GameMap map, boolean canOver) {
 		this.x = x;
 		this.y = y;
 		this.destroyed = false;
-		this.canBeDestroyed = canBeDestroyed;
 		this.map = map;
 		this.canOver = canOver;
 	}
@@ -65,14 +63,14 @@ public abstract class Entity {
 				if(entity.getX() <= (this.getX()+map.widthBomberman) && 
 						(this.getX()+map.widthBomberman) <= (entity.getX() + map.widthTile) && 
 						(entity.getY() + map.widthTile) > (this.getY()+map.errorMovimiento) && 
-						(this.getY() + map.widthBomberman) > (entity.getY() + map.errorMovimiento) && entity.canBeDestroyed) {
+						(this.getY() + map.widthBomberman) > (entity.getY() + map.errorMovimiento) && entity instanceof Destructible) {
 					
 					entity.setDestroyed(true);
 					
 				}
 				
 				//explota a la izquierda
-				if(this.getX() <= (entity.getX()+map.widthTile) && (entity.getX()+map.widthTile) <= (this.getX() + map.widthBomberman) && (entity.getY() + map.widthTile) > (this.getY() + map.errorMovimiento) && (this.getY() + map.widthBomberman) > (entity.getY() + map.errorMovimiento)&& entity.canBeDestroyed) {
+				if(this.getX() <= (entity.getX()+map.widthTile) && (entity.getX()+map.widthTile) <= (this.getX() + map.widthBomberman) && (entity.getY() + map.widthTile) > (this.getY() + map.errorMovimiento) && (this.getY() + map.widthBomberman) > (entity.getY() + map.errorMovimiento)&& entity instanceof Destructible) {
 					entity.setDestroyed(true);	
 				}
 				
@@ -81,7 +79,7 @@ public abstract class Entity {
 						this.getX() <= entity.getX() && entity.getX() <= (this.getX() + map.widthBomberman-map.errorMovimiento) || 
 							 (this.getX()+map.errorMovimiento) <= (entity.getX() + map.widthTile) && (entity.getX() + map.widthTile) <= (this.getX() + map.widthBomberman)
 							 ) && 
-						   ((this.getY() + map.widthBomberman) >= (entity.getY()) && (this.getY() + map.widthBomberman) <= (entity.getY() + map.widthTile))&& entity.canBeDestroyed) {
+						   ((this.getY() + map.widthBomberman) >= (entity.getY()) && (this.getY() + map.widthBomberman) <= (entity.getY() + map.widthTile)) && entity instanceof Destructible) {
 					entity.setDestroyed(true);
 				}
 				
@@ -89,7 +87,7 @@ public abstract class Entity {
 				if((entity.getX()<= this.getX() && (this.getX()+map.errorMovimiento) <= (entity.getX() + map.widthTile)||
 						this.getX() <= entity.getX() && entity.getX() <= (this.getX() + map.widthBomberman - map.errorMovimiento) || 
 						 (this.getX()+map.errorMovimiento) <= (entity.getX() + map.widthTile) && (entity.getX() + map.widthTile) <= (this.getX() + map.widthBomberman)
-						 ) &&  (this.getY() <= (entity.getY() + map.widthTile) && this.getY() >= (entity.getY()))&& entity.canBeDestroyed) {
+						 ) &&  (this.getY() <= (entity.getY() + map.widthTile) && this.getY() >= (entity.getY())) && entity instanceof Destructible) {
 						entity.setDestroyed(true);
 				}
 				
@@ -111,7 +109,4 @@ public abstract class Entity {
 		return this.destroyed;
 	}
 	
-	public boolean canBeDestroy() {
-		return this.canBeDestroyed;
-	}
 }

@@ -3,9 +3,7 @@ package com.bomberman.entities;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.bomberman.graphics.MovementEnum;
-
-public class Player extends Entity implements ExplosionListener {
+public class Player extends Entity implements ExplosionListener, Destructible {
 
 	private static final int CONCURRENT_BOMBS = 2;
 	private int bombsCount;
@@ -14,7 +12,7 @@ public class Player extends Entity implements ExplosionListener {
 	private double desplazamientoY;
 	
 	public Player(int x, int y, GameMap map) {
-		super(x, y, true, map, true);
+		super(x, y, map, true);
 		this.alive = true;
 		this.bombsCount = Player.CONCURRENT_BOMBS;
 		this.desplazamientoX = 0;

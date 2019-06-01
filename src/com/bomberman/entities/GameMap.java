@@ -67,27 +67,5 @@ public class GameMap {
 	public Entity getAtPosition(double x, double y) {
 		return this.objects.stream().filter(o -> o.x == x && o.y == y).findFirst().orElse(null);
 	}
-
-	public void exploitEntitesInBombRange(Bomb bomb) {
-
-		destroyEntity(bomb.x - Bomb.BOMB_RANGE, bomb.y); // destroy entity at left if it is possible
-		destroyEntity(bomb.x + Bomb.BOMB_RANGE, bomb.y); // destroy entity at right if it is possible
-		destroyEntity(bomb.x, bomb.y - Bomb.BOMB_RANGE); // destroy entity below if it is possible
-		destroyEntity(bomb.x, bomb.y + Bomb.BOMB_RANGE); // destroy entity above if it is possible
-		this.objects.remove(bomb);
-	}
-
-	private void destroyEntity(double x, double y) {
-		Entity entity = getAtPosition(x, y);
-		if (entity != null && entity.canBeDestroyed) {
-			if (entity instanceof Bomb && !entity.isDestroyed()) {
-				entity.destroy();
-				exploitEntitesInBombRange((Bomb) entity);
-			} else {
-				entity.destroy();
-				objects.remove(entity);
-			}
-		}
-	}
 	
 }
