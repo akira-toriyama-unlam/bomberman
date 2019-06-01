@@ -8,6 +8,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import com.bomberman.entities.Bomb;
+import com.bomberman.entities.Destructible;
+import com.bomberman.entities.DestructibleTile;
 import com.bomberman.entities.Entity;
 import com.bomberman.entities.GameMap;
 import com.bomberman.entities.Player;
@@ -45,6 +47,7 @@ public class JPanelGrafico extends JPanel {
 		fillMapWithTiles();
 	}
 	
+	@Override
 	public void paintComponent(Graphics g) {
 		int width = this.getSize().width;
 		int height = this.getSize().height;
@@ -59,9 +62,9 @@ public class JPanelGrafico extends JPanel {
 		for(Entity entity : map.getObjects()) {
 			if(entity instanceof Bomb && !entity.isDestroyed()) {
 				g.drawImage(this.bombImage.getImage(), (int)entity.getX(), (int)entity.getY(), 30, 30, null);
-			} else if (entity instanceof Tile && entity.canBeDestroy() && !entity.isDestroyed()) {
+			} else if (entity instanceof Tile && entity instanceof Destructible && !entity.isDestroyed()) {
 				g.drawImage(this.brickImage.getImage(), (int)entity.getX(), (int)entity.getY(), 35, 35, null);
-			} else if(entity instanceof Tile && !entity.canBeDestroy()) {
+			} else if(entity instanceof Tile && !(entity instanceof Destructible)) {
 				g.fillRect((int) entity.getX(),(int) entity.getY(), 35, 35);
 			}
 		}
@@ -101,7 +104,11 @@ public class JPanelGrafico extends JPanel {
 	}
 
 	private void addTileToMap(int x, int y, GameMap m, boolean destroy) {
-		this.map.addObject(new Tile(x, y, destroy, m, false));
+		if (destroy) {
+			this.map.addObject(new DestructibleTile(x, y, m, false));
+		} else {
+			this.map.addObject(new Tile(x, y, m, false));
+		}
 	}
 	
 	private void fillMapWithTiles() {
