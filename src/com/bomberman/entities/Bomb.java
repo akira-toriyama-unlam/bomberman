@@ -34,34 +34,34 @@ public class Bomb extends Entity implements Destructible {
 		for(Entity entity : map.getObjects()) {
 			
 			//explota a la deracha
-			if(entity.getX() <= (this.getX()+map.widthBomberman) && 
-					(this.getX()+map.widthBomberman) <= (entity.getX() + map.widthTile) && 
-					(entity.getY() + map.widthTile) > (this.getY()+map.errorMovimiento) && 
-					(this.getY() + map.widthBomberman) > (entity.getY() + map.errorMovimiento) && entity instanceof Destructible) {
+			if(entity.getX() <= (this.getX() + Player.PLAYER_SIZE) && 
+					(this.getX() + Player.PLAYER_SIZE) <= (entity.getX() + Tile.TILE_SIZE) && 
+					(entity.getY() + Tile.TILE_SIZE) > (this.getY()+map.errorMovimiento) && 
+					(this.getY() + Player.PLAYER_SIZE) > (entity.getY() + map.errorMovimiento) && entity instanceof Destructible) {
 				
 				entity.setDestroyed(true);
 				
 			}
 			
 			//explota a la izquierda
-			if(this.getX() <= (entity.getX()+map.widthTile) && (entity.getX()+map.widthTile) <= (this.getX() + map.widthBomberman) && (entity.getY() + map.widthTile) > (this.getY() + map.errorMovimiento) && (this.getY() + map.widthBomberman) > (entity.getY() + map.errorMovimiento)&& entity instanceof Destructible) {
+			if(this.getX() <= (entity.getX()+Tile.TILE_SIZE) && (entity.getX()+Tile.TILE_SIZE) <= (this.getX() + Player.PLAYER_SIZE) && (entity.getY() + Tile.TILE_SIZE) > (this.getY() + map.errorMovimiento) && (this.getY() + Player.PLAYER_SIZE) > (entity.getY() + map.errorMovimiento)&& entity instanceof Destructible) {
 				entity.setDestroyed(true);	
 			}
 			
 			//explota para abajo
-			if((entity.getX()<= this.getX() && (this.getX()+map.errorMovimiento) <= (entity.getX() + map.widthTile)||
-					this.getX() <= entity.getX() && entity.getX() <= (this.getX() + map.widthBomberman-map.errorMovimiento) || 
-						 (this.getX()+map.errorMovimiento) <= (entity.getX() + map.widthTile) && (entity.getX() + map.widthTile) <= (this.getX() + map.widthBomberman)
+			if((entity.getX()<= this.getX() && (this.getX()+map.errorMovimiento) <= (entity.getX() + Tile.TILE_SIZE)||
+					this.getX() <= entity.getX() && entity.getX() <= (this.getX() + Player.PLAYER_SIZE-map.errorMovimiento) || 
+						 (this.getX()+map.errorMovimiento) <= (entity.getX() + Tile.TILE_SIZE) && (entity.getX() + Tile.TILE_SIZE) <= (this.getX() + Player.PLAYER_SIZE)
 						 ) && 
-					   ((this.getY() + map.widthBomberman) >= (entity.getY()) && (this.getY() + map.widthBomberman) <= (entity.getY() + map.widthTile)) && entity instanceof Destructible) {
+					   ((this.getY() + Player.PLAYER_SIZE) >= (entity.getY()) && (this.getY() + Player.PLAYER_SIZE) <= (entity.getY() + Tile.TILE_SIZE)) && entity instanceof Destructible) {
 				entity.setDestroyed(true);
 			}
 			
 			//explota para arriba
-			if((entity.getX()<= this.getX() && (this.getX()+map.errorMovimiento) <= (entity.getX() + map.widthTile)||
-					this.getX() <= entity.getX() && entity.getX() <= (this.getX() + map.widthBomberman - map.errorMovimiento) || 
-					 (this.getX()+map.errorMovimiento) <= (entity.getX() + map.widthTile) && (entity.getX() + map.widthTile) <= (this.getX() + map.widthBomberman)
-					 ) &&  (this.getY() <= (entity.getY() + map.widthTile) && this.getY() >= (entity.getY())) && entity instanceof Destructible) {
+			if((entity.getX()<= this.getX() && (this.getX()+map.errorMovimiento) <= (entity.getX() + Tile.TILE_SIZE)||
+					this.getX() <= entity.getX() && entity.getX() <= (this.getX() + Player.PLAYER_SIZE - map.errorMovimiento) || 
+					 (this.getX()+map.errorMovimiento) <= (entity.getX() + Tile.TILE_SIZE) && (entity.getX() + Tile.TILE_SIZE) <= (this.getX() + Player.PLAYER_SIZE)
+					 ) &&  (this.getY() <= (entity.getY() + Tile.TILE_SIZE) && this.getY() >= (entity.getY())) && entity instanceof Destructible) {
 					entity.setDestroyed(true);
 			}
 			

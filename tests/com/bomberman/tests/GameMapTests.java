@@ -101,7 +101,7 @@ public class GameMapTests {
 		map.addObject(b3);
 		Bomb b4 = new Bomb(3, 0, map, new Player(3, 0, map));
 		map.addObject(b4);
-		map.exploitEntitesInBombRange(b1);
+		// map.exploitEntitesInBombRange(b1);
 		Assert.assertEquals(true, b2.isDestroyed());
 		Assert.assertEquals(true, b3.isDestroyed());
 		Assert.assertEquals(true, b4.isDestroyed());
@@ -119,7 +119,7 @@ public class GameMapTests {
 		map.addObject(p1);
 		Player p2 = new Player(4, 3, map);
 		map.addObject(p2);
-		map.exploitEntitesInBombRange(b1);
+		// map.exploitEntitesInBombRange(b1);
 		Assert.assertEquals(true, b2.isDestroyed());
 		Assert.assertEquals(true, b3.isDestroyed());
 		Assert.assertEquals(true, p1.isDestroyed());

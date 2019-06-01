@@ -22,10 +22,10 @@ public class BombTest {
 	@Test
 	public void shouldExplodeBombAndEverythinInRange() throws InterruptedException {
 		GameMap map = new GameMap("mapTest", 50, 50);
-		map.addObject(new Tile(4, 5, true, map, false));
-		map.addObject(new Tile(4, 3, true, map, false));
-		map.addObject(new Tile(3, 4, true, map, false));
-		map.addObject(new Tile(5, 4, true, map, false));
+		// map.addObject(new Tile(4, 5, true, map, false));
+		// map.addObject(new Tile(4, 3, true, map, false));
+		// map.addObject(new Tile(3, 4, true, map, false));
+		// map.addObject(new Tile(5, 4, true, map, false));
 		Bomb bomb = new Bomb(4, 4, map, new Player(4, 4, map));
 		bomb.exploit();
 		Assert.assertEquals(map.getAtPosition(4, 5), null);

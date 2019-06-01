@@ -5,6 +5,10 @@ import java.util.TimerTask;
 
 public class Player extends Entity implements ExplosionListener, Destructible {
 
+	public static final double PLAYER_MOVEMENT = 0.1;
+	public static final double PLAYER_SIZE = 40;
+	public static final double PLAYER_WIDTH = 28;
+	
 	private static final int CONCURRENT_BOMBS = 2;
 	private int bombsCount;
 	private boolean alive;

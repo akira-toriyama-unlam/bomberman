@@ -29,7 +29,7 @@ public class JPanelGrafico extends JPanel {
 	private Image background;
 	 
 	public JPanelGrafico() {
-		this.map = new GameMap("Bomberman", 600, 460);
+		this.map = new GameMap("Bomberman", 600, 470);
 		this.player = new Player(40, 40, this.map);
 		this.playerEnemy = new Player(520,360,this.map);
 		
