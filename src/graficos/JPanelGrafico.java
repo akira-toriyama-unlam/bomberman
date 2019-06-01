@@ -18,128 +18,97 @@ public class JPanelGrafico extends JPanel {
 	private ImageIcon ladrillo;
 	private ImageIcon bombIcon;
 	private ImageIcon bomberman;
+	private ImageIcon enemy;
 	private ArrayList<Bomb> listaBombas;
 	private GameMap map;
 	private Player player;
-	
+	private Player playerEnemy;
 	
 	private Image background;
 	 
 
 	
 	public JPanelGrafico() {
-		this.map = new GameMap("prueba de graficos y funcionamiento", 600, 460);
+		this.map = new GameMap("Bomberman - Programaci√≥n Avanzada Unlam 2019", 600, 460);
 		this.player = new Player(40, 40, this.map);
+		this.playerEnemy = new Player(520,360,this.map);
+		
 		listaBombas = new ArrayList<Bomb>();
 		ladrillo = new ImageIcon("./src/imagenes/images.png");
 		bombIcon = new ImageIcon("./src/imagenes/bomba.png");
 		bomberman = new ImageIcon("./src/imagenes/Abajo_0.png");
+		enemy = new ImageIcon("./src/imagenes/enemy.png");
 		this.background = new ImageIcon("./src/imagenes/fondo.png").getImage();
+		this.map.addObject(player);
+		this.map.addObject(playerEnemy);
+		crear_objeto(40,80,this.map,true);
+		crear_objeto(80,360,this.map,true);
+		crear_objeto(80,200,this.map,true);
+		crear_objeto(120,200,this.map,true);
+		crear_objeto(200,120,this.map,true);
+		crear_objeto(280,160,this.map,true);
+		crear_objeto(40,240,this.map,true);
+		crear_objeto(200,200,this.map,true);
+		crear_objeto(400,40,this.map,true);
+		crear_objeto(400,200,this.map,true);
+		crear_objeto(280,280,this.map,true);
+		crear_objeto(280,320,this.map,true);
+		crear_objeto(320,360,this.map,true);
+		crear_objeto(480,360,this.map,true);
+		crear_objeto(520,240,this.map,true);
+		crear_objeto(360,120,this.map,true);
+		crear_objeto(440,280,this.map,true);
 		
-		Entity e1 = new Tile(40, 80, true, this.map, false);
-		this.map.addObject(e1);
-		Entity e2 = new Tile(80, 360, true, this.map, false);
-		this.map.addObject(e2);
-		Entity e3 = new Tile(80, 200, true, this.map, false);
-		this.map.addObject(e3);
+		for(int i = 0; i< 560; i+=40) {
+			crear_objeto(i,0,this.map,false);
+			crear_objeto(0,i,this.map,false);
+			crear_objeto(560,i,this.map,false);
+			crear_objeto(i,400,this.map,false);
+		}
 		
-		Entity e4 = new Tile(120, 200, true, this.map, false);
-		this.map.addObject(e4);
-		
-		Entity e5 = new Tile(200, 120, true, this.map, false);
-		this.map.addObject(e5);
-		
-		Entity e6 = new Tile(280, 160, true, this.map, false);
-		this.map.addObject(e6);
-		
-		Entity e7 = new Tile(40, 240, true, this.map, false);
-		this.map.addObject(e7);
-		
-	
-	}
+		for(int i = 80; i< 360; i+=80) {
+			crear_objeto(80,i,this.map,false);
+			crear_objeto(160,i,this.map,false);
+			crear_objeto(240,i,this.map,false);
+			crear_objeto(320,i,this.map,false);
+			crear_objeto(400,i,this.map,false);
+			crear_objeto(480,i,this.map,false);
+		}
 
-	public void paintComponent(Graphics g) {
 		
-//		super.paintComponent(g);
-		/* Obtenemos el tamaÒo del panel para hacer que se ajuste a este
-		cada vez que redimensionemos la ventana y se lo pasamos al drawImage */
+	}
+	
+	public void crear_objeto(int x, int y, GameMap m, boolean destroy) {
+		this.map.addObject(new Tile(x, y, destroy, m, false));
+	}
+	
+	public void paintComponent(Graphics g) {
 		int width = this.getSize().width;
 		int height = this.getSize().height;
  
-		// Mandamos que pinte la imagen en el panel
+
 		if (this.background != null) {
 			g.drawImage(this.background, 0, 0, width, height, null);
 		}
 		
-		//Dibujamos el Bomberman
-//		g.setColor(Color.BLUE);
-		//g.fillOval((int) circulo.getCentro().getX(), (int) circulo.getCentro().getY(), (int) circulo.getRadio(),
-			//	(int) circulo.getRadio());
-		
-		// Vamos a diobujar las paredes
 		g.setColor(new Color(204,204,204));
-		for(int i = 0; i< 560; i+=40) {
-			g.fillRect(i,0, 35, 35);
-			g.fillRect(0,i, 35, 35);
-			g.fillRect(560,i, 35, 35);
-			g.fillRect(i,400, 35, 35);
-		}
 		
-		for(int i = 80; i< 360; i+=80) {
-			g.fillRect(80,i, 35, 35);	
-			g.fillRect(160,i, 35, 35);
-			g.fillRect(240,i, 35, 35);
-			g.fillRect(320,i, 35, 35);
-			g.fillRect(400,i, 35, 35);
-			g.fillRect(480,i, 35, 35);
-		}
-
-		
-		//Agregar Imagenes
-//		g.drawImage(ladrillo.getImage(), 160, 160, 40, 40, null);
-		
-//		this.x = x;
-//		this.y = y;
-//		this.destroyed = false;
-//		this.canBeDestroyed = canBeDestroyed;
-//		this.map = map;
-//		this.canOver = canOver;
-		
-		
-		g.drawImage(ladrillo.getImage(), 40, 80, 35, 35, null);
-		g.drawImage(ladrillo.getImage(), 80, 360, 35, 35, null);
-		g.drawImage(ladrillo.getImage(), 80, 200, 35, 35, null);
-		g.drawImage(ladrillo.getImage(), 120, 200, 35, 35, null);
-		g.drawImage(ladrillo.getImage(), 200, 120, 35, 35, null);
-		g.drawImage(ladrillo.getImage(), 280, 160, 35, 35, null);
-		g.drawImage(ladrillo.getImage(), 40, 240, 35, 35, null);
-		g.drawImage(ladrillo.getImage(), 200, 200, 35, 35, null);
-		g.drawImage(ladrillo.getImage(), 400, 40, 35, 35, null);
-		g.drawImage(ladrillo.getImage(), 400, 200, 35, 35, null);
-		g.drawImage(ladrillo.getImage(), 280, 280, 35, 35, null);
-		g.drawImage(ladrillo.getImage(), 280, 320, 35, 35, null);
-		g.drawImage(ladrillo.getImage(), 320, 360, 35, 35, null);
-		g.drawImage(ladrillo.getImage(), 480, 360, 35, 35, null);
-		g.drawImage(ladrillo.getImage(), 520, 240, 35, 35, null);
-		g.drawImage(ladrillo.getImage(), 360, 120, 35, 35, null);
-		g.drawImage(ladrillo.getImage(), 440, 280, 35, 35, null);
-		
-		//AgregarBomba
-		
-		//for (Bomb bomba : listaBombas) {
-			//g.drawImage(this.bombIcon.getImage(), (int)bomba.getX(), (int)bomba.getY(), 50, 50, null);			
-		//}
 		for(Entity entity : map.getObjects()) {
-			if(entity instanceof Bomb)
+			if(entity instanceof Bomb && !entity.isDestroyed())
 				g.drawImage(this.bombIcon.getImage(), (int)entity.getX(), (int)entity.getY(), 30, 30, null);
+			else if (entity instanceof Tile && entity.canBeDestroy() && !entity.isDestroyed())
+				g.drawImage(this.ladrillo.getImage(), (int)entity.getX(), (int)entity.getY(), 35, 35, null);
+			else if(entity instanceof Tile && !entity.canBeDestroy())
+				g.fillRect((int) entity.getX(),(int) entity.getY(), 35, 35);
 		}
-		g.drawImage(bomberman.getImage(), (int) player.getX(), (int) player.getY(), 35, 35, null);
 		
-
-	
-	
- 
-//		super.paintComponent(g);
+		if(!player.isDestroyed()) {
+			g.drawImage(bomberman.getImage(), (int) player.getX(), (int) player.getY(), 30, 30, null);	
+		}
+		
+		if(!playerEnemy.isDestroyed()) {
+			g.drawImage(enemy.getImage(), (int)playerEnemy.getX(), (int)playerEnemy.getY(), 30, 30, null);	
+		}
 
 	}
 	
