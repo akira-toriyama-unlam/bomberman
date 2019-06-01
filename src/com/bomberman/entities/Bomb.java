@@ -26,12 +26,12 @@ public class Bomb extends Entity {
 
 	public void exploit() {
 		destroy();
-		map.exploitEntitesInBombRange(this);
+//		map.exploitEntitesInBombRange(this);
 		listener.update(); // Notify player.
 		// Timer timer = new Timer();
 		// timer.scheduleAtFixedRate(getTimerTask(this,map,listener), 0,
 		// TIME_TO_EXPLOIT);
-
+		
 	}
 
 }
