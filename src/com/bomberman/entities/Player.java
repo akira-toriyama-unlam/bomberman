@@ -3,29 +3,29 @@ package com.bomberman.entities;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import graficos.EstadoMovimiento;
+import com.bomberman.graphics.MovementEnum;
 
 public class Player extends Entity implements ExplosionListener {
 
 	private static final int CONCURRENT_BOMBS = 2;
 	private int bombsCount;
 	private boolean alive;
-	private double DesplazamientoX;
-	private double DesplazamientoY;
+	private double desplazamientoX;
+	private double desplazamientoY;
 	
 	public Player(int x, int y, GameMap map) {
 		super(x, y, true, map, true);
 		this.alive = true;
 		this.bombsCount = Player.CONCURRENT_BOMBS;
-		this.DesplazamientoX = 0;
-		this.DesplazamientoY = 0;
+		this.desplazamientoX = 0;
+		this.desplazamientoY = 0;
 		Timer timer = new Timer();
 		timer.scheduleAtFixedRate(new TimerTask() {
 			
 			@Override
 			public void run() {
-				desplazarHorizontalmente(DesplazamientoX);
-				desplazarVerticalmente(DesplazamientoY);
+				moveRight(desplazamientoX);
+				moveLeft(desplazamientoY);
 			}
 		}, 1, 1);
 	}
@@ -42,16 +42,16 @@ public class Player extends Entity implements ExplosionListener {
 		if (this.map.canMove(this.x, this.y, direction)) {
 			switch (direction) {
 			case UP:
-				this.DesplazamientoY = -0.1;
+				this.desplazamientoY = -0.1;
 				break;
 			case DOWN:
-				this.DesplazamientoY = 0.1;
+				this.desplazamientoY = 0.1;
 				break;
 			case LEFT:
-				this.DesplazamientoX = -0.1;
+				this.desplazamientoX = -0.1;
 				break;
 			case RIGHT:
-				this.DesplazamientoX = 0.1;
+				this.desplazamientoX = 0.1;
 				break;
 			}
 		}
@@ -71,29 +71,33 @@ public class Player extends Entity implements ExplosionListener {
 	public void update() {
 		bombsCount++;
 	}
+	
 	public void setDesplazamientoX(double desplazamientoX) {
-		this.DesplazamientoX = desplazamientoX;
+		this.desplazamientoX = desplazamientoX;
 	}
+	
 	public void setDesplazamientoY(double desplazamientoY) {
-		this.DesplazamientoY = desplazamientoY;
+		this.desplazamientoY = desplazamientoY;
 	}
-	public void desplazarHorizontalmente(double delta_x) {
+	
+	public void moveRight(double delta_x) {
 		
-		if ((this.map.canMove(this.x, this.y, Direction.LEFT) && delta_x < 0 )|| (this.map.canMove(this.x, this.y, Direction.RIGHT) && delta_x > 0)) {
+		if ((this.map.canMove(this.x, this.y, Direction.LEFT) && delta_x < 0 ) 
+				|| (this.map.canMove(this.x, this.y, Direction.RIGHT) && delta_x > 0)) {
 			this.x += delta_x;	
-		}else {
+		} else {
 			this.x += 0;	
 		}
 		
 	}
 	
-	public void desplazarVerticalmente(double delta_y) {
-		if ((this.map.canMove(this.x, this.y, Direction.UP) && delta_y < 0) || (this.map.canMove(this.x, this.y, Direction.DOWN) && delta_y > 0)) {
+	public void moveLeft(double delta_y) {
+		if ((this.map.canMove(this.x, this.y, Direction.UP) && delta_y < 0) 
+				|| (this.map.canMove(this.x, this.y, Direction.DOWN) && delta_y > 0)) {
 			this.y += delta_y;	
-		}else {
+		} else {
 			this.y += 0;
 		}
-			
 		
 	}
 }

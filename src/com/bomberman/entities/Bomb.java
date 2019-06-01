@@ -1,3 +1,4 @@
+
 package com.bomberman.entities;
 
 import java.util.Timer;
@@ -21,17 +22,11 @@ public class Bomb extends Entity {
 				exploit();
 			}
 		}, 3000);
-		// this.exploit();
 	}
 
 	public void exploit() {
 		destroy();
-//		map.exploitEntitesInBombRange(this);
 		listener.update(); // Notify player.
-		// Timer timer = new Timer();
-		// timer.scheduleAtFixedRate(getTimerTask(this,map,listener), 0,
-		// TIME_TO_EXPLOIT);
-		
 	}
 
 }
