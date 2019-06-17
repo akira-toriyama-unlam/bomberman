@@ -116,6 +116,7 @@ public class JPanelGrafico extends JPanel {
 		addTileToMap(40,240,this.map,true);
 		addTileToMap(200,200,this.map,true);
 		addTileToMap(400,40,this.map,true);
+		addTileToMap(360,40,this.map,true);
 		addTileToMap(400,200,this.map,true);
 		addTileToMap(280,280,this.map,true);
 		addTileToMap(280,320,this.map,true);

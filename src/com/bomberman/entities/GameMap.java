@@ -2,6 +2,7 @@ package com.bomberman.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GameMap implements InteractionListener {
 
@@ -10,7 +11,7 @@ public class GameMap implements InteractionListener {
 	protected List<Player> players;
 	protected int width;
 	protected int height;
-	protected double errorMovimiento = 2; // es un entero para que da un error de margen para que el bomberman no se tilde justo en los l�mites de cada ladrillo
+	protected final static int MOVEMENT_ERROR = 2;
 
 	public GameMap(String name, int width, int height) {
 		this.name = name;
@@ -58,26 +59,6 @@ public class GameMap implements InteractionListener {
 		return this.objects.stream().filter(o -> o.x == x && o.y == y).findFirst().orElse(null);
 	}
 	
-	public void exploitEntitesInBombRange(Bomb bomb) {
-
-		destroyEntity(bomb.x - Bomb.BOMB_RANGE, bomb.y); // destroy entity at left if it is possible
-		destroyEntity(bomb.x + Bomb.BOMB_RANGE, bomb.y); // destroy entity at right if it is possible
-		destroyEntity(bomb.x, bomb.y - Bomb.BOMB_RANGE); // destroy entity below if it is possible
-		destroyEntity(bomb.x, bomb.y + Bomb.BOMB_RANGE); // destroy entity above if it is possible
-		this.objects.remove(bomb);
-	}
-	
-	private void destroyEntity(double x, double y) {
-		Entity entity = getAtPosition(x, y);
-		if (entity instanceof Bomb) {
-			((Bomb) entity).destroy();
-			exploitEntitesInBombRange((Bomb) entity);
-		} else {
-			((Bomb) entity).destroy();
-			objects.remove(entity);
-		}
-	}
-
 	@Override
 	public void movement(Player player, Direction direction) {
 		if (this.canMove(player.x, player.y, direction)) {
@@ -123,13 +104,13 @@ public class GameMap implements InteractionListener {
 	}
 	
 	private boolean betweenY(Entity o, double y) {
-		return between(y + errorMovimiento, o.getY() + errorMovimiento, o.getY() + Tile.TILE_SIZE - errorMovimiento) ||
-				between(y + Player.HEIGHT - errorMovimiento, o.getY() + errorMovimiento, o.getY() + Tile.TILE_SIZE - errorMovimiento);
+		return between(y + MOVEMENT_ERROR, o.getY() + MOVEMENT_ERROR, o.getY() + Tile.TILE_SIZE - MOVEMENT_ERROR) ||
+				between(y + Player.HEIGHT - MOVEMENT_ERROR, o.getY() + MOVEMENT_ERROR, o.getY() + Tile.TILE_SIZE - MOVEMENT_ERROR);
 	}
 	
 	private boolean betweenX(Entity o, double x) {
-		return between(x + errorMovimiento, o.getX() + errorMovimiento, o.getX() + Tile.TILE_SIZE - errorMovimiento) ||
-				between(x + Player.HEIGHT - errorMovimiento, o.getX() + errorMovimiento, o.getX() + Tile.TILE_SIZE - errorMovimiento);
+		return between(x + MOVEMENT_ERROR, o.getX() + MOVEMENT_ERROR, o.getX() + Tile.TILE_SIZE - MOVEMENT_ERROR) ||
+				between(x + Player.HEIGHT - MOVEMENT_ERROR, o.getX() + MOVEMENT_ERROR, o.getX() + Tile.TILE_SIZE - MOVEMENT_ERROR);
 	}
 	
 	private boolean canMoveRight(double x, double y) {
@@ -150,8 +131,41 @@ public class GameMap implements InteractionListener {
 
 	@Override
 	public void bombExploded(Bomb bomb) {
-		// TODO Auto-generated method stub
-		
+		List<Entity> entitiesToRemove = getEntitesToDestroyAtRight(bomb);
+		entitiesToRemove.addAll(getEntitesToDestroyAtLeft(bomb));
+		entitiesToRemove.addAll(getEntitesToDestroyUp(bomb));
+		entitiesToRemove.addAll(getEntitesToDestroyBottom(bomb));
+		entitiesToRemove.removeIf(o -> !(o instanceof Destructible));
+		this.getObjects().removeAll(entitiesToRemove);
+		this.getObjects().remove(bomb);
+	}
+	
+	private List<Entity> getEntitesToDestroyAtRight(Bomb bomb) {
+		List<Entity> list = this.getObjects().stream()
+				.filter(o -> o.getY() == bomb.getY() && o.getX() == bomb.getX() + Tile.TILE_SIZE).collect(Collectors.toList());
+		return list.isEmpty() ? this.getObjects().stream()
+				.filter(o -> o.getY() == bomb.getY() && o.getX() == bomb.getX() + Tile.TILE_SIZE * 2).collect(Collectors.toList()): list;
+	}
+	
+	private List<Entity> getEntitesToDestroyAtLeft(Bomb bomb) {
+		List<Entity> list = this.getObjects().stream()
+				.filter(o -> o.getY() == bomb.getY() && o.getX() == bomb.getX() - Tile.TILE_SIZE).collect(Collectors.toList());
+		return list.isEmpty() ? this.getObjects().stream()
+				.filter(o -> o.getY() == bomb.getY() && o.getX() == bomb.getX() - Tile.TILE_SIZE * 2).collect(Collectors.toList()) : list;
+	}
+	
+	private List<Entity> getEntitesToDestroyUp(Bomb bomb) {
+		List<Entity> list = this.getObjects().stream()
+				.filter(o -> o.getX() == bomb.getX() && o.getY() == bomb.getY() - Tile.TILE_SIZE).collect(Collectors.toList());
+		return list.isEmpty() ? this.getObjects().stream()
+				.filter(o -> o.getX() == bomb.getX() && o.getY() == bomb.getY() - Tile.TILE_SIZE * 2).collect(Collectors.toList()) : list;
+	}
+	
+	private List<Entity> getEntitesToDestroyBottom(Bomb bomb) {
+		List<Entity> list = this.getObjects().stream()
+				.filter(o -> o.getX() == bomb.getX() && o.getY() == bomb.getY() + Tile.TILE_SIZE).collect(Collectors.toList());
+		return list.isEmpty() ? this.getObjects().stream()
+				.filter(o -> o.getX() == bomb.getX() && o.getY() == bomb.getY() + Tile.TILE_SIZE * 2).collect(Collectors.toList()) : list;
 	}
 	
 }
