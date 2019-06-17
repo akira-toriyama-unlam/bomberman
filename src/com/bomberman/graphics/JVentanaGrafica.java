@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import com.bomberman.entities.Direction;
@@ -47,6 +48,7 @@ public class JVentanaGrafica extends JFrame {
 			
 		});
 		setLocationRelativeTo(null);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	public void setMovimiento(KeyEvent event) {
@@ -55,24 +57,28 @@ public class JVentanaGrafica extends JFrame {
 		cuenta+=1;
 		switch(event.getKeyCode()) {
 		case KeyEvent.VK_LEFT:
+		case KeyEvent.VK_A:
 			bomberman.move(Direction.LEFT);
-			contentPane.setImageBomberman("./resources/Izquierda_" + (cuenta % 3) + ".png");
+			bomberman.setImageIcon(new ImageIcon("./resources/Izquierda_" + (cuenta % 3) + ".png"));
 			break;
-		case KeyEvent.VK_RIGHT: 
+		case KeyEvent.VK_RIGHT:
+		case KeyEvent.VK_D: 
 			bomberman.move(Direction.RIGHT);
-			contentPane.setImageBomberman("./resources/Derecha_" + (cuenta % 3) + ".png");
+			bomberman.setImageIcon(new ImageIcon("./resources/Derecha_" + (cuenta % 3) + ".png"));
 			break;
 		case KeyEvent.VK_UP:
+		case KeyEvent.VK_W:
 			bomberman.move(Direction.UP);
-			contentPane.setImageBomberman("./resources/Arriba_" + (cuenta % 3) + ".png");
+			bomberman.setImageIcon(new ImageIcon("./resources/Arriba_" + (cuenta % 3) + ".png"));
 			break;
 		case KeyEvent.VK_DOWN:
+		case KeyEvent.VK_S:
 			bomberman.move(Direction.DOWN);
-			contentPane.setImageBomberman("./resources/Abajo_" + (cuenta % 3) + ".png");
+			bomberman.setImageIcon(new ImageIcon("./resources/Abajo_" + (cuenta % 3) + ".png"));
 			break;
 		case KeyEvent.VK_SPACE:
+		case KeyEvent.VK_X:	
 			bomberman.placeBomb(map);
-			//contentPane.agregarBomba(bomba);
 		default:
 			// do nothing
 			break;

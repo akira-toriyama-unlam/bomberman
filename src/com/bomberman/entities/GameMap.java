@@ -54,6 +54,10 @@ public class GameMap implements InteractionListener {
 	public List<Entity> getObjects() {
 		return this.objects;
 	}
+	
+	public List<Player> getPlayers() {
+		return this.players;
+	}
 	 
 	public Entity getAtPosition(double x, double y) {
 		return this.objects.stream().filter(o -> o.x == x && o.y == y).findFirst().orElse(null);
@@ -131,41 +135,52 @@ public class GameMap implements InteractionListener {
 
 	@Override
 	public void bombExploded(Bomb bomb) {
-		List<Entity> entitiesToRemove = getEntitesToDestroyAtRight(bomb);
-		entitiesToRemove.addAll(getEntitesToDestroyAtLeft(bomb));
-		entitiesToRemove.addAll(getEntitesToDestroyUp(bomb));
-		entitiesToRemove.addAll(getEntitesToDestroyBottom(bomb));
+
+		List<Entity> entitiesToRemove = new ArrayList<>();
+		
+		entitiesToRemove.addAll(getEntitesToDestroyAtRight(this.getObjects(), bomb));
+		entitiesToRemove.addAll(getEntitesToDestroyAtLeft(this.getObjects(), bomb));
+		entitiesToRemove.addAll(getEntitesToDestroyUp(this.getObjects(), bomb));
+		entitiesToRemove.addAll(getEntitesToDestroyBottom(this.getObjects(), bomb));
+		
+		entitiesToRemove.addAll(getEntitesToDestroyAtRight(this.getPlayers(), bomb));
+		entitiesToRemove.addAll(getEntitesToDestroyAtLeft(this.getPlayers(), bomb));
+		entitiesToRemove.addAll(getEntitesToDestroyUp(this.getPlayers(), bomb));
+		entitiesToRemove.addAll(getEntitesToDestroyBottom(this.getPlayers(), bomb));
+		
 		entitiesToRemove.removeIf(o -> !(o instanceof Destructible));
+ 		this.getPlayers().removeAll(entitiesToRemove.stream().filter(e -> e instanceof Player).collect(Collectors.toList()));
 		this.getObjects().removeAll(entitiesToRemove);
 		this.getObjects().remove(bomb);
+		entitiesToRemove.stream().filter(o -> o instanceof Bomb).forEach(b -> bombExploded((Bomb) b));
+		
 	}
 	
-	private List<Entity> getEntitesToDestroyAtRight(Bomb bomb) {
-		List<Entity> list = this.getObjects().stream()
+	private List<? extends Entity> getEntitesToDestroyAtRight(List<? extends Entity> entities, Bomb bomb) {
+		List<? extends Entity> list = entities.stream()
 				.filter(o -> o.getY() == bomb.getY() && o.getX() == bomb.getX() + Tile.TILE_SIZE).collect(Collectors.toList());
 		return list.isEmpty() ? this.getObjects().stream()
 				.filter(o -> o.getY() == bomb.getY() && o.getX() == bomb.getX() + Tile.TILE_SIZE * 2).collect(Collectors.toList()): list;
 	}
 	
-	private List<Entity> getEntitesToDestroyAtLeft(Bomb bomb) {
-		List<Entity> list = this.getObjects().stream()
+	private List<? extends Entity> getEntitesToDestroyAtLeft(List<? extends Entity> entities, Bomb bomb) {
+		List<? extends Entity> list = entities.stream()
 				.filter(o -> o.getY() == bomb.getY() && o.getX() == bomb.getX() - Tile.TILE_SIZE).collect(Collectors.toList());
-		return list.isEmpty() ? this.getObjects().stream()
+		return list.isEmpty() ? entities.stream()
 				.filter(o -> o.getY() == bomb.getY() && o.getX() == bomb.getX() - Tile.TILE_SIZE * 2).collect(Collectors.toList()) : list;
 	}
 	
-	private List<Entity> getEntitesToDestroyUp(Bomb bomb) {
-		List<Entity> list = this.getObjects().stream()
+	private List<? extends Entity> getEntitesToDestroyUp(List<? extends Entity> entities, Bomb bomb) {
+		List<? extends Entity> list = entities.stream()
 				.filter(o -> o.getX() == bomb.getX() && o.getY() == bomb.getY() - Tile.TILE_SIZE).collect(Collectors.toList());
-		return list.isEmpty() ? this.getObjects().stream()
+		return list.isEmpty() ? entities.stream()
 				.filter(o -> o.getX() == bomb.getX() && o.getY() == bomb.getY() - Tile.TILE_SIZE * 2).collect(Collectors.toList()) : list;
 	}
 	
-	private List<Entity> getEntitesToDestroyBottom(Bomb bomb) {
-		List<Entity> list = this.getObjects().stream()
+	private List<? extends Entity> getEntitesToDestroyBottom(List<? extends Entity> entities, Bomb bomb) {
+		List<? extends Entity> list = entities.stream()
 				.filter(o -> o.getX() == bomb.getX() && o.getY() == bomb.getY() + Tile.TILE_SIZE).collect(Collectors.toList());
-		return list.isEmpty() ? this.getObjects().stream()
+		return list.isEmpty() ? entities.stream()
 				.filter(o -> o.getX() == bomb.getX() && o.getY() == bomb.getY() + Tile.TILE_SIZE * 2).collect(Collectors.toList()) : list;
 	}
-	
 }

@@ -20,29 +20,21 @@ public class JPanelGrafico extends JPanel {
 	private ImageIcon brickImage;
 	private ImageIcon bombImage;
 	private ImageIcon bombermanImage;
-	private ImageIcon enemyImage;
 	private ArrayList<Bomb> bombList;
 	private GameMap map;
-	private Player player;
-	private Player playerEnemy;
-	
+
 	private Image background;
 	 
 	public JPanelGrafico() {
-		this.map = new GameMap("Bomberman", 600, 470);
-		this.player = new Player(40, 40, this.map);
-		this.playerEnemy = new Player(280, 40, this.map);
+		this.map = new GameMap("Bomberman", 600, 4870);
 		
 		bombList = new ArrayList<Bomb>();
 		brickImage = new ImageIcon("./resources/images.png");
 		bombImage = new ImageIcon("./resources/bomba.png");
-		bombermanImage = new ImageIcon("./resources/Abajo_0.png");
-		enemyImage = new ImageIcon("./resources/enemy.png");
 		
 		this.background = new ImageIcon("./resources/fondo.png").getImage();
 		
-		this.map.addPlayer(player);
-		this.map.addPlayer(playerEnemy);
+		this.map.addPlayer(new Player(40, 40, this.map, new ImageIcon("./resources/Abajo_0.png")));
 		
 		fillMapWithTiles();
 	}
@@ -61,24 +53,22 @@ public class JPanelGrafico extends JPanel {
 		
 		for(Entity entity : map.getObjects()) {
 			if(entity instanceof Bomb) {
-				g.drawImage(this.bombImage.getImage(), (int)entity.getX(), (int)entity.getY(), 30, 30, null);
+				g.drawImage(this.bombImage.getImage(), (int)entity.getX(), (int)entity.getY(), 40, 40, null);
 			} else if (entity instanceof Tile && entity instanceof Destructible) {
-				g.drawImage(this.brickImage.getImage(), (int)entity.getX(), (int)entity.getY(), 35, 35, null);
+				g.drawImage(this.brickImage.getImage(), (int)entity.getX(), (int)entity.getY(), 40, 40, null);
 			} else if(entity instanceof Tile && !(entity instanceof Destructible)) {
-				g.fillRect((int) entity.getX(),(int) entity.getY(), 35, 35);
+				g.fillRect((int) entity.getX(),(int) entity.getY(), 40, 40);
 			}
 		}
 		
-		g.drawImage(bombermanImage.getImage(), (int) player.getX(), (int) player.getY(), 30, 30, null);	
-		g.drawImage(enemyImage.getImage(), (int)playerEnemy.getX(), (int)playerEnemy.getY(), 30, 30, null);	
-	}
-	
-	public void setBomberman(Player player) {
-		this.player = player;
+		for(Player player : map.getPlayers() ) {
+			g.drawImage(player.getImageIcon().getImage(), (int) player.getX(), (int) player.getY(), 30, 30, null);	
+		}
+			
 	}
 	
 	public Player getBomberman() {
-		return this.player;
+		return map.getPlayers().stream().findFirst().orElse(null);
 	}
 	
 	public void addBomb(Bomb bomb) {
