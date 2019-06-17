@@ -3,9 +3,9 @@ package com.bomberman.entities;
 public class Player extends Entity implements ExplosionListener, Destructible {
 
 	public static final double MOVEMENT_UNIT = 5;
-	public static final double HEIGHT = 40;
-	public static final double WIDTH = 28;
-	private static final int CONCURRENT_BOMBS = 2;
+	public static final int HEIGHT = 40;
+	public static final int WIDTH = 28;
+	private static final int CONCURRENT_BOMBS = 12;
 	private int bombsCount;
 	private boolean alive;
 	
@@ -16,16 +16,16 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 	}
 	
 	private int generateFixedX() {
-		if (x != 0) {
-			return (int) (40 / x);
-		}
-		return 40;
+		return (int) Tile.TILE_SIZE * ((int) x / Tile.TILE_SIZE);
+	}
+	
+	private int generateFixedY() {
+		return (int) Tile.TILE_SIZE * ((int) y / Tile.TILE_SIZE);
 	}
 
 	public void placeBomb(InteractionListener gameMap) {
 		if (this.bombsCount > 0) {
-			int fixedX = generateFixedX();
-			Bomb bomb = new Bomb(fixedX, (int) y, gameMap, this);
+			Bomb bomb = new Bomb(generateFixedX(), generateFixedY(), gameMap, this);
 			gameMap.bombPlaced(bomb);
 			bombsCount--;
 		}

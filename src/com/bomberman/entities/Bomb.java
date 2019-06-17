@@ -30,13 +30,6 @@ public class Bomb extends Entity implements Destructible {
 		listener.update(); // Notify player.
 	}
 	
-	  private TimerTask getTimerTask(Bomb bomb, GameMap map, ExplosionListener
-	  listener) { return new TimerTask() {
-	  
-	  @Override public void run() {
-	  
-	  } }; }
-	 
 	@Override
 	public void destroy() {
 		for(Entity entity : map.getObjects()) {
