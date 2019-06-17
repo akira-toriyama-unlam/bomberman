@@ -4,18 +4,13 @@ public abstract class Entity {
 
 	protected double x;
 	protected double y;
-	protected boolean destroyed;
-	protected boolean canBeDestroyed; // TODO: Remove this attribute and create 2 new entities.
 	protected GameMap map;
-	protected boolean canOver = false;
+	protected InteractionListener interactionListener;
 
-  public Entity(double x, double y, boolean canBeDestroyed, GameMap map, boolean canOver) {
+	public Entity(double x, double y, InteractionListener map) {
 		this.x = x;
 		this.y = y;
-		this.destroyed = false;
-		this.canBeDestroyed = canBeDestroyed;
-		this.map = map;
-		this.canOver = canOver;
+		this.interactionListener = map;
 	}
 
 	@Override
@@ -52,52 +47,6 @@ public abstract class Entity {
 		return true;
 	}
 
-	public void setDestroyed(boolean destroyed) {
-		this.destroyed = destroyed;
-	}
-
-	public void destroy() {
-		this.destroyed = true;
-		if (this instanceof Bomb) {
-			for(Entity entity : map.getObjects()) {
-				
-				//explota a la deracha
-				if(entity.getX() <= (this.getX()+map.widthBomberman) && 
-						(this.getX()+map.widthBomberman) <= (entity.getX() + map.widthTile) && 
-						(entity.getY() + map.widthTile) > (this.getY()+map.errorMovimiento) && 
-						(this.getY() + map.widthBomberman) > (entity.getY() + map.errorMovimiento) && entity.canBeDestroyed) {
-					
-					entity.setDestroyed(true);
-					
-				}
-				
-				//explota a la izquierda
-				if(this.getX() <= (entity.getX()+map.widthTile) && (entity.getX()+map.widthTile) <= (this.getX() + map.widthBomberman) && (entity.getY() + map.widthTile) > (this.getY() + map.errorMovimiento) && (this.getY() + map.widthBomberman) > (entity.getY() + map.errorMovimiento)&& entity.canBeDestroyed) {
-					entity.setDestroyed(true);	
-				}
-				
-				//explota para abajo
-				if((entity.getX()<= this.getX() && (this.getX()+map.errorMovimiento) <= (entity.getX() + map.widthTile)||
-						this.getX() <= entity.getX() && entity.getX() <= (this.getX() + map.widthBomberman-map.errorMovimiento) || 
-							 (this.getX()+map.errorMovimiento) <= (entity.getX() + map.widthTile) && (entity.getX() + map.widthTile) <= (this.getX() + map.widthBomberman)
-							 ) && 
-						   ((this.getY() + map.widthBomberman) >= (entity.getY()) && (this.getY() + map.widthBomberman) <= (entity.getY() + map.widthTile))&& entity.canBeDestroyed) {
-					entity.setDestroyed(true);
-				}
-				
-				//explota para arriba
-				if((entity.getX()<= this.getX() && (this.getX()+map.errorMovimiento) <= (entity.getX() + map.widthTile)||
-						this.getX() <= entity.getX() && entity.getX() <= (this.getX() + map.widthBomberman - map.errorMovimiento) || 
-						 (this.getX()+map.errorMovimiento) <= (entity.getX() + map.widthTile) && (entity.getX() + map.widthTile) <= (this.getX() + map.widthBomberman)
-						 ) &&  (this.getY() <= (entity.getY() + map.widthTile) && this.getY() >= (entity.getY()))&& entity.canBeDestroyed) {
-						entity.setDestroyed(true);
-				}
-				
-			}
-			
-			
-		}
-	}
 
 	public double getY() {
 		return this.y;
@@ -106,12 +55,9 @@ public abstract class Entity {
 	public double getX() {
 		return this.x;
 	}
-
-	public boolean isDestroyed() {
-		return this.destroyed;
-	}
 	
-	public boolean canBeDestroy() {
-		return this.canBeDestroyed;
+	public boolean canBeOverpassed() {
+		return this instanceof Player;
 	}
+
 }
