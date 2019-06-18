@@ -103,7 +103,7 @@ public class GameMap implements InteractionListener {
 		}
 	}
 	
-	public static boolean between(double i,  double minValueInclusive, double maxValueInclusive) {
+	private boolean between(double i,  double minValueInclusive, double maxValueInclusive) {
 	    return (i >= minValueInclusive && i <= maxValueInclusive);
 	}
 	
@@ -137,16 +137,16 @@ public class GameMap implements InteractionListener {
 	public void bombExploded(Bomb bomb) {
 
 		List<Entity> entitiesToRemove = new ArrayList<>();
-		
-		entitiesToRemove.addAll(getEntitesToDestroyAtRight(this.getObjects(), bomb));
-		entitiesToRemove.addAll(getEntitesToDestroyAtLeft(this.getObjects(), bomb));
-		entitiesToRemove.addAll(getEntitesToDestroyUp(this.getObjects(), bomb));
-		entitiesToRemove.addAll(getEntitesToDestroyBottom(this.getObjects(), bomb));
-		
+		// destroy players in range
 		entitiesToRemove.addAll(getEntitesToDestroyAtRight(this.getPlayers(), bomb));
 		entitiesToRemove.addAll(getEntitesToDestroyAtLeft(this.getPlayers(), bomb));
 		entitiesToRemove.addAll(getEntitesToDestroyUp(this.getPlayers(), bomb));
 		entitiesToRemove.addAll(getEntitesToDestroyBottom(this.getPlayers(), bomb));
+		// destroy destructibles entities in range
+		entitiesToRemove.addAll(getEntitesToDestroyAtRight(this.getObjects(), bomb));
+		entitiesToRemove.addAll(getEntitesToDestroyAtLeft(this.getObjects(), bomb));
+		entitiesToRemove.addAll(getEntitesToDestroyUp(this.getObjects(), bomb));
+		entitiesToRemove.addAll(getEntitesToDestroyBottom(this.getObjects(), bomb));
 		
 		entitiesToRemove.removeIf(o -> !(o instanceof Destructible));
  		this.getPlayers().removeAll(entitiesToRemove.stream().filter(e -> e instanceof Player).collect(Collectors.toList()));
@@ -157,30 +157,38 @@ public class GameMap implements InteractionListener {
 	}
 	
 	private List<? extends Entity> getEntitesToDestroyAtRight(List<? extends Entity> entities, Bomb bomb) {
-		List<? extends Entity> list = entities.stream()
-				.filter(o -> o.getY() == bomb.getY() && o.getX() == bomb.getX() + Tile.TILE_SIZE).collect(Collectors.toList());
-		return list.isEmpty() ? this.getObjects().stream()
-				.filter(o -> o.getY() == bomb.getY() && o.getX() == bomb.getX() + Tile.TILE_SIZE * 2).collect(Collectors.toList()): list;
+		List<? extends Entity> listRange1 = getEntitesAtRightInRange(entities, bomb, 1);
+		return listRange1.isEmpty() ? getEntitesAtRightInRange(entities, bomb, 2) : listRange1;
 	}
 	
+	private List<? extends Entity> getEntitesAtRightInRange(List<? extends Entity> entities, Bomb bomb, int range) {
+		return entities.stream().filter(o -> o.getY() == bomb.getY() && between(o.getX(), bomb.getX(), bomb.getX() + (Tile.TILE_SIZE * range))).collect(Collectors.toList());
+	} 
+	
 	private List<? extends Entity> getEntitesToDestroyAtLeft(List<? extends Entity> entities, Bomb bomb) {
-		List<? extends Entity> list = entities.stream()
-				.filter(o -> o.getY() == bomb.getY() && o.getX() == bomb.getX() - Tile.TILE_SIZE).collect(Collectors.toList());
-		return list.isEmpty() ? entities.stream()
-				.filter(o -> o.getY() == bomb.getY() && o.getX() == bomb.getX() - Tile.TILE_SIZE * 2).collect(Collectors.toList()) : list;
+		List<? extends Entity> listRange1 = getEntitesAtLeftInRange(entities, bomb, 1);
+		return listRange1.isEmpty() ? getEntitesAtLeftInRange(entities, bomb, 2) : listRange1;
+	}
+	
+	private List<? extends Entity> getEntitesAtLeftInRange(List<? extends Entity> entities, Bomb bomb, int range) {
+		return entities.stream().filter(o -> o.getY() == bomb.getY() && between(o.getX(), bomb.getX() - (Tile.TILE_SIZE * range), bomb.getX())).collect(Collectors.toList());
 	}
 	
 	private List<? extends Entity> getEntitesToDestroyUp(List<? extends Entity> entities, Bomb bomb) {
-		List<? extends Entity> list = entities.stream()
-				.filter(o -> o.getX() == bomb.getX() && o.getY() == bomb.getY() - Tile.TILE_SIZE).collect(Collectors.toList());
-		return list.isEmpty() ? entities.stream()
-				.filter(o -> o.getX() == bomb.getX() && o.getY() == bomb.getY() - Tile.TILE_SIZE * 2).collect(Collectors.toList()) : list;
+		List<? extends Entity> listRange1 = getEntitesAtUpInRange(entities, bomb, 1);
+		return listRange1.isEmpty() ? getEntitesAtUpInRange(entities, bomb, 2) : listRange1;
+	}
+	
+	private List<? extends Entity> getEntitesAtUpInRange(List<? extends Entity> entities, Bomb bomb, int range) {
+		return entities.stream().filter(o -> o.getX() == bomb.getX() && between(o.getY(), bomb.getY() - (Tile.TILE_SIZE * range), bomb.getY())).collect(Collectors.toList());
 	}
 	
 	private List<? extends Entity> getEntitesToDestroyBottom(List<? extends Entity> entities, Bomb bomb) {
-		List<? extends Entity> list = entities.stream()
-				.filter(o -> o.getX() == bomb.getX() && o.getY() == bomb.getY() + Tile.TILE_SIZE).collect(Collectors.toList());
-		return list.isEmpty() ? entities.stream()
-				.filter(o -> o.getX() == bomb.getX() && o.getY() == bomb.getY() + Tile.TILE_SIZE * 2).collect(Collectors.toList()) : list;
+		List<? extends Entity> listRange1 = getEntitesAtBottomInRange(entities, bomb, 1);
+		return listRange1.isEmpty() ? getEntitesAtBottomInRange(entities, bomb, 2) : listRange1;
+	}
+	
+	private List<? extends Entity> getEntitesAtBottomInRange(List<? extends Entity> entities, Bomb bomb, int range) {
+		return entities.stream().filter(o -> o.getX() == bomb.getX() && between(o.getY(), bomb.getY(), bomb.getY() + (Tile.TILE_SIZE * range))).collect(Collectors.toList());
 	}
 }
