@@ -2,8 +2,8 @@ package com.bomberman.entities;
 
 public class DestructibleTile extends Tile implements Destructible {
 
-	public DestructibleTile(int x, int y, GameMap map, boolean canOver) {
-		super(x, y, map, canOver);
+	public DestructibleTile(int x, int y, GameMap map) {
+		super(x, y, map);
 		// TODO Auto-generated constructor stub
 	}
 

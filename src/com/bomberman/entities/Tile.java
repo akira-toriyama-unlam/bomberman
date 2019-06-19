@@ -1,11 +1,10 @@
 package com.bomberman.entities;
 
 public class Tile extends Entity {
-
-	public static final double TILE_SIZE = 40;
+	public static final int TILE_SIZE = 40;
 	
-	public Tile (int x, int y, GameMap map, boolean canOver) {
-		super(x, y, map, canOver);
+	public Tile (int x, int y, InteractionListener map) {
+		super(x, y, map);
 	}
 	
 }

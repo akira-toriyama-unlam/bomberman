@@ -15,34 +15,28 @@ import com.bomberman.entities.GameMap;
 import com.bomberman.entities.Player;
 import com.bomberman.entities.Tile;
 
-public class JPanelGrafico extends JPanel {
+public class JGraphicPanel extends JPanel {
 
+	private JGraphicWindow frame;
 	private ImageIcon brickImage;
 	private ImageIcon bombImage;
 	private ImageIcon bombermanImage;
-	private ImageIcon enemyImage;
 	private ArrayList<Bomb> bombList;
 	private GameMap map;
-	private Player player;
-	private Player playerEnemy;
-	
+
 	private Image background;
 	 
-	public JPanelGrafico() {
-		this.map = new GameMap("Bomberman", 600, 470);
-		this.player = new Player(40, 40, this.map);
-		this.playerEnemy = new Player(520,360,this.map);
+	public JGraphicPanel(JGraphicWindow frame) {
+		this.frame = frame;
+		this.map = new GameMap("Bomberman", JGraphicWindow.WIDTH, JGraphicWindow.HEIGHT);
 		
 		bombList = new ArrayList<Bomb>();
 		brickImage = new ImageIcon("./resources/images.png");
 		bombImage = new ImageIcon("./resources/bomba.png");
-		bombermanImage = new ImageIcon("./resources/Abajo_0.png");
-		enemyImage = new ImageIcon("./resources/enemy.png");
 		
 		this.background = new ImageIcon("./resources/fondo.png").getImage();
 		
-		this.map.addObject(player);
-		this.map.addObject(playerEnemy);
+		this.map.addPlayer(new Player(40, 40, this.map, new ImageIcon("./resources/Abajo_0.png")));
 		
 		fillMapWithTiles();
 	}
@@ -52,7 +46,6 @@ public class JPanelGrafico extends JPanel {
 		int width = this.getSize().width;
 		int height = this.getSize().height;
  
-
 		if (this.background != null) {
 			g.drawImage(this.background, 0, 0, width, height, null);
 		}
@@ -60,31 +53,30 @@ public class JPanelGrafico extends JPanel {
 		g.setColor(new Color(204,204,204));
 		
 		for(Entity entity : map.getObjects()) {
-			if(entity instanceof Bomb && !entity.isDestroyed()) {
-				g.drawImage(this.bombImage.getImage(), (int)entity.getX(), (int)entity.getY(), 30, 30, null);
-			} else if (entity instanceof Tile && entity instanceof Destructible && !entity.isDestroyed()) {
-				g.drawImage(this.brickImage.getImage(), (int)entity.getX(), (int)entity.getY(), 35, 35, null);
+			if(entity instanceof Bomb) {
+				g.drawImage(this.bombImage.getImage(), (int)entity.getX(), (int)entity.getY(), 40, 40, null);
+			} else if (entity instanceof Tile && entity instanceof Destructible) {
+				g.drawImage(this.brickImage.getImage(), (int)entity.getX(), (int)entity.getY(), 40, 40, null);
 			} else if(entity instanceof Tile && !(entity instanceof Destructible)) {
-				g.fillRect((int) entity.getX(),(int) entity.getY(), 35, 35);
+				g.fillRect((int) entity.getX(),(int) entity.getY(), 40, 40);
 			}
 		}
 		
-		if(!player.isDestroyed()) {
-			g.drawImage(bombermanImage.getImage(), (int) player.getX(), (int) player.getY(), 30, 30, null);	
+		if(map.getPlayers().size() != 0) {
+			for(Player player : map.getPlayers() ) {
+				g.drawImage(player.getImageIcon().getImage(), (int) player.getX(), (int) player.getY(), 40, 40, null);	
+			}
+		} else {
+			frame.cancelTimer();
+			frame.drawEndGame(g);
+			//frame.dispose();
 		}
 		
-		if(!playerEnemy.isDestroyed()) {
-			g.drawImage(enemyImage.getImage(), (int)playerEnemy.getX(), (int)playerEnemy.getY(), 30, 30, null);	
-		}
-
-	}
-	
-	public void setBomberman(Player player) {
-		this.player = player;
+			
 	}
 	
 	public Player getBomberman() {
-		return this.player;
+		return map.getPlayers().stream().findFirst().orElse(null);
 	}
 	
 	public void addBomb(Bomb bomb) {
@@ -105,14 +97,15 @@ public class JPanelGrafico extends JPanel {
 
 	private void addTileToMap(int x, int y, GameMap m, boolean destroy) {
 		if (destroy) {
-			this.map.addObject(new DestructibleTile(x, y, m, false));
+			this.map.addObject(new DestructibleTile(x, y, m));
 		} else {
-			this.map.addObject(new Tile(x, y, m, false));
+			this.map.addObject(new Tile(x, y, m));
 		}
 	}
 	
 	private void fillMapWithTiles() {
 		addTileToMap(40,80,this.map,true);
+		//addTileToMap(80,40,this.map,true);
 		addTileToMap(80,360,this.map,true);
 		addTileToMap(80,200,this.map,true);
 		addTileToMap(120,200,this.map,true);
@@ -121,6 +114,7 @@ public class JPanelGrafico extends JPanel {
 		addTileToMap(40,240,this.map,true);
 		addTileToMap(200,200,this.map,true);
 		addTileToMap(400,40,this.map,true);
+		addTileToMap(360,40,this.map,true);
 		addTileToMap(400,200,this.map,true);
 		addTileToMap(280,280,this.map,true);
 		addTileToMap(280,320,this.map,true);
@@ -130,20 +124,27 @@ public class JPanelGrafico extends JPanel {
 		addTileToMap(360,120,this.map,true);
 		addTileToMap(440,280,this.map,true);
 		
-		for(int i = 0; i< 560; i+=40) {
+		// Border limits
+		for(int i = 0; i< 800; i+=40) {
 			addTileToMap(i,0,this.map,false);
 			addTileToMap(0,i,this.map,false);
-			addTileToMap(560,i,this.map,false);
-			addTileToMap(i,400,this.map,false);
+			addTileToMap(800,i,this.map,false);
+			addTileToMap(i,560,this.map,false);
 		}
 		
-		for(int i = 80; i< 360; i+=80) {
+		// Inner non-breaking tiles
+		for(int i = 80; i< 1040; i+=80) {
 			addTileToMap(80,i,this.map,false);
 			addTileToMap(160,i,this.map,false);
 			addTileToMap(240,i,this.map,false);
 			addTileToMap(320,i,this.map,false);
 			addTileToMap(400,i,this.map,false);
 			addTileToMap(480,i,this.map,false);
+			addTileToMap(560,i,this.map,false);
+			addTileToMap(640,i,this.map,false);
+			addTileToMap(720,i,this.map,false);
+			addTileToMap(800,i,this.map,false);
+			addTileToMap(880,i,this.map,false);
 		}
 
 	}

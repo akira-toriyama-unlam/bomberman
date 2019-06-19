@@ -4,54 +4,12 @@ public abstract class Entity {
 
 	protected double x;
 	protected double y;
-	protected boolean destroyed;
-	protected GameMap map;
-	protected boolean canOver = false;
+	protected InteractionListener interactionListener;
 
-  public Entity(double x, double y, GameMap map, boolean canOver) {
+	public Entity(double x, double y, InteractionListener map) {
 		this.x = x;
 		this.y = y;
-		this.destroyed = false;
-		this.map = map;
-		this.canOver = canOver;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((map == null) ? 0 : map.hashCode());
-		long temp;
-		temp = Double.doubleToLongBits(x);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(y);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Entity other = (Entity) obj;
-		if (map == null) {
-			if (other.map != null)
-				return false;
-		} else if (!map.equals(other.map))
-			return false;
-		if (Double.doubleToLongBits(x) != Double.doubleToLongBits(other.x))
-			return false;
-		if (Double.doubleToLongBits(y) != Double.doubleToLongBits(other.y))
-			return false;
-		return true;
-	}
-
-	public void setDestroyed(boolean destroyed) {
-		this.destroyed = destroyed;
+		this.interactionListener = map;
 	}
 
 	public double getY() {
@@ -61,9 +19,21 @@ public abstract class Entity {
 	public double getX() {
 		return this.x;
 	}
-
-	public boolean isDestroyed() {
-		return this.destroyed;
+	
+	public boolean canBeOverpassed() {
+		return this instanceof Player;
 	}
 	
+	public boolean isDestructible() {
+		return this instanceof Destructible;
+	}
+	
+	public boolean isBomb() {
+		return this instanceof Bomb;
+	}
+	
+	public boolean isPlayer() {
+		return this instanceof Player;
+	}
+
 }

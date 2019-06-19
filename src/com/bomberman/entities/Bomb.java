@@ -6,65 +6,51 @@ import java.util.TimerTask;
 
 public class Bomb extends Entity implements Destructible {
 
-	public static final int BOMB_RANGE = 1;
-	public static final int TIME_TO_EXPLOIT = 2000;
+	public static final int BOMB_RANGE = 2;
+	public static final int TIME_TO_EXPLOIT = 3000;
+	
+	private Timer timerInstace;
 
 	private ExplosionListener listener;
 
-	public Bomb(double x, double y, GameMap map, ExplosionListener listener) {
-		super(x, y, map, true);
+	public Bomb(int x, int y, InteractionListener map, ExplosionListener listener) {
+		super(x, y, map);
 		this.listener = listener;
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
-			
+		 this.timerInstace = new Timer();
+		 this.timerInstace.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				exploit();
+				destroy();
 			}
-		}, 3000);
+		}, TIME_TO_EXPLOIT);
 	}
-
-	public void exploit() {
-		destroy();
-		listener.update(); // Notify player.
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Bomb other = (Bomb) obj;
+		if (listener == null) {
+			if (other.listener != null)
+				return false;
+		} else if (!listener.equals(other.listener))
+			return false;
+		else if (this.x != other.x || this.y != other.y)
+			return false;
+		return true;
 	}
 
 	@Override
 	public void destroy() {
-		for(Entity entity : map.getObjects()) {
-			
-			//explota a la deracha
-			if(entity.getX() <= (this.getX() + Player.PLAYER_SIZE) && 
-					(this.getX() + Player.PLAYER_SIZE) <= (entity.getX() + Tile.TILE_SIZE) && 
-					(entity.getY() + Tile.TILE_SIZE) > (this.getY()+map.errorMovimiento) && 
-					(this.getY() + Player.PLAYER_SIZE) > (entity.getY() + map.errorMovimiento) && entity instanceof Destructible) {
-				
-				entity.setDestroyed(true);
-				
-			}
-			
-			//explota a la izquierda
-			if(this.getX() <= (entity.getX()+Tile.TILE_SIZE) && (entity.getX()+Tile.TILE_SIZE) <= (this.getX() + Player.PLAYER_SIZE) && (entity.getY() + Tile.TILE_SIZE) > (this.getY() + map.errorMovimiento) && (this.getY() + Player.PLAYER_SIZE) > (entity.getY() + map.errorMovimiento)&& entity instanceof Destructible) {
-				entity.setDestroyed(true);	
-			}
-			
-			//explota para abajo
-			if((entity.getX()<= this.getX() && (this.getX()+map.errorMovimiento) <= (entity.getX() + Tile.TILE_SIZE)||
-					this.getX() <= entity.getX() && entity.getX() <= (this.getX() + Player.PLAYER_SIZE-map.errorMovimiento) || 
-						 (this.getX()+map.errorMovimiento) <= (entity.getX() + Tile.TILE_SIZE) && (entity.getX() + Tile.TILE_SIZE) <= (this.getX() + Player.PLAYER_SIZE)
-						 ) && 
-					   ((this.getY() + Player.PLAYER_SIZE) >= (entity.getY()) && (this.getY() + Player.PLAYER_SIZE) <= (entity.getY() + Tile.TILE_SIZE)) && entity instanceof Destructible) {
-				entity.setDestroyed(true);
-			}
-			
-			//explota para arriba
-			if((entity.getX()<= this.getX() && (this.getX()+map.errorMovimiento) <= (entity.getX() + Tile.TILE_SIZE)||
-					this.getX() <= entity.getX() && entity.getX() <= (this.getX() + Player.PLAYER_SIZE - map.errorMovimiento) || 
-					 (this.getX()+map.errorMovimiento) <= (entity.getX() + Tile.TILE_SIZE) && (entity.getX() + Tile.TILE_SIZE) <= (this.getX() + Player.PLAYER_SIZE)
-					 ) &&  (this.getY() <= (entity.getY() + Tile.TILE_SIZE) && this.getY() >= (entity.getY())) && entity instanceof Destructible) {
-					entity.setDestroyed(true);
-			}
-			
-		}
+		interactionListener.bombExploded(this);
+		listener.update();		
+	}
+	
+	public void cancelTimer() {
+		this.timerInstace.cancel();
 	}
 }
