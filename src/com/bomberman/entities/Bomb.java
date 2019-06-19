@@ -8,9 +8,9 @@ import java.util.TimerTask;
 public class Bomb extends Entity implements Destructible {
 
 	public static final int BOMB_RANGE = 2;
-	public static final int TIME_TO_EXPLOIT = 2000;
+	public static final int TIME_TO_EXPLOIT = 3000;
+	
 	private Timer timerInstace;
-	private boolean flagPrendido = true;
 
 	private ExplosionListener listener;
 
@@ -21,11 +21,9 @@ public class Bomb extends Entity implements Destructible {
 		 this.timerInstace.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				if(flagPrendido) {
-					destroy();
-				}
+				destroy();
 			}
-		}, 3000);
+		}, TIME_TO_EXPLOIT);
 	}
 	
 	@Override
@@ -42,6 +40,8 @@ public class Bomb extends Entity implements Destructible {
 				return false;
 		} else if (!listener.equals(other.listener))
 			return false;
+		else if (this.x != other.x || this.y != other.y)
+			return false;
 		return true;
 	}
 
@@ -52,9 +52,7 @@ public class Bomb extends Entity implements Destructible {
 	}
 	
 	public void cancelTimer() {
-		this.flagPrendido = false;
 		this.timerInstace.cancel();
-		this.timerInstace.purge();
 	}
 	
 }

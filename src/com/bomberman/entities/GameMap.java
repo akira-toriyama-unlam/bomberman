@@ -11,7 +11,8 @@ public class GameMap implements InteractionListener {
 	protected List<Player> players;
 	protected int width;
 	protected int height;
-	protected final static int MOVEMENT_ERROR = 2;
+	protected final static int MOVEMENT_ERROR = 2; // This constant is used for fixing the movement into the Jpanel.
+	protected final static double BOMB_ERROR = 0.01; // This constant is used for fixing bomb range error.
 
 	public GameMap(String name, int width, int height) {
 		this.name = name;
@@ -137,6 +138,8 @@ public class GameMap implements InteractionListener {
 	public void bombExploded(Bomb bomb) {
 
 		List<Entity> entitiesToRemove = new ArrayList<>();
+		entitiesToRemove.add(bomb); // remove current bomb from map
+		
 		// destroy players in range
 		entitiesToRemove.addAll(getEntitesToDestroyAtRight(this.getPlayers(), bomb));
 		entitiesToRemove.addAll(getEntitesToDestroyAtLeft(this.getPlayers(), bomb));
@@ -151,7 +154,8 @@ public class GameMap implements InteractionListener {
 		
  		this.getPlayers().removeAll(entitiesToRemove.stream().filter(e -> e.isPlayer()).collect(Collectors.toList()));
 		this.getObjects().removeAll(entitiesToRemove);
-		System.out.println("lalala");
+	
+		// destroy recursive bombs
 		entitiesToRemove.stream().filter(o -> o.isBomb() && !o.equals(bomb)).forEach(b -> {
 			Bomb currentBomb = (Bomb) b;
 			currentBomb.cancelTimer();
@@ -166,8 +170,8 @@ public class GameMap implements InteractionListener {
 	}
 	
 	private List<? extends Entity> getEntitesAtRightInRange(List<? extends Entity> entities, Bomb bomb, int range) {
-		return entities.stream().filter(o -> o.isDestructible() && o.getY() == bomb.getY()  
-				&& between(o.getX(), bomb.getX(), bomb.getX() + (Tile.TILE_SIZE * range))).collect(Collectors.toList());
+		return entities.stream().filter(o -> o.isDestructible() && o.getY() == bomb.getY()
+				&& between(o.getX(), bomb.getX() + BOMB_ERROR, bomb.getX() + (Tile.TILE_SIZE * range))).collect(Collectors.toList());
 	} 
 	
 	private List<? extends Entity> getEntitesToDestroyAtLeft(List<? extends Entity> entities, Bomb bomb) {
@@ -177,7 +181,7 @@ public class GameMap implements InteractionListener {
 	
 	private List<? extends Entity> getEntitesAtLeftInRange(List<? extends Entity> entities, Bomb bomb, int range) {
 		return entities.stream().filter(o -> o.isDestructible() &&o.getY() == bomb.getY() 
-				&& between(o.getX(), bomb.getX() - (Tile.TILE_SIZE * range), bomb.getX())).collect(Collectors.toList());
+				&& between(o.getX(), bomb.getX() - (Tile.TILE_SIZE * range), bomb.getX() - BOMB_ERROR)).collect(Collectors.toList());
 	}
 	
 	private List<? extends Entity> getEntitesToDestroyUp(List<? extends Entity> entities, Bomb bomb) {
@@ -187,7 +191,7 @@ public class GameMap implements InteractionListener {
 	
 	private List<? extends Entity> getEntitesAtUpInRange(List<? extends Entity> entities, Bomb bomb, int range) {
 		return entities.stream().filter(o -> o.isDestructible() &&o.getX() == bomb.getX() 
-				&& between(o.getY(), bomb.getY() - (Tile.TILE_SIZE * range), bomb.getY())).collect(Collectors.toList());
+				&& between(o.getY(), bomb.getY() - (Tile.TILE_SIZE * range), bomb.getY() - BOMB_ERROR)).collect(Collectors.toList());
 	}
 	
 	private List<? extends Entity> getEntitesToDestroyBottom(List<? extends Entity> entities, Bomb bomb) {
@@ -197,7 +201,7 @@ public class GameMap implements InteractionListener {
 	
 	private List<? extends Entity> getEntitesAtBottomInRange(List<? extends Entity> entities, Bomb bomb, int range) {
 		return entities.stream().filter(o -> o.isDestructible() &&o.getX() == bomb.getX() 
-				&& between(o.getY(), bomb.getY(), bomb.getY() + (Tile.TILE_SIZE * range))).collect(Collectors.toList());
+				&& between(o.getY(), bomb.getY() + BOMB_ERROR, bomb.getY() + (Tile.TILE_SIZE * range))).collect(Collectors.toList());
 	}
 	
 	private boolean isBombOnlyEntityInList(List<? extends Entity> entities, Bomb bomb) {

@@ -20,6 +20,37 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 		this.imageIcon = imageIcon;
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (alive ? 1231 : 1237);
+		result = prime * result + bombsCount;
+		result = prime * result + ((imageIcon == null) ? 0 : imageIcon.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Player other = (Player) obj;
+		if (alive != other.alive)
+			return false;
+		if (bombsCount != other.bombsCount)
+			return false;
+		if (imageIcon == null) {
+			if (other.imageIcon != null)
+				return false;
+		} else if (!imageIcon.equals(other.imageIcon))
+			return false;
+		return true;
+	}
+
 	private int generateFixedX() {
 		return Tile.TILE_SIZE * ((int) x / Tile.TILE_SIZE);
 	}
