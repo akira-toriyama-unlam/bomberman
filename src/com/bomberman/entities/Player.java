@@ -7,7 +7,7 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 	public static final double MOVEMENT_UNIT = 8;
 	public static final int HEIGHT = 40;
 	public static final int WIDTH = 28;
-	private static final int CONCURRENT_BOMBS = 12;
+	private static final int CONCURRENT_BOMBS = 2;
 	private int bombsCount;
 	private boolean alive;
 	
