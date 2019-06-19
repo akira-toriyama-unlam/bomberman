@@ -58,6 +58,7 @@ public class JGraphicWindow extends JFrame {
 				repaint();
 			}
 		}, 200, 1);
+
 		
 		
 		addKeyListener(new KeyAdapter() {
