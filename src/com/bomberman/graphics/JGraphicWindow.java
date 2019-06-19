@@ -1,5 +1,6 @@
 package com.bomberman.graphics;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
@@ -27,6 +28,7 @@ public class JGraphicWindow extends JFrame {
     private DataOutputStream salidaDatos;
     private int puerto = 1236;
     private String host = "127.0.0.1";
+    private Timer timer;
     
 	public static void main(String[] args) {
 		new JGraphicWindow().setVisible(true);
@@ -48,8 +50,8 @@ public class JGraphicWindow extends JFrame {
 		setBackground(Color.WHITE);
 		setContentPane(contentPane);
 		
-		Timer timer = new Timer();
-		timer.scheduleAtFixedRate(new TimerTask() {
+		this.timer = new Timer();
+		this.timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {		
 				repaint();
@@ -72,10 +74,24 @@ public class JGraphicWindow extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
-	public void drawCenteredString(String s, int w, int h, Graphics g) {
+	public void cancelTimer() {
+		this.timer.cancel();
+	}
+	
+	public void drawEndGame(Graphics g) {
+		g.setColor(Color.black);
+		g.fillRect(0, 0, WIDTH, HEIGHT);
+		
+		Font font = new Font("Arial", Font.PLAIN, 50);
+		g.setFont(font);
+		g.setColor(Color.white);
+		drawCenteredString("GAME OVER", g);
+	}
+	
+	public void drawCenteredString(String s, Graphics g) {
 	    FontMetrics fm = g.getFontMetrics();
-	    int x = (w - fm.stringWidth(s)) / 2;
-	    int y = (fm.getAscent() + (h - (fm.getAscent() + fm.getDescent())) / 2);
+	    int x = (WIDTH - fm.stringWidth(s)) / 2;
+	    int y = (fm.getAscent() + (HEIGHT - (fm.getAscent() + fm.getDescent())) / 2);
 	    g.drawString(s, x, y);
 	 }
 	

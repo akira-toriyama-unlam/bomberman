@@ -144,6 +144,7 @@ public class GameMap implements InteractionListener {
 		entitiesToRemove.addAll(getEntitesToDestroyAtLeft(this.getPlayers(), bomb));
 		entitiesToRemove.addAll(getEntitesToDestroyUp(this.getPlayers(), bomb));
 		entitiesToRemove.addAll(getEntitesToDestroyBottom(this.getPlayers(), bomb));
+		entitiesToRemove.addAll(getPlayersAtSite(this.getPlayers(), bomb));
 	
 		// destroy destructibles entities in range
 		entitiesToRemove.addAll(getEntitesToDestroyAtRight(this.getObjects(), bomb));
@@ -161,6 +162,10 @@ public class GameMap implements InteractionListener {
 			currentBomb.destroy();
 		});
 		
+	}
+	
+	private List<Entity> getPlayersAtSite(List<Player> players, Bomb b) {
+		return players.stream().filter(p -> b.x == p.x && b.y == p.y).collect(Collectors.toList());
 	}
 	
 	private List<? extends Entity> getEntitesToDestroyAtRight(List<? extends Entity> entities, Bomb bomb) {

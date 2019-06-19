@@ -67,7 +67,9 @@ public class JGraphicPanel extends JPanel {
 				g.drawImage(player.getImageIcon().getImage(), (int) player.getX(), (int) player.getY(), 40, 40, null);	
 			}
 		} else {
-			frame.dispose();
+			frame.cancelTimer();
+			frame.drawEndGame(g);
+			//frame.dispose();
 		}
 		
 			
