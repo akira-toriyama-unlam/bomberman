@@ -10,8 +10,7 @@ public class GameMap implements InteractionListener {
 	protected List<Entity> objects;
 	protected List<Player> players;
 	protected int width;
-	protected int height;
-	protected final static int MOVEMENT_ERROR = 2; // This constant is used for fixing the movement into the Jpanel.
+	protected int height;	protected final static int MOVEMENT_ERROR = 2; // This constant is used for fixing the movement into the Jpanel.
 	protected final static double BOMB_ERROR = 0.01; // This constant is used for fixing bomb range error.
 
 	public GameMap(String name, int width, int height) {

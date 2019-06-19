@@ -4,7 +4,6 @@ package com.bomberman.entities;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
 public class Bomb extends Entity implements Destructible {
 
 	public static final int BOMB_RANGE = 2;
@@ -54,5 +53,4 @@ public class Bomb extends Entity implements Destructible {
 	public void cancelTimer() {
 		this.timerInstace.cancel();
 	}
-	
 }
