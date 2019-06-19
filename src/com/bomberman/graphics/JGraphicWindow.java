@@ -24,6 +24,7 @@ public class JGraphicWindow extends JFrame {
 	public static final int HEIGHT = 620;
 	private JGraphicPanel contentPane;
 	private int cuenta = -1;
+	private boolean stopKeyEvents = false;
     private Socket socket;
     private DataOutputStream salidaDatos;
     private int puerto = 1236;
@@ -56,14 +57,16 @@ public class JGraphicWindow extends JFrame {
 			public void run() {		
 				repaint();
 			}
-		}, 33, 1);
+		}, 200, 1);
 		
 		
 		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 				try {
-					setMovimiento(arg0);
+					if(!stopKeyEvents) {
+						setMovimiento(arg0);
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -74,6 +77,14 @@ public class JGraphicWindow extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
+	public boolean isStopKeyEvents() {
+		return stopKeyEvents;
+	}
+
+	public void setStopKeyEvents(boolean stopKeyEvents) {
+		this.stopKeyEvents = stopKeyEvents;
+	}
+
 	public void cancelTimer() {
 		this.timer.cancel();
 	}
