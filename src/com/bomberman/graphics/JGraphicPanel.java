@@ -15,8 +15,9 @@ import com.bomberman.entities.GameMap;
 import com.bomberman.entities.Player;
 import com.bomberman.entities.Tile;
 
-public class JPanelGrafico extends JPanel {
+public class JGraphicPanel extends JPanel {
 
+	private JGraphicWindow frame;
 	private ImageIcon brickImage;
 	private ImageIcon bombImage;
 	private ImageIcon bombermanImage;
@@ -25,8 +26,9 @@ public class JPanelGrafico extends JPanel {
 
 	private Image background;
 	 
-	public JPanelGrafico() {
-		this.map = new GameMap("Bomberman", 600, 4870);
+	public JGraphicPanel(JGraphicWindow frame) {
+		this.frame = frame;
+		this.map = new GameMap("Bomberman", JGraphicWindow.WIDTH, JGraphicWindow.HEIGHT);
 		
 		bombList = new ArrayList<Bomb>();
 		brickImage = new ImageIcon("./resources/images.png");
@@ -44,7 +46,6 @@ public class JPanelGrafico extends JPanel {
 		int width = this.getSize().width;
 		int height = this.getSize().height;
  
-
 		if (this.background != null) {
 			g.drawImage(this.background, 0, 0, width, height, null);
 		}
@@ -61,9 +62,14 @@ public class JPanelGrafico extends JPanel {
 			}
 		}
 		
-		for(Player player : map.getPlayers() ) {
-			g.drawImage(player.getImageIcon().getImage(), (int) player.getX(), (int) player.getY(), 30, 30, null);	
+		if(map.getPlayers().size() != 0) {
+			for(Player player : map.getPlayers() ) {
+				g.drawImage(player.getImageIcon().getImage(), (int) player.getX(), (int) player.getY(), 40, 40, null);	
+			}
+		} else {
+			frame.dispose();
 		}
+		
 			
 	}
 	
@@ -116,20 +122,27 @@ public class JPanelGrafico extends JPanel {
 		addTileToMap(360,120,this.map,true);
 		addTileToMap(440,280,this.map,true);
 		
-		for(int i = 0; i< 560; i+=40) {
+		// Border limits
+		for(int i = 0; i< 800; i+=40) {
 			addTileToMap(i,0,this.map,false);
 			addTileToMap(0,i,this.map,false);
-			addTileToMap(560,i,this.map,false);
-			addTileToMap(i,400,this.map,false);
+			addTileToMap(800,i,this.map,false);
+			addTileToMap(i,560,this.map,false);
 		}
 		
-		for(int i = 80; i< 360; i+=80) {
+		// Inner non-breaking tiles
+		for(int i = 80; i< 1040; i+=80) {
 			addTileToMap(80,i,this.map,false);
 			addTileToMap(160,i,this.map,false);
 			addTileToMap(240,i,this.map,false);
 			addTileToMap(320,i,this.map,false);
 			addTileToMap(400,i,this.map,false);
 			addTileToMap(480,i,this.map,false);
+			addTileToMap(560,i,this.map,false);
+			addTileToMap(640,i,this.map,false);
+			addTileToMap(720,i,this.map,false);
+			addTileToMap(800,i,this.map,false);
+			addTileToMap(880,i,this.map,false);
 		}
 
 	}

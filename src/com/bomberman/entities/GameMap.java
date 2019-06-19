@@ -142,53 +142,65 @@ public class GameMap implements InteractionListener {
 		entitiesToRemove.addAll(getEntitesToDestroyAtLeft(this.getPlayers(), bomb));
 		entitiesToRemove.addAll(getEntitesToDestroyUp(this.getPlayers(), bomb));
 		entitiesToRemove.addAll(getEntitesToDestroyBottom(this.getPlayers(), bomb));
+	
 		// destroy destructibles entities in range
 		entitiesToRemove.addAll(getEntitesToDestroyAtRight(this.getObjects(), bomb));
 		entitiesToRemove.addAll(getEntitesToDestroyAtLeft(this.getObjects(), bomb));
 		entitiesToRemove.addAll(getEntitesToDestroyUp(this.getObjects(), bomb));
 		entitiesToRemove.addAll(getEntitesToDestroyBottom(this.getObjects(), bomb));
 		
-		entitiesToRemove.removeIf(o -> !(o instanceof Destructible));
- 		this.getPlayers().removeAll(entitiesToRemove.stream().filter(e -> e instanceof Player).collect(Collectors.toList()));
+ 		this.getPlayers().removeAll(entitiesToRemove.stream().filter(e -> e.isPlayer()).collect(Collectors.toList()));
 		this.getObjects().removeAll(entitiesToRemove);
-		this.getObjects().remove(bomb);
-		entitiesToRemove.stream().filter(o -> o instanceof Bomb).forEach(b -> bombExploded((Bomb) b));
+		System.out.println("lalala");
+		entitiesToRemove.stream().filter(o -> o.isBomb() && !o.equals(bomb)).forEach(b -> {
+			Bomb currentBomb = (Bomb) b;
+			currentBomb.cancelTimer();
+			currentBomb.destroy();
+		});
 		
 	}
 	
 	private List<? extends Entity> getEntitesToDestroyAtRight(List<? extends Entity> entities, Bomb bomb) {
 		List<? extends Entity> listRange1 = getEntitesAtRightInRange(entities, bomb, 1);
-		return listRange1.isEmpty() ? getEntitesAtRightInRange(entities, bomb, 2) : listRange1;
+		return isBombOnlyEntityInList(listRange1, bomb) ? getEntitesAtRightInRange(entities, bomb, 2) : listRange1;
 	}
 	
 	private List<? extends Entity> getEntitesAtRightInRange(List<? extends Entity> entities, Bomb bomb, int range) {
-		return entities.stream().filter(o -> o.getY() == bomb.getY() && between(o.getX(), bomb.getX(), bomb.getX() + (Tile.TILE_SIZE * range))).collect(Collectors.toList());
+		return entities.stream().filter(o -> o.isDestructible() && o.getY() == bomb.getY()  
+				&& between(o.getX(), bomb.getX(), bomb.getX() + (Tile.TILE_SIZE * range))).collect(Collectors.toList());
 	} 
 	
 	private List<? extends Entity> getEntitesToDestroyAtLeft(List<? extends Entity> entities, Bomb bomb) {
 		List<? extends Entity> listRange1 = getEntitesAtLeftInRange(entities, bomb, 1);
-		return listRange1.isEmpty() ? getEntitesAtLeftInRange(entities, bomb, 2) : listRange1;
+		return isBombOnlyEntityInList(listRange1, bomb) ? getEntitesAtLeftInRange(entities, bomb, 2) : listRange1;
 	}
 	
 	private List<? extends Entity> getEntitesAtLeftInRange(List<? extends Entity> entities, Bomb bomb, int range) {
-		return entities.stream().filter(o -> o.getY() == bomb.getY() && between(o.getX(), bomb.getX() - (Tile.TILE_SIZE * range), bomb.getX())).collect(Collectors.toList());
+		return entities.stream().filter(o -> o.isDestructible() &&o.getY() == bomb.getY() 
+				&& between(o.getX(), bomb.getX() - (Tile.TILE_SIZE * range), bomb.getX())).collect(Collectors.toList());
 	}
 	
 	private List<? extends Entity> getEntitesToDestroyUp(List<? extends Entity> entities, Bomb bomb) {
 		List<? extends Entity> listRange1 = getEntitesAtUpInRange(entities, bomb, 1);
-		return listRange1.isEmpty() ? getEntitesAtUpInRange(entities, bomb, 2) : listRange1;
+		return isBombOnlyEntityInList(listRange1, bomb) ? getEntitesAtUpInRange(entities, bomb, 2) : listRange1;
 	}
 	
 	private List<? extends Entity> getEntitesAtUpInRange(List<? extends Entity> entities, Bomb bomb, int range) {
-		return entities.stream().filter(o -> o.getX() == bomb.getX() && between(o.getY(), bomb.getY() - (Tile.TILE_SIZE * range), bomb.getY())).collect(Collectors.toList());
+		return entities.stream().filter(o -> o.isDestructible() &&o.getX() == bomb.getX() 
+				&& between(o.getY(), bomb.getY() - (Tile.TILE_SIZE * range), bomb.getY())).collect(Collectors.toList());
 	}
 	
 	private List<? extends Entity> getEntitesToDestroyBottom(List<? extends Entity> entities, Bomb bomb) {
 		List<? extends Entity> listRange1 = getEntitesAtBottomInRange(entities, bomb, 1);
-		return listRange1.isEmpty() ? getEntitesAtBottomInRange(entities, bomb, 2) : listRange1;
+		return isBombOnlyEntityInList(listRange1, bomb) ? getEntitesAtBottomInRange(entities, bomb, 2) : listRange1;
 	}
 	
 	private List<? extends Entity> getEntitesAtBottomInRange(List<? extends Entity> entities, Bomb bomb, int range) {
-		return entities.stream().filter(o -> o.getX() == bomb.getX() && between(o.getY(), bomb.getY(), bomb.getY() + (Tile.TILE_SIZE * range))).collect(Collectors.toList());
+		return entities.stream().filter(o -> o.isDestructible() &&o.getX() == bomb.getX() 
+				&& between(o.getY(), bomb.getY(), bomb.getY() + (Tile.TILE_SIZE * range))).collect(Collectors.toList());
+	}
+	
+	private boolean isBombOnlyEntityInList(List<? extends Entity> entities, Bomb bomb) {
+		return entities.isEmpty() || entities.size() == 1 && entities.get(0).equals(bomb);
 	}
 }
