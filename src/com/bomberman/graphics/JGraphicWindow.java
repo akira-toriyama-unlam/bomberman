@@ -29,6 +29,7 @@ public class JGraphicWindow extends JFrame {
     private DataOutputStream salidaDatos;
     private int puerto = 1236;
     private String host = "127.0.0.1";
+    private Player currentPlayer;
     private Timer timer;
     
 	public static void main(String[] args) {
@@ -65,11 +66,17 @@ public class JGraphicWindow extends JFrame {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 				try {
-					if(!stopKeyEvents) {
-						setMovimiento(arg0);
-					}
+					if(!stopKeyEvents) 
+						setMovimiento(arg0);		
 				} catch (IOException e) {
 					e.printStackTrace();
+				}
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				if(!stopKeyEvents) {
+					currentPlayer.setMoving(false);
 				}
 			}
 			
@@ -109,6 +116,8 @@ public class JGraphicWindow extends JFrame {
 	
 	public void setMovimiento(KeyEvent event) throws IOException {
 		Player bomberman = contentPane.getBomberman();
+		this.setCurrentPlayer(bomberman);
+		bomberman.setMoving(true);
 		GameMap map = contentPane.getMap();
 		cuenta+=1;
 		switch(event.getKeyCode()) {
@@ -149,5 +158,13 @@ public class JGraphicWindow extends JFrame {
 		if(cuenta==2) {
 			cuenta=-1;
 		}
+	}
+
+	public Player getCurrentPlayer() {
+		return currentPlayer;
+	}
+
+	public void setCurrentPlayer(Player currentPlayer) {
+		this.currentPlayer = currentPlayer;
 	}
 }

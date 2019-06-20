@@ -2,8 +2,12 @@ package com.bomberman.graphics;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
@@ -18,22 +22,16 @@ import com.bomberman.entities.Tile;
 public class JGraphicPanel extends JPanel {
 
 	private JGraphicWindow frame;
-	private ImageIcon brickImage;
-	private ImageIcon bombImage;
-	private ImageIcon bombermanImage;
 	private ArrayList<Bomb> bombList;
 	private GameMap map;
 
 	private Image background;
-	 
+	
 	public JGraphicPanel(JGraphicWindow frame) {
 		this.frame = frame;
 		this.map = new GameMap("Bomberman", JGraphicWindow.WIDTH, JGraphicWindow.HEIGHT);
 		
 		bombList = new ArrayList<Bomb>();
-		brickImage = new ImageIcon("./resources/images.png");
-		bombImage = new ImageIcon("./resources/bomba.png");
-		
 		this.background = new ImageIcon("./resources/fondo.png").getImage();
 		
 		this.map.addPlayer(new Player(40, 40, this.map, new ImageIcon("./resources/Abajo_0.png")));
@@ -54,17 +52,19 @@ public class JGraphicPanel extends JPanel {
 		
 		for(Entity entity : map.getObjects()) {
 			if(entity instanceof Bomb) {
-				g.drawImage(this.bombImage.getImage(), (int)entity.getX(), (int)entity.getY(), 40, 40, null);
+				Bomb bomb = (Bomb) entity;
+				g.drawImage(bomb.getSprite(), (int)entity.getX(), (int)entity.getY(), 40, 40, null);
 			} else if (entity instanceof Tile && entity instanceof Destructible) {
-				g.drawImage(this.brickImage.getImage(), (int)entity.getX(), (int)entity.getY(), 40, 40, null);
+				DestructibleTile tile = (DestructibleTile) entity; 
+				g.drawImage(tile.getSprite(), (int)entity.getX(), (int)entity.getY(), 40, 40, null);
 			} else if(entity instanceof Tile && !(entity instanceof Destructible)) {
-				g.fillRect((int) entity.getX(),(int) entity.getY(), 40, 40);
+				g.drawImage(Sprite.wall, (int)entity.getX(), (int)entity.getY(), 40, 40, null);
 			}
 		}
 		
 		if(map.getPlayers().size() != 0) {
 			for(Player player : map.getPlayers() ) {
-				g.drawImage(player.getImageIcon().getImage(), (int) player.getX(), (int) player.getY(), 40, 40, null);	
+				g.drawImage(player.getSprite(), (int) player.getX(), (int) player.getY(), 40, 40, null);	
 			}
 		} else {
 			frame.setStopKeyEvents(true);
@@ -72,7 +72,6 @@ public class JGraphicPanel extends JPanel {
 			frame.drawEndGame(g);
 		}
 		
-			
 	}
 	
 	public Player getBomberman() {
@@ -85,14 +84,6 @@ public class JGraphicPanel extends JPanel {
 	
 	public GameMap getMap() {
 		return this.map;
-	}
-	
-	public void setImageBomberman(String image) {
-		bombermanImage = new ImageIcon(image);
-	}
-
-	public ImageIcon getBombermanImage() {
-		return this.bombermanImage;
 	}
 
 	private void addTileToMap(int x, int y, GameMap m, boolean destroy) {

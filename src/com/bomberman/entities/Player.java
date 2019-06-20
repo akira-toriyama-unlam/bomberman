@@ -2,6 +2,8 @@ package com.bomberman.entities;
 
 import javax.swing.ImageIcon;
 
+import com.bomberman.graphics.Sprite;
+
 public class Player extends Entity implements ExplosionListener, Destructible {
 
 	public static final double MOVEMENT_UNIT = 8;
@@ -18,6 +20,7 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 		this.alive = true;
 		this.bombsCount = Player.CONCURRENT_BOMBS;
 		this.imageIcon = imageIcon;
+		this.sprite = Sprite.player_down; //initial position
 	}
 	
 	@Override
@@ -52,11 +55,11 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 	}
 
 	private int generateFixedX() {
-		return Tile.TILE_SIZE * ((int) x / Tile.TILE_SIZE);
+		return Tile.SIZE * ((int) x / Tile.SIZE);
 	}
 	
 	private int generateFixedY() {
-		return Tile.TILE_SIZE * ((int) y / Tile.TILE_SIZE);
+		return Tile.SIZE * ((int) y / Tile.SIZE);
 	}
 
 	public void placeBomb(InteractionListener gameMap) {
@@ -69,6 +72,7 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 	
 	public void move(Direction direction) {
 		interactionListener.movement(this, direction);
+		chooseSprite(direction);		
 	}
 
 	@Override
@@ -91,6 +95,36 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 	
 	public void setImageIcon(ImageIcon imageIcon) {
 		this.imageIcon = imageIcon;
+	}
+	
+	public void chooseSprite(Direction direction) {
+		animate();
+		switch(direction) {
+		case UP:
+			sprite = Sprite.player_up;
+			if(moving) {
+				sprite = Sprite.movingSprite(Sprite.player_up, Sprite.player_up_1, Sprite.player_up_2, animate, 5);
+			}
+			break;
+		case RIGHT:
+			sprite = Sprite.player_right;
+			if(moving) {
+				sprite = Sprite.movingSprite(Sprite.player_right, Sprite.player_right_1, Sprite.player_right_2, animate, 5);
+			}
+			break;
+		case DOWN:
+			sprite = Sprite.player_down;
+			if(moving) {
+				sprite = Sprite.movingSprite(Sprite.player_down, Sprite.player_down_1, Sprite.player_down_2, animate, 5);
+			}
+			break;
+		case LEFT:
+			sprite = Sprite.player_left;
+			if(moving) {
+				sprite = Sprite.movingSprite(Sprite.player_left, Sprite.player_left_1, Sprite.player_left_2, animate, 5);
+			}
+			break;
+		}
 	}
 
 }

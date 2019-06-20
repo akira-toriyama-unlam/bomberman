@@ -2,7 +2,11 @@ package com.bomberman.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.stream.Collectors;
+
+import com.bomberman.graphics.Sprite;
 
 public class GameMap implements InteractionListener {
 
@@ -91,13 +95,13 @@ public class GameMap implements InteractionListener {
 	private boolean crashWithLimits(double x, double y, Direction direction) {
 		switch (direction) {
 			case RIGHT:
-				return (x + Player.MOVEMENT_UNIT) > (width - Player.HEIGHT - Tile.TILE_SIZE);
+				return (x + Player.MOVEMENT_UNIT) > (width - Player.HEIGHT - Tile.SIZE);
 			case LEFT:
-				return (x - Player.MOVEMENT_UNIT - Tile.TILE_SIZE) < 0;
+				return (x - Player.MOVEMENT_UNIT - Tile.SIZE) < 0;
 			case UP:
-				return (y - Player.MOVEMENT_UNIT - Tile.TILE_SIZE) < 0;
+				return (y - Player.MOVEMENT_UNIT - Tile.SIZE) < 0;
 			case DOWN:
-				return (y + Player.MOVEMENT_UNIT) > (height - Player.HEIGHT - Tile.TILE_SIZE);
+				return (y + Player.MOVEMENT_UNIT) > (height - Player.HEIGHT - Tile.SIZE);
 			default:
 				return false;
 		}
@@ -108,29 +112,29 @@ public class GameMap implements InteractionListener {
 	}
 	
 	private boolean betweenY(Entity o, double y) {
-		return between(y + MOVEMENT_ERROR, o.getY() + MOVEMENT_ERROR, o.getY() + Tile.TILE_SIZE - MOVEMENT_ERROR) ||
-				between(y + Player.HEIGHT - MOVEMENT_ERROR, o.getY() + MOVEMENT_ERROR, o.getY() + Tile.TILE_SIZE - MOVEMENT_ERROR);
+		return between(y + MOVEMENT_ERROR, o.getY() + MOVEMENT_ERROR, o.getY() + Tile.SIZE - MOVEMENT_ERROR) ||
+				between(y + Player.HEIGHT - MOVEMENT_ERROR, o.getY() + MOVEMENT_ERROR, o.getY() + Tile.SIZE - MOVEMENT_ERROR);
 	}
 	
 	private boolean betweenX(Entity o, double x) {
-		return between(x + MOVEMENT_ERROR, o.getX() + MOVEMENT_ERROR, o.getX() + Tile.TILE_SIZE - MOVEMENT_ERROR) ||
-				between(x + Player.HEIGHT - MOVEMENT_ERROR, o.getX() + MOVEMENT_ERROR, o.getX() + Tile.TILE_SIZE - MOVEMENT_ERROR);
+		return between(x + MOVEMENT_ERROR, o.getX() + MOVEMENT_ERROR, o.getX() + Tile.SIZE - MOVEMENT_ERROR) ||
+				between(x + Player.HEIGHT - MOVEMENT_ERROR, o.getX() + MOVEMENT_ERROR, o.getX() + Tile.SIZE - MOVEMENT_ERROR);
 	}
 	
 	private boolean canMoveRight(double x, double y) {
-		return this.objects.stream().filter(o -> betweenY(o, y)).noneMatch(o -> o.getX() == x + Tile.TILE_SIZE);  
+		return this.objects.stream().filter(o -> betweenY(o, y)).noneMatch(o -> o.getX() == x + Tile.SIZE);  
 	}
 	
 	private boolean canMoveLeft(double x, double y) {
-		return this.objects.stream().filter(o -> betweenY(o, y)).noneMatch(o -> o.getX() == x - Tile.TILE_SIZE);
+		return this.objects.stream().filter(o -> betweenY(o, y)).noneMatch(o -> o.getX() == x - Tile.SIZE);
 	}
 	
 	private boolean canMoveUp(double x, double y) {
-		return this.objects.stream().filter(o -> betweenX(o, x)).noneMatch(o -> o.getY() == y - Tile.TILE_SIZE);  
+		return this.objects.stream().filter(o -> betweenX(o, x)).noneMatch(o -> o.getY() == y - Tile.SIZE);  
 	}
 	
 	private boolean canMoveDown(double x, double y) {
-		return this.objects.stream().filter(o -> betweenX(o, x)).noneMatch(o -> o.getY() == y + Tile.TILE_SIZE);  
+		return this.objects.stream().filter(o -> betweenX(o, x)).noneMatch(o -> o.getY() == y + Tile.SIZE);  
 	}
 
 	@Override
@@ -153,14 +157,25 @@ public class GameMap implements InteractionListener {
 		entitiesToRemove.addAll(getEntitesToDestroyBottom(this.getObjects(), bomb));
 		
  		this.getPlayers().removeAll(entitiesToRemove.stream().filter(e -> e.isPlayer()).collect(Collectors.toList()));
-		this.getObjects().removeAll(entitiesToRemove);
-	
-		// destroy recursive bombs
-		entitiesToRemove.stream().filter(o -> o.isBomb() && !o.equals(bomb)).forEach(b -> {
+ 		
+ 		List<Entity> list = entitiesToRemove.stream().filter(e -> e.isDestructible() && e instanceof DestructibleTile).collect(Collectors.toList());
+ 		list.forEach(t -> ((DestructibleTile) t).destroy());
+ 		
+ 		// destroy recursive bombs
+ 		entitiesToRemove.stream().filter(o -> o.isBomb() && !o.equals(bomb)).forEach(b -> {
 			Bomb currentBomb = (Bomb) b;
 			currentBomb.cancelTimer();
 			currentBomb.destroy();
+ 		});
+ 		
+ 		//destroy the bombs
+ 		entitiesToRemove.forEach(e -> {
+ 			if(e.isBomb())
+ 				getObjects().remove(e);
 		});
+ 		
+ 		//remove tiles after animation
+ 		this.removeEntitiesAfterAnimation(entitiesToRemove);
 		
 	}
 	
@@ -175,7 +190,7 @@ public class GameMap implements InteractionListener {
 	
 	private List<? extends Entity> getEntitesAtRightInRange(List<? extends Entity> entities, Bomb bomb, int range) {
 		return entities.stream().filter(o -> o.isDestructible() && o.getY() == bomb.getY()
-				&& between(o.getX(), bomb.getX() + BOMB_ERROR, bomb.getX() + (Tile.TILE_SIZE * range))).collect(Collectors.toList());
+				&& between(o.getX(), bomb.getX() + BOMB_ERROR, bomb.getX() + (Tile.SIZE * range))).collect(Collectors.toList());
 	} 
 	
 	private List<? extends Entity> getEntitesToDestroyAtLeft(List<? extends Entity> entities, Bomb bomb) {
@@ -185,7 +200,7 @@ public class GameMap implements InteractionListener {
 	
 	private List<? extends Entity> getEntitesAtLeftInRange(List<? extends Entity> entities, Bomb bomb, int range) {
 		return entities.stream().filter(o -> o.isDestructible() &&o.getY() == bomb.getY() 
-				&& between(o.getX(), bomb.getX() - (Tile.TILE_SIZE * range), bomb.getX() - BOMB_ERROR)).collect(Collectors.toList());
+				&& between(o.getX(), bomb.getX() - (Tile.SIZE * range), bomb.getX() - BOMB_ERROR)).collect(Collectors.toList());
 	}
 	
 	private List<? extends Entity> getEntitesToDestroyUp(List<? extends Entity> entities, Bomb bomb) {
@@ -195,7 +210,7 @@ public class GameMap implements InteractionListener {
 	
 	private List<? extends Entity> getEntitesAtUpInRange(List<? extends Entity> entities, Bomb bomb, int range) {
 		return entities.stream().filter(o -> o.isDestructible() &&o.getX() == bomb.getX() 
-				&& between(o.getY(), bomb.getY() - (Tile.TILE_SIZE * range), bomb.getY() - BOMB_ERROR)).collect(Collectors.toList());
+				&& between(o.getY(), bomb.getY() - (Tile.SIZE * range), bomb.getY() - BOMB_ERROR)).collect(Collectors.toList());
 	}
 	
 	private List<? extends Entity> getEntitesToDestroyBottom(List<? extends Entity> entities, Bomb bomb) {
@@ -205,10 +220,21 @@ public class GameMap implements InteractionListener {
 	
 	private List<? extends Entity> getEntitesAtBottomInRange(List<? extends Entity> entities, Bomb bomb, int range) {
 		return entities.stream().filter(o -> o.isDestructible() &&o.getX() == bomb.getX() 
-				&& between(o.getY(), bomb.getY() + BOMB_ERROR, bomb.getY() + (Tile.TILE_SIZE * range))).collect(Collectors.toList());
+				&& between(o.getY(), bomb.getY() + BOMB_ERROR, bomb.getY() + (Tile.SIZE * range))).collect(Collectors.toList());
 	}
 	
 	private boolean isBombOnlyEntityInList(List<? extends Entity> entities, Bomb bomb) {
 		return entities.isEmpty() || entities.size() == 1 && entities.get(0).equals(bomb);
 	}
+	
+	private void removeEntitiesAfterAnimation(List<? extends Entity> entities) {
+		Timer timer = new Timer();
+		 timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				getObjects().removeAll(entities);       
+			}
+		}, 300);	
+	}
+		
 }
