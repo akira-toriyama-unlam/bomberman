@@ -4,25 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.swing.ImageIcon;
+
+import com.bomberman.graphics.JGraphicWindow;
+import com.bomberman.services.PlayerModel;
+
 public class GameMap implements InteractionListener {
 
-	protected String name;
 	protected List<Entity> objects;
 	protected List<Player> players;
-	protected int width;
-	protected int height;	protected final static int MOVEMENT_ERROR = 2; // This constant is used for fixing the movement into the Jpanel.
+	protected final static int MOVEMENT_ERROR = 2; // This constant is used for fixing the movement into the Jpanel.
 	protected final static double BOMB_ERROR = 0.01; // This constant is used for fixing bomb range error.
 
-	public GameMap(String name, int width, int height) {
-		this.name = name;
+	public GameMap() {
 		this.objects = new ArrayList<>();
 		this.players = new ArrayList<>();
-		this.width = width;
-		this.height = height;
-	}
-	
-	public String getName() {
-		return this.name;
 	}
 	
 	public boolean canMove(double x, double y, Direction direction) {
@@ -91,13 +87,13 @@ public class GameMap implements InteractionListener {
 	private boolean crashWithLimits(double x, double y, Direction direction) {
 		switch (direction) {
 			case RIGHT:
-				return (x + Player.MOVEMENT_UNIT) > (width - Player.HEIGHT - Tile.TILE_SIZE);
+				return (x + Player.MOVEMENT_UNIT) > (JGraphicWindow.WIDTH - Player.HEIGHT - Tile.TILE_SIZE);
 			case LEFT:
 				return (x - Player.MOVEMENT_UNIT - Tile.TILE_SIZE) < 0;
 			case UP:
 				return (y - Player.MOVEMENT_UNIT - Tile.TILE_SIZE) < 0;
 			case DOWN:
-				return (y + Player.MOVEMENT_UNIT) > (height - Player.HEIGHT - Tile.TILE_SIZE);
+				return (y + Player.MOVEMENT_UNIT) > (JGraphicWindow.HEIGHT - Player.HEIGHT - Tile.TILE_SIZE);
 			default:
 				return false;
 		}
@@ -152,11 +148,11 @@ public class GameMap implements InteractionListener {
 		entitiesToRemove.addAll(getEntitesToDestroyUp(this.getObjects(), bomb));
 		entitiesToRemove.addAll(getEntitesToDestroyBottom(this.getObjects(), bomb));
 		
- 		this.getPlayers().removeAll(entitiesToRemove.stream().filter(e -> e.isPlayer()).collect(Collectors.toList()));
+ 		this.getPlayers().removeAll(entitiesToRemove.stream().filter(e -> isPlayer(e)).collect(Collectors.toList()));
 		this.getObjects().removeAll(entitiesToRemove);
 	
 		// destroy recursive bombs
-		entitiesToRemove.stream().filter(o -> o.isBomb() && !o.equals(bomb)).forEach(b -> {
+		entitiesToRemove.stream().filter(o -> isBomb(o) && !o.equals(bomb)).forEach(b -> {
 			Bomb currentBomb = (Bomb) b;
 			currentBomb.cancelTimer();
 			currentBomb.destroy();
@@ -174,7 +170,7 @@ public class GameMap implements InteractionListener {
 	}
 	
 	private List<? extends Entity> getEntitesAtRightInRange(List<? extends Entity> entities, Bomb bomb, int range) {
-		return entities.stream().filter(o -> o.isDestructible() && o.getY() == bomb.getY()
+		return entities.stream().filter(o -> isDestructible(o) && o.getY() == bomb.getY()
 				&& between(o.getX(), bomb.getX() + BOMB_ERROR, bomb.getX() + (Tile.TILE_SIZE * range))).collect(Collectors.toList());
 	} 
 	
@@ -184,7 +180,7 @@ public class GameMap implements InteractionListener {
 	}
 	
 	private List<? extends Entity> getEntitesAtLeftInRange(List<? extends Entity> entities, Bomb bomb, int range) {
-		return entities.stream().filter(o -> o.isDestructible() &&o.getY() == bomb.getY() 
+		return entities.stream().filter(o -> isDestructible(o) &&o.getY() == bomb.getY() 
 				&& between(o.getX(), bomb.getX() - (Tile.TILE_SIZE * range), bomb.getX() - BOMB_ERROR)).collect(Collectors.toList());
 	}
 	
@@ -194,7 +190,7 @@ public class GameMap implements InteractionListener {
 	}
 	
 	private List<? extends Entity> getEntitesAtUpInRange(List<? extends Entity> entities, Bomb bomb, int range) {
-		return entities.stream().filter(o -> o.isDestructible() &&o.getX() == bomb.getX() 
+		return entities.stream().filter(o -> isDestructible(o) &&o.getX() == bomb.getX() 
 				&& between(o.getY(), bomb.getY() - (Tile.TILE_SIZE * range), bomb.getY() - BOMB_ERROR)).collect(Collectors.toList());
 	}
 	
@@ -204,11 +200,60 @@ public class GameMap implements InteractionListener {
 	}
 	
 	private List<? extends Entity> getEntitesAtBottomInRange(List<? extends Entity> entities, Bomb bomb, int range) {
-		return entities.stream().filter(o -> o.isDestructible() &&o.getX() == bomb.getX() 
+		return entities.stream().filter(o -> isDestructible(o) &&o.getX() == bomb.getX() 
 				&& between(o.getY(), bomb.getY() + BOMB_ERROR, bomb.getY() + (Tile.TILE_SIZE * range))).collect(Collectors.toList());
 	}
 	
 	private boolean isBombOnlyEntityInList(List<? extends Entity> entities, Bomb bomb) {
 		return entities.isEmpty() || entities.size() == 1 && entities.get(0).equals(bomb);
 	}
+	
+	private boolean isPlayer(Entity entity) {
+		return entity instanceof Player;
+	}
+	
+	private boolean isBomb(Entity entity) {
+		return entity instanceof Bomb;
+	}
+	
+	private boolean isDestructible(Entity entity) {
+		return entity instanceof Destructible;
+	}
+	
+	public List<PlayerModel> generatePlayersModelList() {
+		List<PlayerModel> playerModels = new ArrayList<>();
+		for(Player player : this.players) {
+			playerModels.add(
+					new PlayerModel(
+							player.getX(),
+							player.getY(),
+							player.interactionListener));
+		}
+		
+		return playerModels;
+	}
+	
+	public List<Player> generatePlayerFromModel(List<PlayerModel> playerModels) {
+		List<Player> playersList = new ArrayList<>(); 
+		for(PlayerModel playerModel : playerModels) {
+			// TODO: Select ICON depending on player type
+			
+			playersList.add(new Player(
+					playerModel.getX(),
+					playerModel.getY(),
+					playerModel.getMap(),
+					new ImageIcon("./resources/Abajo_0.png")));
+		}
+		
+		return playersList;
+	}
+	
+	public void setObjects(List<Entity> objects) {
+		this.objects = objects;
+	}
+	
+	public void setPlayers(List<Player> players) {
+		this.players = players;
+	}
+	
 }

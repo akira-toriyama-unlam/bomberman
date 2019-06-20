@@ -1,9 +1,9 @@
 package com.bomberman.graphics;
 
-import com.bomberman.services.Message;
+import com.bomberman.services.MapMessage;
 
 public interface SocketActionListener {
 	
-	void messageReceived(Message message);
+	void messageReceived(MapMessage message);
 
 }

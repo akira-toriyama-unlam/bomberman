@@ -12,11 +12,11 @@ import java.util.TimerTask;
 import javax.swing.JFrame;
 
 import com.bomberman.entities.GameMap;
-import com.bomberman.entities.Player;
 import com.bomberman.services.Client;
+import com.bomberman.services.MapMessage;
 import com.bomberman.services.Message;
 
-public class JGraphicWindow extends JFrame implements SocketActionListener{
+public class JGraphicWindow extends JFrame implements SocketActionListener {
 
 	public static final int WIDTH = 840;
 	public static final int HEIGHT = 620;
@@ -25,6 +25,8 @@ public class JGraphicWindow extends JFrame implements SocketActionListener{
 	private boolean stopKeyEvents = false;
     private Client client;
     private Timer timer;
+    private GameMap map;
+    private boolean repaintOn = false;
     
 	public static void main(String[] args) {
 		new JGraphicWindow().setVisible(true);
@@ -32,24 +34,36 @@ public class JGraphicWindow extends JFrame implements SocketActionListener{
 	
 	public JGraphicWindow() {
 		this.client = new Client(this);
+		this.initializeGraphicWindow();
+		//this.initializeRepaint();
+		this.intializeKeyboardListeners();
+	}
+	
+	
+	private void initializeGraphicWindow() {
 		setResizable(false);		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, WIDTH, HEIGHT);
-		contentPane = new JGraphicPanel(this);
-		setTitle(contentPane.getMap().getName());
+		setTitle("Bomberman");
 		setBackground(Color.WHITE);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	private void initializeRepaint() {
+		contentPane = new JGraphicPanel(this);
 		setContentPane(contentPane);
 		
 		this.timer = new Timer();
 		this.timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
-			public void run() {		
+			public void run() {	
 				repaint();
 			}
 		}, 200, 1);
-
-		
-		
+	}
+	
+	private void intializeKeyboardListeners() {
 		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
@@ -63,8 +77,6 @@ public class JGraphicWindow extends JFrame implements SocketActionListener{
 			}
 			
 		});
-		setLocationRelativeTo(null);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	public boolean isStopKeyEvents() {
@@ -97,8 +109,8 @@ public class JGraphicWindow extends JFrame implements SocketActionListener{
 	 }
 	
 	public void setMovimiento(KeyEvent event) throws IOException {
-		Player bomberman = contentPane.getBomberman();
-		GameMap map = contentPane.getMap();
+		//Player bomberman = contentPane.getBomberman();
+		//GameMap map = contentPane.getMap();
 		cuenta+=1;
 		switch(event.getKeyCode()) {
 		case KeyEvent.VK_LEFT:
@@ -138,9 +150,29 @@ public class JGraphicWindow extends JFrame implements SocketActionListener{
 			cuenta=-1;
 		}
 	}
+	
+	public GameMap getMap() {
+		return this.map;
+	}
 
 	@Override
-	public void messageReceived(Message message) {
+	public void messageReceived(MapMessage mapMessage) {
+		System.out.println("Mensaje recibido");
+
+		if(this.map == null) {
+			this.map = new GameMap();
+		}
 		
+		this.map.setObjects(mapMessage.getObjects());
+		this.map.setPlayers(this.map.generatePlayerFromModel(mapMessage.getPlayers()));
+		
+		
+		if (!this.repaintOn) {
+			System.out.println("Esto se tiene que pintar;");
+			this.initializeRepaint();
+			this.repaintOn = true;
+		}
+		
+		//repaint();
 	}
 }

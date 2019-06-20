@@ -2,6 +2,8 @@ package com.bomberman.entities;
 
 import javax.swing.ImageIcon;
 
+import com.bomberman.services.PlayerTypes;
+
 public class Player extends Entity implements ExplosionListener, Destructible {
 
 	public static final double MOVEMENT_UNIT = 8;
@@ -10,6 +12,7 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 	private static final int CONCURRENT_BOMBS = 2;
 	private int bombsCount;
 	private boolean alive;
+	private PlayerTypes playerType;
 	
 	private ImageIcon imageIcon;
 	
@@ -91,6 +94,14 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 	
 	public void setImageIcon(ImageIcon imageIcon) {
 		this.imageIcon = imageIcon;
+	}
+	
+	public PlayerTypes getPlayerType() {
+		return this.playerType;
+	}
+	
+	public void setPlayerType(PlayerTypes playerType) {
+		this.playerType = playerType;
 	}
 
 }

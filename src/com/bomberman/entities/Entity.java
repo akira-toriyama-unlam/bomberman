@@ -1,6 +1,8 @@
 package com.bomberman.entities;
 
-public abstract class Entity {
+import java.io.Serializable;
+
+public abstract class Entity implements Serializable {
 
 	protected double x;
 	protected double y;
@@ -20,6 +22,7 @@ public abstract class Entity {
 		return this.x;
 	}
 	
+	/*
 	public boolean canBeOverpassed() {
 		return this instanceof Player;
 	}
@@ -35,5 +38,6 @@ public abstract class Entity {
 	public boolean isPlayer() {
 		return this instanceof Player;
 	}
+	*/
 
 }

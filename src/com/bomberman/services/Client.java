@@ -67,11 +67,11 @@ public class Client {
 		}
 	}
 	
-	private void reciveMessage(String message) {
+	private void reciveMessage(String mapMessage) {
 		System.out.println("Mensage recibido en el cliente");
-		Message messageObject = gson.fromJson(message, Message.class);
-		System.out.println(messageObject.getMessage());
-		//TODO: Do something with the recieved message
+		MapMessage mapMessageObject = gson.fromJson(mapMessage, MapMessage.class);
+
+		listener.messageReceived(mapMessageObject);
 	}
 
 }
