@@ -9,6 +9,12 @@ import com.bomberman.services.Message;
 public class ScoreBoard extends Observable implements GameActionPerformed {
 	
 	private GameMap gameMap;
+	
+	public ScoreBoard() {
+		// Crear mapita
+		
+		//this.notifyAllObservers(this.gameMap);
+	}
 
 	@Override
 	public void actionPerformed(Message message) {

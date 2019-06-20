@@ -41,7 +41,10 @@ public class ClientConnection extends Thread implements Observer {
             	receivedMessage = dataInputStream.readUTF();
             	Message message = gson.fromJson(receivedMessage, Message.class);
                 System.out.println(message.getMessage());
-                scoreBoard.actionPerformed(message);
+                
+                // VALIDO SI ME PUEDO MOVER
+                // ACTUALIZO EL OBJETO
+                scoreBoard.actionPerformed(message); // ACA TA EL SEND FORZADO
                 
             } catch (IOException ex) {
             	System.out.println("Cliente con la IP " + socket.getInetAddress().getHostName() + " desconectado.");
