@@ -3,16 +3,17 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.Timer;
 
 import com.bomberman.entities.Direction;
 import com.bomberman.entities.GameMap;
@@ -23,15 +24,13 @@ public class JGraphicWindow extends JFrame {
 	public static final int WIDTH = 840;
 	public static final int HEIGHT = 620;
 	private JGraphicPanel contentPane;
-	private int cuenta = -1;
 	private boolean stopKeyEvents = false;
     private Socket socket;
     private DataOutputStream salidaDatos;
     private int puerto = 1236;
     private String host = "127.0.0.1";
     private Player currentPlayer;
-    private Timer timer;
-    
+    private Timer timer;    
 	public static void main(String[] args) {
 		new JGraphicWindow().setVisible(true);
 	}
@@ -52,16 +51,14 @@ public class JGraphicWindow extends JFrame {
 		setBackground(Color.WHITE);
 		setContentPane(contentPane);
 		
-		this.timer = new Timer();
-		this.timer.scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {		
-				repaint();
-			}
-		}, 200, 1);
+		ActionListener taskPerformer = new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+            	repaint();
+            }
+        };
+		this.timer = new Timer(20, taskPerformer);
+		this.timer.start();
 
-		
-		
 		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
@@ -94,17 +91,17 @@ public class JGraphicWindow extends JFrame {
 	}
 
 	public void cancelTimer() {
-		this.timer.cancel();
+		this.timer.stop();
 	}
 	
 	public void drawEndGame(Graphics g) {
 		g.setColor(Color.black);
-		g.fillRect(0, 0, WIDTH, HEIGHT);
-		
+		g.fillRect(0, 0, WIDTH, HEIGHT);	
 		Font font = new Font("Arial", Font.PLAIN, 50);
 		g.setFont(font);
 		g.setColor(Color.white);
 		drawCenteredString("GAME OVER", g);
+		cancelTimer();
 	}
 	
 	public void drawCenteredString(String s, Graphics g) {
@@ -119,32 +116,27 @@ public class JGraphicWindow extends JFrame {
 		this.setCurrentPlayer(bomberman);
 		bomberman.setMoving(true);
 		GameMap map = contentPane.getMap();
-		cuenta+=1;
 		switch(event.getKeyCode()) {
 		case KeyEvent.VK_LEFT:
 		case KeyEvent.VK_A:
 			
 			salidaDatos.writeUTF("Left");
 			bomberman.move(Direction.LEFT);
-			bomberman.setImageIcon(new ImageIcon("./resources/Izquierda_" + (cuenta % 3) + ".png"));
 			break;
 		case KeyEvent.VK_RIGHT:
 		case KeyEvent.VK_D: 
 			salidaDatos.writeUTF("Right");
 			bomberman.move(Direction.RIGHT);
-			bomberman.setImageIcon(new ImageIcon("./resources/Derecha_" + (cuenta % 3) + ".png"));
 			break;
 		case KeyEvent.VK_UP:
 		case KeyEvent.VK_W:
 			salidaDatos.writeUTF("Up");
 			bomberman.move(Direction.UP);
-			bomberman.setImageIcon(new ImageIcon("./resources/Arriba_" + (cuenta % 3) + ".png"));
 			break;
 		case KeyEvent.VK_DOWN:
 		case KeyEvent.VK_S:
 			salidaDatos.writeUTF("Down");
 			bomberman.move(Direction.DOWN);
-			bomberman.setImageIcon(new ImageIcon("./resources/Abajo_" + (cuenta % 3) + ".png"));
 			break;
 		case KeyEvent.VK_SPACE:
 		case KeyEvent.VK_X:	
@@ -153,10 +145,6 @@ public class JGraphicWindow extends JFrame {
 		default:
 			// do nothing
 			break;
-		}
-		
-		if(cuenta==2) {
-			cuenta=-1;
 		}
 	}
 

@@ -81,9 +81,9 @@ public class Sprite {
 	public static Image explosion_horizontal_right_last1 = SPRITE_SHEET.image.getSubimage(2 * TILE_PIXELS, 8 * TILE_PIXELS, 16, 16);
 	public static Image explosion_horizontal_right_last2 = SPRITE_SHEET.image.getSubimage(2 * TILE_PIXELS, 9 * TILE_PIXELS, 16, 16);
 	
-	public static Image explosion_vertical_top_last = SPRITE_SHEET.image.getSubimage(1 * TILE_PIXELS, 4 * TILE_PIXELS, 16, 16);
-	public static Image explosion_vertical_top_last1 = SPRITE_SHEET.image.getSubimage(2 * TILE_PIXELS, 4 * TILE_PIXELS, 16, 16);
-	public static Image explosion_vertical_top_last2 = SPRITE_SHEET.image.getSubimage(3 * TILE_PIXELS, 4 * TILE_PIXELS, 16, 16);
+	public static Image explosion_vertical_up_last = SPRITE_SHEET.image.getSubimage(1 * TILE_PIXELS, 4 * TILE_PIXELS, 16, 16);
+	public static Image explosion_vertical_up_last1 = SPRITE_SHEET.image.getSubimage(2 * TILE_PIXELS, 4 * TILE_PIXELS, 16, 16);
+	public static Image explosion_vertical_up_last2 = SPRITE_SHEET.image.getSubimage(3 * TILE_PIXELS, 4 * TILE_PIXELS, 16, 16);
 	
 	public static Image explosion_vertical_down_last = SPRITE_SHEET.image.getSubimage(1 * TILE_PIXELS, 6 * TILE_PIXELS, 16, 16);
 	public static Image explosion_vertical_down_last1 = SPRITE_SHEET.image.getSubimage(2 * TILE_PIXELS, 6 * TILE_PIXELS, 16, 16);

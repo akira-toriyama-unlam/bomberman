@@ -25,7 +25,6 @@ public class DestructibleTile extends Tile implements Destructible {
 				counter++;
 				
 		       if (counter == 3){
-		    	 // setDestroyed(true);
 		         timer.cancel();
 		       }
 			}

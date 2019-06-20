@@ -1,11 +1,14 @@
 package com.bomberman.graphics;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -51,24 +54,15 @@ public class JGraphicPanel extends JPanel {
 		g.setColor(new Color(204,204,204));
 		
 		for(Entity entity : map.getObjects()) {
-			if(entity instanceof Bomb) {
-				Bomb bomb = (Bomb) entity;
-				g.drawImage(bomb.getSprite(), (int)entity.getX(), (int)entity.getY(), 40, 40, null);
-			} else if (entity instanceof Tile && entity instanceof Destructible) {
-				DestructibleTile tile = (DestructibleTile) entity; 
-				g.drawImage(tile.getSprite(), (int)entity.getX(), (int)entity.getY(), 40, 40, null);
-			} else if(entity instanceof Tile && !(entity instanceof Destructible)) {
-				g.drawImage(Sprite.wall, (int)entity.getX(), (int)entity.getY(), 40, 40, null);
-			}
+			g.drawImage(entity.getSprite(), (int) entity.getX(), (int) entity.getY(), 40, 40, null);
 		}
 		
-		if(map.getPlayers().size() != 0) {
+		if(!map.getPlayers().isEmpty()) {
 			for(Player player : map.getPlayers() ) {
 				g.drawImage(player.getSprite(), (int) player.getX(), (int) player.getY(), 40, 40, null);	
 			}
 		} else {
 			frame.setStopKeyEvents(true);
-			frame.cancelTimer();
 			frame.drawEndGame(g);
 		}
 		

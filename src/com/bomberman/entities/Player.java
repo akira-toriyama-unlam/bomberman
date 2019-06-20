@@ -1,5 +1,9 @@
 package com.bomberman.entities;
 
+import java.awt.Image;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.swing.ImageIcon;
 
 import com.bomberman.graphics.Sprite;
@@ -78,7 +82,22 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 	@Override
 	public void destroy() {
 		this.alive = false;
-	}
+		
+			Timer timer = new Timer();
+			 timer.schedule(new TimerTask() {
+				int counter = 0;
+				@Override
+				public void run() {
+					animate();
+					sprite = movingSprite(Sprite.player_dead1, Sprite.player_dead2, Sprite.player_dead3);
+					counter++;
+					
+			       if (counter == 3){
+			         timer.cancel();
+			       }
+				}
+			}, 0, 100);	
+		}
 
 	public boolean isAlive() {
 		return alive;
@@ -125,6 +144,20 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 			}
 			break;
 		}
+	}
+	
+	private Image movingSprite(Image normal, Image x1, Image x2) {
+		int calc = animate % 3;
+		
+		if(calc == 1) {
+			return normal;
+		}
+			
+		if(calc == 2) {
+			return x1;
+		}
+	
+		return x2;
 	}
 
 }

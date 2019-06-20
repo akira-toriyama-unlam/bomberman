@@ -1,7 +1,8 @@
-
 package com.bomberman.entities;
 
 import java.awt.Image;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -11,7 +12,7 @@ public class Bomb extends Entity implements Destructible {
 
 	public static final int BOMB_RANGE = 2;
 	public static final int TIME_TO_EXPLOIT = 3000;
-	
+	private List<ExplosionDirection> explosionDirections;
 	private Timer timerInstace;
 
 	private ExplosionListener listener;
@@ -19,10 +20,11 @@ public class Bomb extends Entity implements Destructible {
 	public Bomb(int x, int y, InteractionListener map, ExplosionListener listener) {
 		super(x, y, map);
 		this.listener = listener;
-		 this.sprite = Sprite.bomb;
-		 this.changeSprite();
-		 this.timerInstace = new Timer();
-		 this.timerInstace.schedule(new TimerTask() {
+		this.explosionDirections = new ArrayList<>();
+		this.sprite = Sprite.bomb;
+		this.chooseSprite();
+		this.timerInstace = new Timer();
+		this.timerInstace.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				destroy();
@@ -48,9 +50,24 @@ public class Bomb extends Entity implements Destructible {
 			return false;
 		return true;
 	}
-
+	
+	public void addExplotionDirection(Entity range1, Entity range2, ExplosionDirection max, ExplosionDirection min) {
+		if(range1 == null) {
+			if(range2 == null) {
+				this.explosionDirections.add(max);
+			} else {
+				this.explosionDirections.add(min);
+			}
+		}
+	}
+	
+	public List<ExplosionDirection> getExplosionDirections() {
+		return explosionDirections;
+	}
+	
 	@Override
 	public void destroy() {
+		destroyed = true;
 		interactionListener.bombExploded(this);
 		listener.update();		
 	}
@@ -59,13 +76,17 @@ public class Bomb extends Entity implements Destructible {
 		this.timerInstace.cancel();
 	}
 	
-	public void changeSprite() {
+	public void chooseSprite() {
 		Timer timer = new Timer();
 		 timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				animate();
-				sprite = movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2);
+				if(destroyed) {
+					sprite = movingSprite(Sprite.bomb_exploded, Sprite.bomb_exploded1, Sprite.bomb_exploded2);
+				} else {
+					sprite = movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2);
+				}
 			}
 		}, 0, 200);	
 	}
