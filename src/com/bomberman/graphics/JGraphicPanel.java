@@ -28,14 +28,16 @@ public class JGraphicPanel extends JPanel {
 	 
 	public JGraphicPanel(JGraphicWindow frame) {
 		this.frame = frame;
+		// Move to server
 		this.map = new GameMap("Bomberman", JGraphicWindow.WIDTH, JGraphicWindow.HEIGHT);
-		
 		bombList = new ArrayList<Bomb>();
-		brickImage = new ImageIcon("./resources/images.png");
-		bombImage = new ImageIcon("./resources/bomba.png");
 		
+		this.brickImage = new ImageIcon("./resources/images.png");
+		this.bombImage = new ImageIcon("./resources/bomba.png");
 		this.background = new ImageIcon("./resources/fondo.png").getImage();
 		
+		
+		// Server
 		this.map.addPlayer(new Player(40, 40, this.map, new ImageIcon("./resources/Abajo_0.png")));
 		
 		fillMapWithTiles();

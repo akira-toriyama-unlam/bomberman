@@ -7,63 +7,62 @@ import java.net.Socket;
 import java.util.Observable;
 import java.util.Observer;
 
+import com.bomberman.services.Message;
+import com.google.gson.Gson;
 
-@SuppressWarnings("deprecation")
-public class ClientConnection extends Thread implements Observer{
+public class ClientConnection extends Thread implements Observer {
+	private Gson gson;
 	private Socket socket; 
-    private Messages mensajes;
-    private DataInputStream entradaDatos;
-    private DataOutputStream salidaDatos;
+    private DataInputStream dataInputStream;
+    private DataOutputStream dataOutputStream;
+    private GameActionPerformed scoreBoard;
     
-    public ClientConnection (Socket socket, Messages mensajes){
+    public ClientConnection (Socket socket, GameActionPerformed scoreBoard) {
+    	this.gson = new Gson();
         this.socket = socket;
-        this.mensajes = mensajes;
+        this.scoreBoard = scoreBoard;
+        this.scoreBoard.addObserver(this);
         
         try {
-            entradaDatos = new DataInputStream(socket.getInputStream());
-            salidaDatos = new DataOutputStream(socket.getOutputStream());
+        	dataInputStream = new DataInputStream(socket.getInputStream());
+        	dataOutputStream = new DataOutputStream(socket.getOutputStream());
         } catch (IOException ex) {
             System.out.println("Error al crear los stream de entrada y salida : " + ex.getMessage());
         }
     }
     
     @Override
-    public void run(){
-        String mensajeRecibido;
-        boolean conectado = true;
-        mensajes.addObserver(this);
+    public void run() {
+        String receivedMessage;
+        boolean connected = true;
         
-        while (conectado) {
+        while (connected) {
             try {
-                // Lee un mensaje enviado por el cliente
-                mensajeRecibido = entradaDatos.readUTF();
-                
-                /*
-                 * aca hay que crear el jugador
-                 * */
-                
-                System.out.println(mensajeRecibido);
-//                mensajes.setMensaje(mensajeRecibido);
+            	receivedMessage = dataInputStream.readUTF();
+            	Message message = gson.fromJson(receivedMessage, Message.class);
+                System.out.println(message.getMessage());
+                scoreBoard.actionPerformed(message);
                 
             } catch (IOException ex) {
             	System.out.println("Cliente con la IP " + socket.getInetAddress().getHostName() + " desconectado.");
-                conectado = false; 
-                // Si se ha producido un error al recibir datos del cliente se cierra la conexion con el.
+                connected = false; 
                 try {
-                    entradaDatos.close();
-                    salidaDatos.close();
+                	dataInputStream.close();
+                	dataOutputStream.close();
                 } catch (IOException ex2) {
                 	System.out.println("Error al cerrar los stream de entrada y salida :" + ex2.getMessage());
                 }
             }
         }   
     }
-    
+
     @Override
-    public void update(Observable o, Object arg) {
+    public void update(Observable o, Object object) {
         try {
             // Envia el mensaje al cliente
-            salidaDatos.writeUTF(arg.toString());
+        	System.out.println("Observer being updated");
+        	Message message = (Message) object;
+        	dataOutputStream.writeUTF(gson.toJson(message));
         } catch (IOException ex) {
         	System.out.println("Error al enviar mensaje al cliente (" + ex.getMessage() + ").");
         }
