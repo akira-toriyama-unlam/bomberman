@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import javax.swing.ImageIcon;
 
-import com.bomberman.graphics.JGraphicWindow;
 import com.bomberman.services.EntityModel;
 import com.bomberman.services.EntityTypes;
 import com.bomberman.services.PlayerModel;
@@ -16,30 +15,12 @@ public class GameMap implements InteractionListener {
 
 	protected List<Entity> objects;
 	protected List<Player> players;
-	protected final static int MOVEMENT_ERROR = 2; // This constant is used for fixing the movement into the Jpanel.
+	public final static int MOVEMENT_ERROR = 2; // This constant is used for fixing the movement into the Jpanel.
 	protected final static double BOMB_ERROR = 0.01; // This constant is used for fixing bomb range error.
 
 	public GameMap() {
 		this.objects = new ArrayList<>();
 		this.players = new ArrayList<>();
-	}
-	
-	public boolean canMove(double x, double y, Direction direction) {
-		if(!crashWithLimits(x, y, direction)) {
-			switch (direction) {
-				case RIGHT:
-					return canMoveRight(x, y);
-				case LEFT:
-					return canMoveLeft(x,y); 
-				case UP:
-					return canMoveUp(x,y);
-				case DOWN:
-					return canMoveDown(x,y); 
-				default:
-					return false;
-			}
-		}
-		return false;
 	}
 
 	public void addObject(Entity obj) {
@@ -63,73 +44,12 @@ public class GameMap implements InteractionListener {
 	}
 	
 	@Override
-	public void movement(Player player, Direction direction) {
-		if (this.canMove(player.x, player.y, direction)) {
-			switch (direction) {
-			case UP:
-				player.y -= Player.MOVEMENT_UNIT;
-				break;
-			case DOWN:
-				player.y += Player.MOVEMENT_UNIT;
-				break;
-			case LEFT:
-				player.x -= Player.MOVEMENT_UNIT;
-				break;
-			case RIGHT:
-				player.x += Player.MOVEMENT_UNIT;
-				break;
-			}
-		}
-	}
-	
-	@Override
 	public void bombPlaced(Bomb bomb) {
 		objects.add(bomb);
-	}
-
-	private boolean crashWithLimits(double x, double y, Direction direction) {
-		switch (direction) {
-			case RIGHT:
-				return (x + Player.MOVEMENT_UNIT) > (JGraphicWindow.WIDTH - Player.HEIGHT - Tile.TILE_SIZE);
-			case LEFT:
-				return (x - Player.MOVEMENT_UNIT - Tile.TILE_SIZE) < 0;
-			case UP:
-				return (y - Player.MOVEMENT_UNIT - Tile.TILE_SIZE) < 0;
-			case DOWN:
-				return (y + Player.MOVEMENT_UNIT) > (JGraphicWindow.HEIGHT - Player.HEIGHT - Tile.TILE_SIZE);
-			default:
-				return false;
-		}
 	}
 	
 	private boolean between(double i,  double minValueInclusive, double maxValueInclusive) {
 	    return (i >= minValueInclusive && i <= maxValueInclusive);
-	}
-	
-	private boolean betweenY(Entity o, double y) {
-		return between(y + MOVEMENT_ERROR, o.getY() + MOVEMENT_ERROR, o.getY() + Tile.TILE_SIZE - MOVEMENT_ERROR) ||
-				between(y + Player.HEIGHT - MOVEMENT_ERROR, o.getY() + MOVEMENT_ERROR, o.getY() + Tile.TILE_SIZE - MOVEMENT_ERROR);
-	}
-	
-	private boolean betweenX(Entity o, double x) {
-		return between(x + MOVEMENT_ERROR, o.getX() + MOVEMENT_ERROR, o.getX() + Tile.TILE_SIZE - MOVEMENT_ERROR) ||
-				between(x + Player.HEIGHT - MOVEMENT_ERROR, o.getX() + MOVEMENT_ERROR, o.getX() + Tile.TILE_SIZE - MOVEMENT_ERROR);
-	}
-	
-	private boolean canMoveRight(double x, double y) {
-		return this.objects.stream().filter(o -> betweenY(o, y)).noneMatch(o -> o.getX() == x + Tile.TILE_SIZE);  
-	}
-	
-	private boolean canMoveLeft(double x, double y) {
-		return this.objects.stream().filter(o -> betweenY(o, y)).noneMatch(o -> o.getX() == x - Tile.TILE_SIZE);
-	}
-	
-	private boolean canMoveUp(double x, double y) {
-		return this.objects.stream().filter(o -> betweenX(o, x)).noneMatch(o -> o.getY() == y - Tile.TILE_SIZE);  
-	}
-	
-	private boolean canMoveDown(double x, double y) {
-		return this.objects.stream().filter(o -> betweenX(o, x)).noneMatch(o -> o.getY() == y + Tile.TILE_SIZE);  
 	}
 
 	@Override
@@ -230,7 +150,8 @@ public class GameMap implements InteractionListener {
 					new PlayerModel(
 							player.getX(),
 							player.getY(),
-							PlayerTypes.GREEN
+							PlayerTypes.GREEN,
+							player.getId()
 							));
 		}
 		
@@ -246,7 +167,8 @@ public class GameMap implements InteractionListener {
 					playerModel.getX(),
 					playerModel.getY(),
 					this,
-					new ImageIcon("./resources/Abajo_0.png")));
+					new ImageIcon("./resources/Abajo_0.png"),
+					playerModel.getId()));
 		}
 		
 		return playersList;
@@ -257,8 +179,8 @@ public class GameMap implements InteractionListener {
 		for(EntityModel e : entityModels) {
 			switch(e.getEntityType()) {
 			case BOMB:
-				//TODO: Como carajo sabes que player sos
-				objectsList.add(new Bomb((int) e.getX(), (int) e.getY(), this, null));
+				Player currentPlayer = this.getPlayers().stream().filter(p -> p.getId() == e.getIdPlayer()).findFirst().orElse(null);
+				objectsList.add(new Bomb((int) e.getX(), (int) e.getY(), this, currentPlayer, e.getIdPlayer()));
 				break;
 			case DESTRUCTIBLE_TILE:
 				objectsList.add(new DestructibleTile((int) e.getX(), (int) e.getY(), this));
@@ -280,20 +202,23 @@ public class GameMap implements InteractionListener {
 				newList.add(new EntityModel(
 						e.getX(),
 						e.getY(),
-						EntityTypes.BOMB
+						EntityTypes.BOMB,
+						((Bomb) e).getId()
 						));	
 			} else if (e instanceof DestructibleTile) {
 				newList.add(new EntityModel(
 						e.getX(),
 						e.getY(),
-						EntityTypes.DESTRUCTIBLE_TILE
+						EntityTypes.DESTRUCTIBLE_TILE,
+						-1
 						));
 			} else {
 				// Just a tile
 				newList.add(new EntityModel(
 						e.getX(),
 						e.getY(),
-						EntityTypes.TILE
+						EntityTypes.TILE,
+						-1
 						));
 			}
 		}

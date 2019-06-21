@@ -5,11 +5,13 @@ public class EntityModel {
 	private double x;
 	private double y;
 	private EntityTypes entityType;
+	private int idPlayer;
 	
-	public EntityModel(double x, double y, EntityTypes entityType) {
+	public EntityModel(double x, double y, EntityTypes entityType, int idPlayer) {
 		this.x = x;
 		this.y = y;
 		this.entityType = entityType;
+		this.idPlayer = idPlayer;
 	}
 	
 	public double getX() {
@@ -34,6 +36,14 @@ public class EntityModel {
 
 	public void setY(EntityTypes entityType) {
 		this.entityType = entityType;
+	}
+	
+	public int getIdPlayer() {
+		return this.idPlayer;
+	}
+	
+	public void setIdPlayer(int idPlayer) {
+		this.idPlayer = idPlayer;
 	}
 
 }

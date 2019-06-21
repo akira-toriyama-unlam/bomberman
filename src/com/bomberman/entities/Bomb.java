@@ -10,12 +10,13 @@ public class Bomb extends Entity implements Destructible {
 	public static final int TIME_TO_EXPLOIT = 3000;
 	
 	private Timer timerInstace;
-
+	private int id;
 	private ExplosionListener listener;
 
-	public Bomb(int x, int y, InteractionListener map, ExplosionListener listener) {
+	public Bomb(int x, int y, InteractionListener map, ExplosionListener listener, int id) {
 		super(x, y, map);
 		this.listener = listener;
+		this.id = id;
 		this.timerInstace = new Timer();
 		this.timerInstace.schedule(new TimerTask() {
 			@Override
@@ -52,5 +53,13 @@ public class Bomb extends Entity implements Destructible {
 	
 	public void cancelTimer() {
 		this.timerInstace.cancel();
+	}
+	
+	private void setId(int id) {
+		this.id = id;
+	}
+	
+	public int getId() {
+		return this.id;
 	}
 }

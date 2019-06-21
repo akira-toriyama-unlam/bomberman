@@ -8,6 +8,8 @@ import java.util.Observable;
 import java.util.Observer;
 
 import com.bomberman.entities.GameMap;
+import com.bomberman.entities.Player;
+import com.bomberman.services.DirectionMessage;
 import com.bomberman.services.MapMessage;
 import com.google.gson.Gson;
 
@@ -17,6 +19,7 @@ public class ClientConnection extends Thread implements Observer {
     private DataInputStream dataInputStream;
     private DataOutputStream dataOutputStream;
     private GameActionPerformed scoreBoard;
+    private Player currentPlayer;
     
     public ClientConnection (Socket socket, GameActionPerformed scoreBoard) {
     	this.gson = new Gson();
@@ -37,18 +40,21 @@ public class ClientConnection extends Thread implements Observer {
         String receivedMessage;
         boolean connected = true;
         
-        scoreBoard.newPlayer();
+        this.currentPlayer = scoreBoard.newPlayer();
+        scoreBoard.actionPerformed();
         
         while (connected) {
             try {
-            	System.out.println("Mensaje recibido de clientConection");
             	receivedMessage = dataInputStream.readUTF();
-            	GameMap map = gson.fromJson(receivedMessage, GameMap.class);
-                // VALIDO SI ME PUEDO MOVER
-                // ACTUALIZO EL OBJETO
-                
+            	DirectionMessage message = gson.fromJson(receivedMessage, DirectionMessage.class);
+            	if(message.getDirection() != null) {
+            		scoreBoard.movementMessageReceived(this.currentPlayer, message);
+            	} else {
+            		scoreBoard.bombMessageReceived(this.currentPlayer, message);
+            	}
             } catch (IOException ex) {
             	System.out.println("Cliente con la IP " + socket.getInetAddress().getHostName() + " desconectado.");
+            	scoreBoard.playerDisconected(this.currentPlayer);
                 connected = false; 
                 try {
                 	dataInputStream.close();
@@ -63,12 +69,8 @@ public class ClientConnection extends Thread implements Observer {
     @Override
     public void update(Observable o, Object object) {
         try {
-            // Envia el mensaje al cliente
-        	System.out.println("Observer being updated");
         	GameMap map = (GameMap) object;
-        	//MapMessage mapMessage = new MapMessage(map.getObjects(), map.generatePlayersModelList());
         	MapMessage mapMessage = new MapMessage(map.generateEntityModelList(), map.generatePlayersModelList());
-
         	dataOutputStream.writeUTF(gson.toJson(mapMessage));
         } catch (IOException ex) {
         	System.out.println("Error al enviar mensaje al cliente (" + ex.getMessage() + ").");

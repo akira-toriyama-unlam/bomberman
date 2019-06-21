@@ -13,14 +13,16 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 	private int bombsCount;
 	private boolean alive;
 	private PlayerTypes playerType;
+	private int id;
 	
 	private ImageIcon imageIcon;
 	
-	public Player(double x, double y, InteractionListener map, ImageIcon imageIcon) {
+	public Player(double x, double y, InteractionListener map, ImageIcon imageIcon, int id) {
 		super(x, y, map);
 		this.alive = true;
 		this.bombsCount = Player.CONCURRENT_BOMBS;
 		this.imageIcon = imageIcon;
+		this.id = id;
 	}
 	
 	@Override
@@ -64,14 +66,10 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 
 	public void placeBomb(InteractionListener gameMap) {
 		if (this.bombsCount > 0) {
-			Bomb bomb = new Bomb(generateFixedX(), generateFixedY(), gameMap, this);
+			Bomb bomb = new Bomb(generateFixedX(), generateFixedY(), gameMap, this, this.getId());
 			gameMap.bombPlaced(bomb);
 			bombsCount--;
 		}
-	}
-	
-	public void move(Direction direction) {
-		interactionListener.movement(this, direction);
 	}
 
 	@Override
@@ -102,6 +100,14 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 	
 	public void setPlayerType(PlayerTypes playerType) {
 		this.playerType = playerType;
+	}
+	
+	private void setId(int id) {
+		this.id = id;
+	}
+	
+	public int getId() {
+		return this.id;
 	}
 
 }

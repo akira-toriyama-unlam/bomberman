@@ -6,15 +6,20 @@ import java.util.TimerTask;
 import javax.swing.ImageIcon;
 
 import com.bomberman.entities.DestructibleTile;
+import com.bomberman.entities.Direction;
+import com.bomberman.entities.Entity;
 import com.bomberman.entities.GameMap;
 import com.bomberman.entities.Player;
 import com.bomberman.entities.Tile;
+import com.bomberman.graphics.JGraphicWindow;
+import com.bomberman.services.DirectionMessage;
 
 
 public class ScoreBoard extends Observable implements GameActionPerformed {
 	
 	private GameMap map;
 	private Timer timer;
+	private final static int MOVEMENT_ERROR = 2;
 	
 	public ScoreBoard() {
 		this.map = new GameMap();
@@ -44,28 +49,30 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 	}
 	
 	@Override
-	public void newPlayer() {
+	public Player newPlayer() {
 		int playersCount = this.map.getPlayers().size(); 
+		Player player = null;
 		switch(playersCount) {
 		case 0:
-			this.map.addPlayer(new Player(40, 40, this.map, new ImageIcon("./resources/Abajo_0.png")));
+			player = new Player(40, 40, this.map, new ImageIcon("./resources/Abajo_0.png"), 1);
+			this.map.addPlayer(player);
 			break;
 		case 1:
-			this.map.addPlayer(new Player(80, 40, this.map, new ImageIcon("./resources/Abajo_0.png")));
+			player = new Player(760, 40, this.map, new ImageIcon("./resources/Abajo_0.png"), 2);
+			this.map.addPlayer(player);
 			break;
 		case 2:
-			this.map.addPlayer(new Player(120, 40, this.map, new ImageIcon("./resources/Abajo_0.png")));
+			player = new Player(40, 520, this.map, new ImageIcon("./resources/Abajo_0.png"), 3);
+			this.map.addPlayer(player);
 			break;
 		case 3:
-			this.map.addPlayer(new Player(160, 40, this.map, new ImageIcon("./resources/Abajo_0.png")));
+			player = new Player(760, 520, this.map, new ImageIcon("./resources/Abajo_0.png"), 4);
+			this.map.addPlayer(player);
 			break;
 			
 		}
-		// Update status the notify
-		System.out.println("Trying to notify all observers from NEW PLAYER");
-		this.setChanged();
-        //this.notifyObservers(this.gameMap);
-		this.notifyObservers(this.map); // just for test
+		
+		return player;
 	}
 		
 	private void addTileToMap(int x, int y, GameMap m, boolean destroy) {
@@ -120,6 +127,105 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 			addTileToMap(880,i,this.map,false);
 		}
 
+	}
+	
+	private boolean crashWithLimits(double x, double y, Direction direction) {
+		switch (direction) {
+			case RIGHT:
+				return (x + Player.MOVEMENT_UNIT) > (JGraphicWindow.WIDTH - Player.HEIGHT - Tile.TILE_SIZE);
+			case LEFT:
+				return (x - Player.MOVEMENT_UNIT - Tile.TILE_SIZE) < 0;
+			case UP:
+				return (y - Player.MOVEMENT_UNIT - Tile.TILE_SIZE) < 0;
+			case DOWN:
+				return (y + Player.MOVEMENT_UNIT) > (JGraphicWindow.HEIGHT - Player.HEIGHT - Tile.TILE_SIZE);
+			default:
+				return false;
+		}
+	}
+	
+	private boolean between(double i,  double minValueInclusive, double maxValueInclusive) {
+	    return (i >= minValueInclusive && i <= maxValueInclusive);
+	}
+	
+	private boolean betweenY(Entity o, double y) {
+		return between(y + MOVEMENT_ERROR, o.getY() + MOVEMENT_ERROR, o.getY() + Tile.TILE_SIZE - MOVEMENT_ERROR) ||
+				between(y + Player.HEIGHT - MOVEMENT_ERROR, o.getY() + MOVEMENT_ERROR, o.getY() + Tile.TILE_SIZE - MOVEMENT_ERROR);
+	}
+	
+	private boolean betweenX(Entity o, double x) {
+		return between(x + MOVEMENT_ERROR, o.getX() + MOVEMENT_ERROR, o.getX() + Tile.TILE_SIZE - MOVEMENT_ERROR) ||
+				between(x + Player.HEIGHT - MOVEMENT_ERROR, o.getX() + MOVEMENT_ERROR, o.getX() + Tile.TILE_SIZE - MOVEMENT_ERROR);
+	}
+	
+	private boolean canMoveRight(double x, double y) {
+		return this.map.getObjects().stream().filter(o -> betweenY(o, y)).noneMatch(o -> o.getX() == x + Tile.TILE_SIZE);  
+	}
+	
+	private boolean canMoveLeft(double x, double y) {
+		return this.map.getObjects().stream().filter(o -> betweenY(o, y)).noneMatch(o -> o.getX() == x - Tile.TILE_SIZE);
+	}
+	
+	private boolean canMoveUp(double x, double y) {
+		return this.map.getObjects().stream().filter(o -> betweenX(o, x)).noneMatch(o -> o.getY() == y - Tile.TILE_SIZE);  
+	}
+	
+	private boolean canMoveDown(double x, double y) {
+		return this.map.getObjects().stream().filter(o -> betweenX(o, x)).noneMatch(o -> o.getY() == y + Tile.TILE_SIZE);  
+	}
+	
+	public boolean canMove(double x, double y, Direction direction) {
+		if(!crashWithLimits(x, y, direction)) {
+			switch (direction) {
+				case RIGHT:
+					return canMoveRight(x, y);
+				case LEFT:
+					return canMoveLeft(x,y); 
+				case UP:
+					return canMoveUp(x,y);
+				case DOWN:
+					return canMoveDown(x,y); 
+				default:
+					return false;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void movementMessageReceived(Player player, DirectionMessage message) {
+		Direction direction = message.getDirection();
+		if (this.canMove(player.getX(), player.getY(), direction)) {
+			Player current = this.map.getPlayers().stream().filter(p -> p.equals(player)).findFirst().orElse(null);
+			switch (direction) {
+			case UP:
+				current.setY(current.getY() - Player.MOVEMENT_UNIT);
+				break;
+			case DOWN:
+				current.setY(current.getY() + Player.MOVEMENT_UNIT);
+				break;
+			case LEFT:
+				current.setX(current.getX() - Player.MOVEMENT_UNIT);
+				break;
+			case RIGHT:
+				current.setX(current.getX() + Player.MOVEMENT_UNIT);
+				break;
+			}
+			this.actionPerformed();
+		}
+	}
+	
+	@Override
+	public void bombMessageReceived(Player player, DirectionMessage message) {
+		Player current = this.map.getPlayers().stream().filter(p -> p.equals(player)).findFirst().orElse(null);
+		current.placeBomb(this.map);
+		this.actionPerformed();
+	}
+
+	@Override
+	public void playerDisconected(Player player) {
+		this.map.getPlayers().remove(player);
+		this.actionPerformed();
 	}
 
 }

@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -29,17 +30,6 @@ public class JGraphicPanel extends JPanel {
 		this.brickImage = new ImageIcon("./resources/images.png");
 		this.bombImage = new ImageIcon("./resources/bomba.png");
 		this.background = new ImageIcon("./resources/fondo.png").getImage();
-		
-		// Move to server
-		//this.map = new GameMap("Bomberman", JGraphicWindow.WIDTH, JGraphicWindow.HEIGHT); // server
-		//bombList = new ArrayList<Bomb>(); // server
-		
-		
-		
-		
-		// Server
-		//this.map.addPlayer(new Player(40, 40, this.map, new ImageIcon("./resources/Abajo_0.png"))); 
-		//fillMapWithTiles(); // server
 	}
 	
 	@Override
@@ -58,8 +48,9 @@ public class JGraphicPanel extends JPanel {
 			}
 			g.setColor(new Color(204,204,204));
 			
-			// Se dibuja usando el mapa del frame (que viene del server)
-			for(Entity entity : map.getObjects()) {
+			Iterator<Entity> itEntity = map.getObjects().iterator();
+			while (itEntity.hasNext()) {
+				Entity entity = itEntity.next();
 				if(entity instanceof Bomb) {
 					g.drawImage(this.bombImage.getImage(), (int)entity.getX(), (int)entity.getY(), 40, 40, null);
 				} else if (entity instanceof Tile && entity instanceof Destructible) {
@@ -69,8 +60,10 @@ public class JGraphicPanel extends JPanel {
 				}
 			}
 			
-			for(Player player : map.getPlayers() ) {
-				g.drawImage(player.getImageIcon().getImage(), (int) player.getX(), (int) player.getY(), 40, 40, null);	
+			Iterator<Player> itPlayer = map.getPlayers().iterator();
+			while(itPlayer.hasNext()) {
+				Player player = itPlayer.next();
+				g.drawImage(player.getImageIcon().getImage(), (int) player.getX(), (int) player.getY(), 40, 40, null);
 			}
 		}
 	}

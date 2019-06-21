@@ -1,17 +1,16 @@
 package com.bomberman.services;
 
-import com.bomberman.entities.InteractionListener;
-
 public class PlayerModel {
 	private double x;
 	private double y;
-	InteractionListener map;
-	PlayerTypes playerType;
+	private PlayerTypes playerType;
+	private int id;
 
-	public PlayerModel(double x, double y, PlayerTypes playerType) {
+	public PlayerModel(double x, double y, PlayerTypes playerType, int id) {
 		this.x = x;
 		this.y = y;
 		this.playerType = playerType;
+		this.id = id;
 	}
 
 	public double getX() {
@@ -36,5 +35,13 @@ public class PlayerModel {
 
 	public void setPlayerType(PlayerTypes playerType) {
 		this.playerType = playerType;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public int getId() {
+		return this.id;
 	}
 }

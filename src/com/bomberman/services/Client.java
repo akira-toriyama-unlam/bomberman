@@ -59,7 +59,7 @@ public class Client {
     }
     
 	    
-	public void sendMessage(Message message) {
+	public void sendMessage(DirectionMessage message) {
 		try {
 			dataOutputStream.writeUTF(gson.toJson(message));
 		} catch (IOException e) {
