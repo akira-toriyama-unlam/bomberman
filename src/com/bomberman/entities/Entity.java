@@ -69,6 +69,10 @@ public abstract class Entity {
 		return this instanceof Destructible;
 	}
 	
+	public boolean isNotDestructible() {
+		return !(this instanceof Destructible);
+	}
+	
 	public boolean isBomb() {
 		return this instanceof Bomb;
 	}
@@ -79,6 +83,14 @@ public abstract class Entity {
 	
 	public boolean isExplosion() {
 		return this instanceof Explosion;
+	}
+	
+	public boolean isTile() {
+		return this instanceof Tile;
+	}
+	
+	public boolean isDestructibleTile() {
+		return this instanceof DestructibleTile;
 	}
 	
 }

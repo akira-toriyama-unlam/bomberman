@@ -2,7 +2,9 @@ package com.bomberman.entities;
 
 import java.awt.Image;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -12,7 +14,7 @@ public class Bomb extends Entity implements Destructible {
 
 	public static final int BOMB_RANGE = 2;
 	public static final int TIME_TO_EXPLOIT = 3000;
-	private List<ExplosionDirection> explosionDirections;
+	private Set<ExplosionDirection> explosionDirections;
 	private Timer timerInstace;
 
 	private ExplosionListener listener;
@@ -20,7 +22,7 @@ public class Bomb extends Entity implements Destructible {
 	public Bomb(int x, int y, InteractionListener map, ExplosionListener listener) {
 		super(x, y, map);
 		this.listener = listener;
-		this.explosionDirections = new ArrayList<>();
+		this.explosionDirections = new HashSet<>();
 		this.sprite = Sprite.bomb;
 		this.chooseSprite();
 		this.timerInstace = new Timer();
@@ -58,10 +60,10 @@ public class Bomb extends Entity implements Destructible {
 			} else {
 				this.explosionDirections.add(min);
 			}
-		}
+		} 
 	}
 	
-	public List<ExplosionDirection> getExplosionDirections() {
+	public Set<ExplosionDirection> getExplosionDirections() {
 		return explosionDirections;
 	}
 	

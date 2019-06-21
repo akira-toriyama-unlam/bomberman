@@ -147,21 +147,22 @@ public class GameMap implements InteractionListener {
 		List<Entity> entitiesToRemove = new ArrayList<>();
 		entitiesToRemove.add(bomb); // remove current bomb from map
 		
-		// destroy players in range
-		entitiesToRemove.add(getEntityToDestroyAtRight(this.getPlayers(), bomb));
-		entitiesToRemove.add(getEntityToDestroyAtLeft(this.getPlayers(), bomb));
-		entitiesToRemove.add(getEntityToDestroyAtUp(this.getPlayers(), bomb));
-		entitiesToRemove.add(getEntityToDestroyAtBottom(this.getPlayers(), bomb));
+		// get players to destroy in range
+		entitiesToRemove.add(getEntityToDestroyAtRight(this.getPlayers(), bomb, true));
+		entitiesToRemove.add(getEntityToDestroyAtLeft(this.getPlayers(), bomb, true));
+		entitiesToRemove.add(getEntityToDestroyAtUp(this.getPlayers(), bomb, true));
+		entitiesToRemove.add(getEntityToDestroyAtBottom(this.getPlayers(), bomb, true));
 		entitiesToRemove.addAll(getPlayersAtSite(this.getPlayers(), bomb));
 	
-		// destroy destructibles entities in range
-		entitiesToRemove.add(getEntityToDestroyAtRight(this.getObjects(), bomb));
-		entitiesToRemove.add(getEntityToDestroyAtLeft(this.getObjects(), bomb));
-		entitiesToRemove.add(getEntityToDestroyAtUp(this.getObjects(), bomb));
-		entitiesToRemove.add(getEntityToDestroyAtBottom(this.getObjects(), bomb));
+		// get entities to destroy in range
+		entitiesToRemove.add(getEntityToDestroyAtRight(this.getObjects(), bomb, false));
+		entitiesToRemove.add(getEntityToDestroyAtLeft(this.getObjects(), bomb, false));
+		entitiesToRemove.add(getEntityToDestroyAtUp(this.getObjects(), bomb, false));
+		entitiesToRemove.add(getEntityToDestroyAtBottom(this.getObjects(), bomb, false));
 		
 		addExplosionsToMap(bomb);
 		
+		// add explosions to the list to desptro
 		entitiesToRemove.addAll(this.getObjects().stream().filter(e -> e.isExplosion()).collect(Collectors.toList()));
 		
 		entitiesToRemove.removeAll(Collections.singleton(null)); // magic
@@ -172,8 +173,8 @@ public class GameMap implements InteractionListener {
 				((Destructible)e).destroy();
 		});
 		
-		List<Entity> list = entitiesToRemove.stream().filter(e -> e.isDestructible() && e instanceof DestructibleTile).collect(Collectors.toList());
- 		list.forEach(t -> ((DestructibleTile) t).destroy());
+		// destroy tiles in range
+		entitiesToRemove.stream().filter(e -> e.isDestructibleTile()).forEach(t -> ((DestructibleTile) t).destroy());
  		
  		// destroy recursive bombs
  		entitiesToRemove.stream().filter(o -> o.isBomb() && !o.equals(bomb)).forEach(b -> {
@@ -195,11 +196,31 @@ public class GameMap implements InteractionListener {
 		return players.stream().filter(p -> b.x == p.x && b.y == p.y).collect(Collectors.toList());
 	}
 	
-	private Entity getEntityToDestroyAtRight(List<? extends Entity> entities, Bomb bomb) {
+	private Entity getEntityToDestroy(Entity e1, Entity e2) {
+		if(e1 != null) {
+			if(e1.isNotDestructible()) {
+				return null;
+			} else {
+				return e1;
+			}
+		} else if(e2 != null) {
+			if(e2.isNotDestructible()) {
+				return null;
+			} else {
+				return e2;
+			}
+		}
+		
+		return null;
+	}
+	
+	private Entity getEntityToDestroyAtRight(List<? extends Entity> entities, Bomb bomb, boolean arePlayers) {
 		Entity entityRange1 = getEntityAtRightInRange(entities, bomb, 1);
 		Entity entityRange2 = getEntityAtRightInRange(entities, bomb, 2);
-		bomb.addExplotionDirection(entityRange1, entityRange2, ExplosionDirection.RIGHT_MAX, ExplosionDirection.RIGHT); 
-		return entityRange1 != null ? entityRange1 : entityRange2;
+		if(!arePlayers) {
+			bomb.addExplotionDirection(entityRange1, entityRange2, ExplosionDirection.RIGHT_MAX, ExplosionDirection.RIGHT);
+		}
+		return getEntityToDestroy(entityRange1, entityRange2);
 	}
 	
 	private Entity getEntityAtRightInRange(List<? extends Entity> entities, Bomb bomb, int range) {
@@ -207,11 +228,13 @@ public class GameMap implements InteractionListener {
 				bomb.getX() + (Tile.SIZE * range))).findFirst().orElse(null);
 	} 
 	
-	private Entity getEntityToDestroyAtLeft(List<? extends Entity> entities, Bomb bomb) {
+	private Entity getEntityToDestroyAtLeft(List<? extends Entity> entities, Bomb bomb, boolean arePlayers) {
 		Entity entityRange1 = getEntityAtLeftInRange(entities, bomb, 1);
 		Entity entityRange2 = getEntityAtLeftInRange(entities, bomb, 2);
-		bomb.addExplotionDirection(entityRange1, entityRange2, ExplosionDirection.LEFT_MAX, ExplosionDirection.LEFT); 
-		return entityRange1 != null ? entityRange1 : entityRange2;
+		if(!arePlayers) {
+			bomb.addExplotionDirection(entityRange1, entityRange2, ExplosionDirection.LEFT_MAX, ExplosionDirection.LEFT);
+		}
+		return getEntityToDestroy(entityRange1, entityRange2);
 	}
 	
 	private Entity getEntityAtLeftInRange(List<? extends Entity> entities, Bomb bomb, int range) {
@@ -219,11 +242,13 @@ public class GameMap implements InteractionListener {
 				&& between(o.getX(), bomb.getX() - (Tile.SIZE * range), bomb.getX() - BOMB_ERROR)).findFirst().orElse(null);
 	}
 	
-	private Entity getEntityToDestroyAtUp(List<? extends Entity> entities, Bomb bomb) {
+	private Entity getEntityToDestroyAtUp(List<? extends Entity> entities, Bomb bomb, boolean arePlayers) {
 		Entity entityRange1 = getEntityAtUpInRange(entities, bomb, 1);
 		Entity entityRange2 = getEntityAtUpInRange(entities, bomb, 2);
-		bomb.addExplotionDirection(entityRange1, entityRange2, ExplosionDirection.UP_MAX, ExplosionDirection.UP); 
-		return entityRange1 != null ? entityRange1 : entityRange2;
+		if(!arePlayers) {
+			bomb.addExplotionDirection(entityRange1, entityRange2, ExplosionDirection.UP_MAX, ExplosionDirection.UP);
+		}
+		return getEntityToDestroy(entityRange1, entityRange2);
 	}
 	
 	private Entity getEntityAtUpInRange(List<? extends Entity> entities, Bomb bomb, int range) {
@@ -231,11 +256,13 @@ public class GameMap implements InteractionListener {
 				&& between(o.getY(), bomb.getY() - (Tile.SIZE * range), bomb.getY() - BOMB_ERROR)).findFirst().orElse(null);
 	}
 	
-	private Entity getEntityToDestroyAtBottom(List<? extends Entity> entities, Bomb bomb) {
+	private Entity getEntityToDestroyAtBottom(List<? extends Entity> entities, Bomb bomb, boolean arePlayers) {
 		Entity entityRange1 = getEntityAtBottomInRange(entities, bomb, 1);
 		Entity entityRange2 = getEntityAtBottomInRange(entities, bomb, 2);
-		bomb.addExplotionDirection(entityRange1, entityRange2, ExplosionDirection.DOWN_MAX, ExplosionDirection.DOWN); 
-		return entityRange1 != null ? entityRange1 : entityRange2;
+		if(!arePlayers) {
+			bomb.addExplotionDirection(entityRange1, entityRange2, ExplosionDirection.DOWN_MAX, ExplosionDirection.DOWN);
+		}
+		return getEntityToDestroy(entityRange1, entityRange2);
 	}
 	
 	private Entity getEntityAtBottomInRange(List<? extends Entity> entities, Bomb bomb, int range) {

@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,7 +26,6 @@ import com.bomberman.entities.Tile;
 public class JGraphicPanel extends JPanel {
 
 	private JGraphicWindow frame;
-	private ArrayList<Bomb> bombList;
 	private GameMap map;
 
 	private Image background;
@@ -34,10 +34,9 @@ public class JGraphicPanel extends JPanel {
 		this.frame = frame;
 		this.map = new GameMap("Bomberman", JGraphicWindow.WIDTH, JGraphicWindow.HEIGHT);
 		
-		bombList = new ArrayList<Bomb>();
 		this.background = new ImageIcon("./resources/fondo.png").getImage();
 		
-		this.map.addPlayer(new Player(40, 40, this.map, new ImageIcon("./resources/Abajo_0.png")));
+		this.map.addPlayer(new Player(40, 40, this.map));
 		
 		fillMapWithTiles();
 	}
@@ -53,13 +52,19 @@ public class JGraphicPanel extends JPanel {
 		
 		g.setColor(new Color(204,204,204));
 		
-		for(Entity entity : map.getObjects()) {
-			g.drawImage(entity.getSprite(), (int) entity.getX(), (int) entity.getY(), 40, 40, null);
+		Iterator<Entity> iter = map.getObjects().iterator();
+
+		while (iter.hasNext()) {
+		    Entity entity = iter.next();
+		    g.drawImage(entity.getSprite(), (int) entity.getX(), (int) entity.getY(), 40, 40, null);
 		}
+
 		
 		if(!map.getPlayers().isEmpty()) {
-			for(Player player : map.getPlayers() ) {
-				g.drawImage(player.getSprite(), (int) player.getX(), (int) player.getY(), 40, 40, null);	
+			Iterator<Player> iterPlayer = map.getPlayers().iterator();
+			while (iterPlayer.hasNext()) {
+				Player player = iterPlayer.next();
+				g.drawImage(player.getSprite(), (int) player.getX(), (int) player.getY(), 40, 40, null);
 			}
 		} else {
 			frame.setStopKeyEvents(true);
@@ -70,10 +75,6 @@ public class JGraphicPanel extends JPanel {
 	
 	public Player getBomberman() {
 		return map.getPlayers().stream().findFirst().orElse(null);
-	}
-	
-	public void addBomb(Bomb bomb) {
-		bombList.add(bomb);
 	}
 	
 	public GameMap getMap() {
@@ -90,7 +91,6 @@ public class JGraphicPanel extends JPanel {
 	
 	private void fillMapWithTiles() {
 		addTileToMap(40,80,this.map,true);
-		//addTileToMap(80,40,this.map,true);
 		addTileToMap(80,360,this.map,true);
 		addTileToMap(80,200,this.map,true);
 		addTileToMap(120,200,this.map,true);

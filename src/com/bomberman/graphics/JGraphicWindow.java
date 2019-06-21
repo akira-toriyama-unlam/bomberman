@@ -56,7 +56,7 @@ public class JGraphicWindow extends JFrame {
             	repaint();
             }
         };
-		this.timer = new Timer(20, taskPerformer);
+		this.timer = new Timer(50, taskPerformer);
 		this.timer.start();
 
 		addKeyListener(new KeyAdapter() {
@@ -113,38 +113,34 @@ public class JGraphicWindow extends JFrame {
 	
 	public void setMovimiento(KeyEvent event) throws IOException {
 		Player bomberman = contentPane.getBomberman();
-		this.setCurrentPlayer(bomberman);
-		bomberman.setMoving(true);
-		GameMap map = contentPane.getMap();
-		switch(event.getKeyCode()) {
-		case KeyEvent.VK_LEFT:
-		case KeyEvent.VK_A:
-			
-			salidaDatos.writeUTF("Left");
-			bomberman.move(Direction.LEFT);
-			break;
-		case KeyEvent.VK_RIGHT:
-		case KeyEvent.VK_D: 
-			salidaDatos.writeUTF("Right");
-			bomberman.move(Direction.RIGHT);
-			break;
-		case KeyEvent.VK_UP:
-		case KeyEvent.VK_W:
-			salidaDatos.writeUTF("Up");
-			bomberman.move(Direction.UP);
-			break;
-		case KeyEvent.VK_DOWN:
-		case KeyEvent.VK_S:
-			salidaDatos.writeUTF("Down");
-			bomberman.move(Direction.DOWN);
-			break;
-		case KeyEvent.VK_SPACE:
-		case KeyEvent.VK_X:	
-			salidaDatos.writeUTF("Bomba");
-			bomberman.placeBomb(map);
-		default:
-			// do nothing
-			break;
+		if(bomberman != null) {
+			this.setCurrentPlayer(bomberman);
+			bomberman.setMoving(true);
+			GameMap map = contentPane.getMap();
+			switch(event.getKeyCode()) {
+			case KeyEvent.VK_LEFT:
+			case KeyEvent.VK_A:
+				bomberman.move(Direction.LEFT);
+				break;
+			case KeyEvent.VK_RIGHT:
+			case KeyEvent.VK_D: 
+				bomberman.move(Direction.RIGHT);
+				break;
+			case KeyEvent.VK_UP:
+			case KeyEvent.VK_W:
+				bomberman.move(Direction.UP);
+				break;
+			case KeyEvent.VK_DOWN:
+			case KeyEvent.VK_S:
+				bomberman.move(Direction.DOWN);
+				break;
+			case KeyEvent.VK_SPACE:
+			case KeyEvent.VK_X:	
+				bomberman.placeBomb(map);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 

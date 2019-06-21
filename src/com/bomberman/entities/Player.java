@@ -17,13 +17,10 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 	private int bombsCount;
 	private boolean alive;
 	
-	private ImageIcon imageIcon;
-	
-	public Player(double x, double y, InteractionListener map, ImageIcon imageIcon) {
+	public Player(double x, double y, InteractionListener map) {
 		super(x, y, map);
 		this.alive = true;
 		this.bombsCount = Player.CONCURRENT_BOMBS;
-		this.imageIcon = imageIcon;
 		this.sprite = Sprite.player_down; //initial position
 	}
 	
@@ -33,7 +30,6 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 		int result = 1;
 		result = prime * result + (alive ? 1231 : 1237);
 		result = prime * result + bombsCount;
-		result = prime * result + ((imageIcon == null) ? 0 : imageIcon.hashCode());
 		return result;
 	}
 
@@ -50,11 +46,6 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 			return false;
 		if (bombsCount != other.bombsCount)
 			return false;
-		if (imageIcon == null) {
-			if (other.imageIcon != null)
-				return false;
-		} else if (!imageIcon.equals(other.imageIcon))
-			return false;
 		return true;
 	}
 
@@ -66,10 +57,10 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 		return Tile.SIZE * ((int) y / Tile.SIZE);
 	}
 
-	public void placeBomb(InteractionListener gameMap) {
+	public void placeBomb(InteractionListener map) {
 		if (this.bombsCount > 0) {
-			Bomb bomb = new Bomb(generateFixedX(), generateFixedY(), gameMap, this);
-			gameMap.bombPlaced(bomb);
+			Bomb bomb = new Bomb(generateFixedX(), generateFixedY(), map, this);
+			map.bombPlaced(bomb);
 			bombsCount--;
 		}
 	}
@@ -108,14 +99,6 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 		bombsCount++;
 	}
 
-	public ImageIcon getImageIcon() {
-		return imageIcon;
-	}
-	
-	public void setImageIcon(ImageIcon imageIcon) {
-		this.imageIcon = imageIcon;
-	}
-	
 	public void chooseSprite(Direction direction) {
 		animate();
 		switch(direction) {
