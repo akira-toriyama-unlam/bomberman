@@ -181,8 +181,8 @@ public class GameMap implements InteractionListener {
  		// destroy recursive bombs
  		entitiesToRemove.stream().filter(o -> o.isBomb() && !o.equals(bomb)).forEach(b -> {
 			Bomb currentBomb = (Bomb) b;
-			currentBomb.cancelTimer();
-			currentBomb.destroy();
+			currentBomb.interruptThread();
+			currentBomb.explode();
  		});
  		
  		//remove players after animation

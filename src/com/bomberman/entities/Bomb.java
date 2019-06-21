@@ -1,9 +1,8 @@
 package com.bomberman.entities;
 
 import java.awt.Image;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,8 +13,12 @@ public class Bomb extends Entity implements Destructible {
 
 	public static final int BOMB_RANGE = 2;
 	public static final int TIME_TO_EXPLOIT = 3000;
+	
 	private Set<ExplosionDirection> explosionDirections;
-	private Timer timerInstace;
+	private Date timeCreated;
+	private Thread thread;
+	private Thread spriteThread;
+	private Timer spriteTimer;
 
 	private ExplosionListener listener;
 
@@ -23,15 +26,10 @@ public class Bomb extends Entity implements Destructible {
 		super(x, y, map);
 		this.listener = listener;
 		this.explosionDirections = new HashSet<>();
+		this.timeCreated = new Date();
 		this.sprite = Sprite.bomb;
 		this.chooseSprite();
-		this.timerInstace = new Timer();
-		this.timerInstace.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				destroy();
-			}
-		}, TIME_TO_EXPLOIT);  
+		this.destroy();
 	}
 	
 	@Override
@@ -69,28 +67,53 @@ public class Bomb extends Entity implements Destructible {
 	
 	@Override
 	public void destroy() {
-		destroyed = true;
-		interactionListener.bombExploded(this);
-		listener.update();		
+		thread = new Thread() {
+		    @Override
+			public void run(){
+		    	while(true) {
+		    		if((new Date().getTime() - timeCreated.getTime()) > TIME_TO_EXPLOIT){
+		    			explode();
+						break;
+					}
+				}
+		    }
+		};
+		thread.start();
 	}
 	
-	public void cancelTimer() {
-		this.timerInstace.cancel();
+	public void explode() {
+		destroyed = true;
+		interactionListener.bombExploded(this);
+		listener.update();
+	}
+	
+	public void interruptThread() {
+		thread.interrupt();
+	}
+	
+	public void cancelThread() {
+		this.spriteTimer.cancel();
+	}
+	
+	public Date getTimeCreated() {
+		return this.timeCreated;
 	}
 	
 	public void chooseSprite() {
-		Timer timer = new Timer();
-		 timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				animate();
-				if(destroyed) {
-					sprite = movingSprite(Sprite.bomb_exploded, Sprite.bomb_exploded1, Sprite.bomb_exploded2);
-				} else {
-					sprite = movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2);
+		spriteThread = new Thread() {
+		    @Override
+			public void run(){
+		    	while(true) {
+		    		animate();
+		    		if((new Date().getTime() - timeCreated.getTime()) < TIME_TO_EXPLOIT){
+		    			sprite = movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2);
+					} else {
+						sprite = movingSprite(Sprite.bomb_exploded, Sprite.bomb_exploded1, Sprite.bomb_exploded2);
+					}
 				}
-			}
-		}, 0, 200);	
+		    }
+		};
+		spriteThread.start();
 	}
 	
 	private Image movingSprite(Image normal, Image x1, Image x2) {
