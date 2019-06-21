@@ -6,7 +6,7 @@ public interface InteractionListener extends EventListener {
 	
 	void movement(Player player,Direction direction);
 	
-	void bombPlaced(Bomb bomb);
+	boolean placeBomb(Bomb bomb);
 	
 	void bombExploded(Bomb bomb);
 

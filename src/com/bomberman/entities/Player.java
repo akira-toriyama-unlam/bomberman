@@ -60,8 +60,10 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 	public void placeBomb(InteractionListener map) {
 		if (this.bombsCount > 0) {
 			Bomb bomb = new Bomb(generateFixedX(), generateFixedY(), map, this);
-			map.bombPlaced(bomb);
-			bombsCount--;
+			boolean placed = map.placeBomb(bomb);
+			if(placed) {
+				bombsCount--;
+			}
 		}
 	}
 	

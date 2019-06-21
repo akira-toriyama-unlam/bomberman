@@ -48,11 +48,13 @@ public class GameMap implements InteractionListener {
 		return false;
 	}
 
-	public void addObject(Entity obj) {
+	public boolean addObject(Entity obj) {
 		Entity entity = getAtPosition(obj.getX(), obj.getY());
 		if(entity == null) {
 			this.objects.add(obj);
+			return true;
 		}
+		return false;
 	}
 	
 	public void addPlayer(Player player) {
@@ -92,8 +94,8 @@ public class GameMap implements InteractionListener {
 	}
 	
 	@Override
-	public void bombPlaced(Bomb bomb) {
-		objects.add(bomb);
+	public boolean placeBomb(Bomb bomb) {
+		return addObject(bomb);
 	}
 
 	private boolean crashWithLimits(double x, double y, Direction direction) {
@@ -162,7 +164,7 @@ public class GameMap implements InteractionListener {
 		
 		addExplosionsToMap(bomb);
 		
-		// add explosions to the list to desptro
+		// add explosions to the list to destroy
 		entitiesToRemove.addAll(this.getObjects().stream().filter(e -> e.isExplosion()).collect(Collectors.toList()));
 		
 		entitiesToRemove.removeAll(Collections.singleton(null)); // magic
@@ -181,7 +183,6 @@ public class GameMap implements InteractionListener {
 			Bomb currentBomb = (Bomb) b;
 			currentBomb.cancelTimer();
 			currentBomb.destroy();
-			this.getObjects().remove(currentBomb);
  		});
  		
  		//remove players after animation
