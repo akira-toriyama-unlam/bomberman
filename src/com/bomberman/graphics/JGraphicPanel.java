@@ -47,33 +47,32 @@ public class JGraphicPanel extends JPanel {
 		GameMap map = this.frame.getMap();
 		int width = this.getSize().width;
 		int height = this.getSize().height;
- 
 		
-		if (this.background != null) {
-			g.drawImage(this.background, 0, 0, width, height, null);
-		}
-		g.setColor(new Color(204,204,204));
-		
-		// Se dibuja usando el mapa del frame (que viene del server)
-		for(Entity entity : map.getObjects()) {
-			if(entity instanceof Bomb) {
-				g.drawImage(this.bombImage.getImage(), (int)entity.getX(), (int)entity.getY(), 40, 40, null);
-			} else if (entity instanceof Tile && entity instanceof Destructible) {
-				g.drawImage(this.brickImage.getImage(), (int)entity.getX(), (int)entity.getY(), 40, 40, null);
-			} else if(entity instanceof Tile && !(entity instanceof Destructible)) {
-				g.fillRect((int) entity.getX(),(int) entity.getY(), 40, 40);
-			}
-		}
-		
-		if(map.getPlayers().size() != 0) {
-			for(Player player : map.getPlayers() ) {
-				g.drawImage(player.getImageIcon().getImage(), (int) player.getX(), (int) player.getY(), 40, 40, null);	
-			}
-		} else {
+		if(map.getPlayers().size() == 0) {
 			frame.setStopKeyEvents(true);
 			frame.cancelTimer();
 			frame.drawEndGame(g);
-		}	
+		} else {
+			if (this.background != null) {
+				g.drawImage(this.background, 0, 0, width, height, null);
+			}
+			g.setColor(new Color(204,204,204));
+			
+			// Se dibuja usando el mapa del frame (que viene del server)
+			for(Entity entity : map.getObjects()) {
+				if(entity instanceof Bomb) {
+					g.drawImage(this.bombImage.getImage(), (int)entity.getX(), (int)entity.getY(), 40, 40, null);
+				} else if (entity instanceof Tile && entity instanceof Destructible) {
+					g.drawImage(this.brickImage.getImage(), (int)entity.getX(), (int)entity.getY(), 40, 40, null);
+				} else if(entity instanceof Tile && !(entity instanceof Destructible)) {
+					g.fillRect((int) entity.getX(),(int) entity.getY(), 40, 40);
+				}
+			}
+			
+			for(Player player : map.getPlayers() ) {
+				g.drawImage(player.getImageIcon().getImage(), (int) player.getX(), (int) player.getY(), 40, 40, null);	
+			}
+		}
 	}
 	
 	public void addBomb(Bomb bomb) {

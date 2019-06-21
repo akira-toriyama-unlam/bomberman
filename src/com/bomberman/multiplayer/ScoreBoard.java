@@ -1,11 +1,13 @@
 package com.bomberman.multiplayer;
-
 import java.util.Observable;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.ImageIcon;
+
 import com.bomberman.entities.DestructibleTile;
 import com.bomberman.entities.GameMap;
+import com.bomberman.entities.Player;
 import com.bomberman.entities.Tile;
 
 
@@ -35,10 +37,35 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 	@Override
 	public void actionPerformed() {
 		// Update status the notify
-		System.out.println("Trying to notify all observers");
+		System.out.println("Trying to notify all observers from EMPTY");
 		this.setChanged();
         //this.notifyObservers(this.gameMap);
 		this.notifyObservers(map); // just for test
+	}
+	
+	@Override
+	public void newPlayer() {
+		int playersCount = this.map.getPlayers().size(); 
+		switch(playersCount) {
+		case 0:
+			this.map.addPlayer(new Player(40, 40, this.map, new ImageIcon("./resources/Abajo_0.png")));
+			break;
+		case 1:
+			this.map.addPlayer(new Player(80, 40, this.map, new ImageIcon("./resources/Abajo_0.png")));
+			break;
+		case 2:
+			this.map.addPlayer(new Player(120, 40, this.map, new ImageIcon("./resources/Abajo_0.png")));
+			break;
+		case 3:
+			this.map.addPlayer(new Player(160, 40, this.map, new ImageIcon("./resources/Abajo_0.png")));
+			break;
+			
+		}
+		// Update status the notify
+		System.out.println("Trying to notify all observers from NEW PLAYER");
+		this.setChanged();
+        //this.notifyObservers(this.gameMap);
+		this.notifyObservers(this.map); // just for test
 	}
 		
 	private void addTileToMap(int x, int y, GameMap m, boolean destroy) {

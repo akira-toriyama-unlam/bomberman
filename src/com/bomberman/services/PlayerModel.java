@@ -6,13 +6,12 @@ public class PlayerModel {
 	private double x;
 	private double y;
 	InteractionListener map;
-	//PlayerTypes playerType;
+	PlayerTypes playerType;
 
-	public PlayerModel(double x, double y, InteractionListener map) {
+	public PlayerModel(double x, double y, PlayerTypes playerType) {
 		this.x = x;
 		this.y = y;
-		this.map = map;
-		//this.playerType = playerType;
+		this.playerType = playerType;
 	}
 
 	public double getX() {
@@ -30,20 +29,12 @@ public class PlayerModel {
 	public void setY(double y) {
 		this.y = y;
 	}
-
-	public InteractionListener getMap() {
-		return map;
-	}
-
-	public void setMap(InteractionListener map) {
-		this.map = map;
-	}
 	
-	/*public PlayerTypes getPlayerType() {
+	public PlayerTypes getPlayerType() {
 		return playerType;
 	}
 
 	public void setPlayerType(PlayerTypes playerType) {
 		this.playerType = playerType;
-	}*/
+	}
 }

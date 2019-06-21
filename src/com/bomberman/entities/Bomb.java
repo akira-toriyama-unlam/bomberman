@@ -16,8 +16,8 @@ public class Bomb extends Entity implements Destructible {
 	public Bomb(int x, int y, InteractionListener map, ExplosionListener listener) {
 		super(x, y, map);
 		this.listener = listener;
-		 this.timerInstace = new Timer();
-		 this.timerInstace.schedule(new TimerTask() {
+		this.timerInstace = new Timer();
+		this.timerInstace.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				destroy();

@@ -7,7 +7,10 @@ import java.util.stream.Collectors;
 import javax.swing.ImageIcon;
 
 import com.bomberman.graphics.JGraphicWindow;
+import com.bomberman.services.EntityModel;
+import com.bomberman.services.EntityTypes;
 import com.bomberman.services.PlayerModel;
+import com.bomberman.services.PlayerTypes;
 
 public class GameMap implements InteractionListener {
 
@@ -227,7 +230,8 @@ public class GameMap implements InteractionListener {
 					new PlayerModel(
 							player.getX(),
 							player.getY(),
-							player.interactionListener));
+							PlayerTypes.GREEN
+							));
 		}
 		
 		return playerModels;
@@ -241,11 +245,59 @@ public class GameMap implements InteractionListener {
 			playersList.add(new Player(
 					playerModel.getX(),
 					playerModel.getY(),
-					playerModel.getMap(),
+					this,
 					new ImageIcon("./resources/Abajo_0.png")));
 		}
 		
 		return playersList;
+	}
+	
+	public List<Entity> generateObjectsFromModel(List<EntityModel> entityModels) {
+		List<Entity> objectsList = new ArrayList<>();
+		for(EntityModel e : entityModels) {
+			switch(e.getEntityType()) {
+			case BOMB:
+				//TODO: Como carajo sabes que player sos
+				objectsList.add(new Bomb((int) e.getX(), (int) e.getY(), this, null));
+				break;
+			case DESTRUCTIBLE_TILE:
+				objectsList.add(new DestructibleTile((int) e.getX(), (int) e.getY(), this));
+				break;
+			case TILE:
+				objectsList.add(new Tile((int) e.getX(), (int) e.getY(), this));
+				break;
+			}
+		}
+		
+		return objectsList;
+		
+	}
+	
+	public List<EntityModel> generateEntityModelList() {
+		List<EntityModel> newList = new ArrayList<>();
+		for(Entity e : this.getObjects()) {
+			if(e instanceof Bomb) {
+				newList.add(new EntityModel(
+						e.getX(),
+						e.getY(),
+						EntityTypes.BOMB
+						));	
+			} else if (e instanceof DestructibleTile) {
+				newList.add(new EntityModel(
+						e.getX(),
+						e.getY(),
+						EntityTypes.DESTRUCTIBLE_TILE
+						));
+			} else {
+				// Just a tile
+				newList.add(new EntityModel(
+						e.getX(),
+						e.getY(),
+						EntityTypes.TILE
+						));
+			}
+		}
+		return newList;
 	}
 	
 	public void setObjects(List<Entity> objects) {

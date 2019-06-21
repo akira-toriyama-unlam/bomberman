@@ -37,10 +37,11 @@ public class ClientConnection extends Thread implements Observer {
         String receivedMessage;
         boolean connected = true;
         
-        scoreBoard.actionPerformed();
+        scoreBoard.newPlayer();
         
         while (connected) {
             try {
+            	System.out.println("Mensaje recibido de clientConection");
             	receivedMessage = dataInputStream.readUTF();
             	GameMap map = gson.fromJson(receivedMessage, GameMap.class);
                 // VALIDO SI ME PUEDO MOVER
@@ -66,7 +67,7 @@ public class ClientConnection extends Thread implements Observer {
         	System.out.println("Observer being updated");
         	GameMap map = (GameMap) object;
         	//MapMessage mapMessage = new MapMessage(map.getObjects(), map.generatePlayersModelList());
-        	MapMessage mapMessage = new MapMessage(map.getObjects(), null);
+        	MapMessage mapMessage = new MapMessage(map.generateEntityModelList(), map.generatePlayersModelList());
 
         	dataOutputStream.writeUTF(gson.toJson(mapMessage));
         } catch (IOException ex) {

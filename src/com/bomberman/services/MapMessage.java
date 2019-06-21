@@ -3,23 +3,21 @@ package com.bomberman.services;
 import java.io.Serializable;
 import java.util.List;
 
-import com.bomberman.entities.Entity;
-
 public class MapMessage implements Serializable {
 	
-	private List<Entity> objects;
+	private List<EntityModel> objects;
 	private List<PlayerModel> players;
 	
-	public MapMessage(List<Entity> objects, List<PlayerModel> players) {
+	public MapMessage(List<EntityModel> objects, List<PlayerModel> players) {
 		this.objects = objects;
 		this.players = players;
 	}
 	
-	public List<Entity> getObjects() {
+	public List<EntityModel> getObjects() {
 		return objects;
 	}
 
-	public void setObjects(List<Entity> objects) {
+	public void setObjects(List<EntityModel> objects) {
 		this.objects = objects;
 	}
 

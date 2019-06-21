@@ -6,12 +6,15 @@ import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
 
+import com.bomberman.entities.Entity;
 import com.bomberman.entities.GameMap;
+import com.bomberman.entities.Player;
 import com.bomberman.services.Client;
 import com.bomberman.services.MapMessage;
 import com.bomberman.services.Message;
@@ -163,14 +166,16 @@ public class JGraphicWindow extends JFrame implements SocketActionListener {
 			this.map = new GameMap();
 		}
 		
-		this.map.setObjects(mapMessage.getObjects());
-		this.map.setPlayers(this.map.generatePlayerFromModel(mapMessage.getPlayers()));
-		
+		List<Entity> objects = this.map.generateObjectsFromModel(mapMessage.getObjects());
+		List<Player> players = this.map.generatePlayerFromModel(mapMessage.getPlayers());
+		this.map.setObjects(objects);
+		this.map.setPlayers(players);
 		
 		if (!this.repaintOn) {
 			System.out.println("Esto se tiene que pintar;");
 			this.initializeRepaint();
 			this.repaintOn = true;
+			revalidate();
 		}
 		
 		//repaint();
