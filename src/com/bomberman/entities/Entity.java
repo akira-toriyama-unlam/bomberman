@@ -1,38 +1,30 @@
 package com.bomberman.entities;import java.awt.Image;
 import java.io.Serializable;
 
-import com.bomberman.multiplayer.GameActionPerformed;
+import com.bomberman.dto.EntityDto;
+import com.bomberman.server.GameActionPerformed;
 
 public abstract class Entity implements Serializable {
 
 	protected double x;
 	protected double y;
-	protected boolean moving = false; 
-	protected GameActionPerformed gameActionPerformedListener;
+	//protected GameActionPerformed gameActionPerformedListener;
 	public Image sprite;
 	public boolean destroyed;
-	protected int animate = 0;
+	protected int animateCount = 0;
 	protected final int MAX_ANIMATE = 7500; //save the animation status and dont let this get too big
 	
-	public void animate() {
-		if(animate < MAX_ANIMATE) animate++; else animate = 0; //reset animation
+	public void incrementAnimateCount() {
+		if(animateCount < MAX_ANIMATE) animateCount++; else animateCount = 0; //reset animation
 	}
 	
-	public Entity(double x, double y, GameActionPerformed gameActionPerformedListener) {
+	public Entity(double x, double y/*, GameActionPerformed gameActionPerformedListener*/) {
 		this.x = x;
 		this.y = y;
-		this.gameActionPerformedListener = gameActionPerformedListener;
+		//this.gameActionPerformedListener = gameActionPerformedListener;
 		this.destroyed = false;
 	}
-
-	public boolean isMoving() {
-		return moving;
-	}
-
-	public void setMoving(boolean moving) {
-		this.moving = moving;
-	}
-
+	
 	public double getY() {
 		return this.y;
 	}

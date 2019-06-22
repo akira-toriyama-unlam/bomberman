@@ -3,11 +3,7 @@ package com.bomberman.entities;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bomberman.multiplayer.GameActionPerformed;
-import com.bomberman.services.EntityModel;
-import com.bomberman.services.EntityTypes;
-import com.bomberman.services.PlayerModel;
-import com.bomberman.services.PlayerTypes;
+import com.bomberman.server.GameActionPerformed;
 
 public class GameMap {
 	
@@ -22,6 +18,8 @@ public class GameMap {
 		this.gameActionPerformedListener = gameActionPerformedListener;
 		this.objects = new ArrayList<>();
 		this.players = new ArrayList<>();
+		
+		this.fillMapWithTiles();
 	}
 
 	public boolean addObject(Entity obj) {
@@ -49,86 +47,6 @@ public class GameMap {
 		return this.objects.stream().filter(o -> o.x == x && o.y == y).findFirst().orElse(null);
 	}
 	
-	public List<PlayerModel> generatePlayersModelList() {
-		List<PlayerModel> playerModels = new ArrayList<>();
-		for(Player player : this.players) {
-			playerModels.add(
-					new PlayerModel(
-							player.getX(),
-							player.getY(),
-							PlayerTypes.GREEN,
-							player.getId()
-							));
-		}
-		
-		return playerModels;
-	}
-	
-	public List<Player> generatePlayerFromModel(List<PlayerModel> playerModels) {
-		List<Player> playersList = new ArrayList<>(); 
-		for(PlayerModel playerModel : playerModels) {
-			// TODO: Select ICON depending on player type
-			
-			playersList.add(new Player(
-					playerModel.getX(),
-					playerModel.getY(),
-					this.gameActionPerformedListener,
-					playerModel.getId()));
-		}
-		
-		return playersList;
-	}
-	
-	public List<Entity> generateObjectsFromModel(List<EntityModel> entityModels) {
-		List<Entity> objectsList = new ArrayList<>();
-		for(EntityModel e : entityModels) {
-			switch(e.getEntityType()) {
-			case BOMB:
-				Player currentPlayer = this.getPlayers().stream().filter(p -> p.getId() == e.getIdPlayer()).findFirst().orElse(null);
-				objectsList.add(new Bomb((int) e.getX(), (int) e.getY(), this.gameActionPerformedListener, currentPlayer, e.getIdPlayer()));
-				break;
-			case DESTRUCTIBLE_TILE:
-				objectsList.add(new DestructibleTile((int) e.getX(), (int) e.getY()));
-				break;
-			case TILE:
-				objectsList.add(new Tile((int) e.getX(), (int) e.getY()));
-				break;
-			}
-		}
-		
-		return objectsList;
-		
-	}
-	
-	public List<EntityModel> generateEntityModelList() {
-		List<EntityModel> newList = new ArrayList<>();
-		for(Entity e : this.getObjects()) {
-			if(e instanceof Bomb) {
-				newList.add(new EntityModel(
-						e.getX(),
-						e.getY(),
-						EntityTypes.BOMB,
-						((Bomb) e).getId()
-						));	
-			} else if (e instanceof DestructibleTile) {
-				newList.add(new EntityModel(
-						e.getX(),
-						e.getY(),
-						EntityTypes.DESTRUCTIBLE_TILE,
-						-1
-						));
-			} else {
-				// Just a tile
-				newList.add(new EntityModel(
-						e.getX(),
-						e.getY(),
-						EntityTypes.TILE,
-						-1
-						));
-			}
-		}
-		return newList;
-	}
 	
 	public void setObjects(List<Entity> objects) {
 		this.objects = objects;
@@ -136,5 +54,59 @@ public class GameMap {
 	
 	public void setPlayers(List<Player> players) {
 		this.players = players;
+	}
+	
+	private void addTileToMap(int x, int y, boolean destroy) {
+		if (destroy) {
+			this.objects.add(new DestructibleTile(x, y));
+		} else {
+			this.objects.add(new Tile(x, y));
+		}
+	}
+
+	
+	private void fillMapWithTiles() {
+		addTileToMap(40,80,true);
+		addTileToMap(80,360,true);
+		addTileToMap(80,200,true);
+		addTileToMap(120,200,true);
+		addTileToMap(200,120,true);
+		addTileToMap(280,160,true);
+		addTileToMap(40,240,true);
+		addTileToMap(200,200,true);
+		addTileToMap(400,40,true);
+		addTileToMap(360,40,true);
+		addTileToMap(400,200,true);
+		addTileToMap(280,280,true);
+		addTileToMap(280,320,true);
+		addTileToMap(320,360,true);
+		addTileToMap(480,360,true);
+		addTileToMap(520,240,true);
+		addTileToMap(360,120,true);
+		addTileToMap(440,280,true);
+		
+		// Border limits
+		for(int i = 0; i< 800; i+=40) {
+			addTileToMap(i,0,false);
+			addTileToMap(0,i,false);
+			addTileToMap(800,i,false);
+			addTileToMap(i,560,false);
+		}
+		
+		// Inner non-breaking tiles
+		for(int i = 80; i< 1040; i+=80) {
+			addTileToMap(80,i,false);
+			addTileToMap(160,i,false);
+			addTileToMap(240,i,false);
+			addTileToMap(320,i,false);
+			addTileToMap(400,i,false);
+			addTileToMap(480,i,false);
+			addTileToMap(560,i,false);
+			addTileToMap(640,i,false);
+			addTileToMap(720,i,false);
+			addTileToMap(800,i,false);
+			addTileToMap(880,i,false);
+		}
+
 	}
 }

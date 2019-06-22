@@ -3,13 +3,13 @@ package com.bomberman.entities;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.bomberman.dto.DestructibleTileDto;
 import com.bomberman.graphics.Sprite;
 
 public class DestructibleTile extends Tile implements Destructible {
 
 	public DestructibleTile(int x, int y) {
 		super(x, y);
-		sprite = Sprite.brick;
 	}
 
 	@Override
@@ -19,8 +19,8 @@ public class DestructibleTile extends Tile implements Destructible {
 			int counter = 0;
 			@Override
 			public void run() {
-				animate();
-				sprite = Sprite.movingSprite(Sprite.brick_exploded, Sprite.brick_exploded1, Sprite.brick_exploded2, animate);
+				incrementAnimateCount();
+				sprite = Sprite.movingSprite(Sprite.brick_exploded, Sprite.brick_exploded1, Sprite.brick_exploded2, animateCount);
 				counter++;
 				
 		       if (counter == 3){
@@ -28,6 +28,10 @@ public class DestructibleTile extends Tile implements Destructible {
 		       }
 			}
 		}, 0, 100);	
+	}
+	
+	public DestructibleTileDto toDestructibleTileDto() {
+		return new DestructibleTileDto((int) x, (int) y);
 	}
 
 }

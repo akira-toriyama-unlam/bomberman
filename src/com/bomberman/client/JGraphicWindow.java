@@ -1,4 +1,4 @@
-package com.bomberman.graphics;
+package com.bomberman.client;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -6,17 +6,13 @@ import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
 
+import com.bomberman.dto.MapDto;
 import com.bomberman.entities.Direction;
-import com.bomberman.entities.Entity;
-import com.bomberman.entities.GameMap;
-import com.bomberman.entities.Player;
-import com.bomberman.services.Client;
 import com.bomberman.services.DirectionMessage;
 import com.bomberman.services.MapMessage;
 
@@ -29,7 +25,7 @@ public class JGraphicWindow extends JFrame implements SocketActionListener {
 
     private Client client;
     private Timer timer;
-    private GameMap map;
+    private MapDto map;
     private boolean repaintOn = false;
 
 	public static void main(String[] args) {
@@ -79,6 +75,11 @@ public class JGraphicWindow extends JFrame implements SocketActionListener {
 					e.printStackTrace();
 				}
 			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				stopMovimiento(e);
+			}
 		});
 	}
 	
@@ -111,7 +112,7 @@ public class JGraphicWindow extends JFrame implements SocketActionListener {
 	    g.drawString(s, x, y);
 	 }
 	
-	public void setMovimiento(KeyEvent event) throws IOException {
+	private void setMovimiento(KeyEvent event) throws IOException {
 		switch(event.getKeyCode()) {
 		case KeyEvent.VK_LEFT:
 		case KeyEvent.VK_A:
@@ -131,27 +132,29 @@ public class JGraphicWindow extends JFrame implements SocketActionListener {
 			break;
 		case KeyEvent.VK_SPACE:
 		case KeyEvent.VK_X:	
-			client.sendMessage(new DirectionMessage(null));
+			client.sendMessage(new DirectionMessage(Direction.BOMB));
 			break;
 		default:
 			break;
 		}
 	}
 	
-	public GameMap getMap() {
+	private void stopMovimiento(KeyEvent event) {
+		client.sendMessage(new DirectionMessage(null));
+	}
+	
+	public MapDto getMap() {
 		return this.map;
 	}
 
 	@Override
 	public void messageReceived(MapMessage mapMessage) {
 		if(this.map == null) {
-			this.map = new GameMap(null);
+			this.map = new MapDto();
 		}
 		
-		List<Entity> objects = this.map.generateObjectsFromModel(mapMessage.getObjects());
-		List<Player> players = this.map.generatePlayerFromModel(mapMessage.getPlayers());
-		this.map.setObjects(objects);
-		this.map.setPlayers(players);
+		this.map.setEntites(mapMessage.getEntities());
+		this.map.setPlayers(mapMessage.getPlayers());
 		
 		if (!this.repaintOn) {
 			this.initializeRepaint();

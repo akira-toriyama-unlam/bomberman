@@ -1,4 +1,4 @@
-package com.bomberman.multiplayer;
+package com.bomberman.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.util.Observable;
 import java.util.Observer;
 
+import com.bomberman.entities.Direction;
 import com.bomberman.entities.GameMap;
 import com.bomberman.entities.Player;
 import com.bomberman.services.DirectionMessage;
@@ -47,14 +48,19 @@ public class ClientConnection extends Thread implements Observer {
             try {
             	receivedMessage = dataInputStream.readUTF();
             	DirectionMessage message = gson.fromJson(receivedMessage, DirectionMessage.class);
-            	if(message.getDirection() != null) {
-            		scoreBoard.movementMessageReceived(this.currentPlayer, message);
+            	Direction direction = message.getDirection();
+            	if(direction != null) {
+            		if(Direction.BOMB.equals(direction)) {
+            			scoreBoard.bombMessageReceived(this.currentPlayer, message);
+            		} else {
+            			scoreBoard.movementMessageReceived(this.currentPlayer, message);	
+            		}
             	} else {
-            		scoreBoard.bombMessageReceived(this.currentPlayer, message);
+            		scoreBoard.stopMovementMessageReceived(this.currentPlayer);
             	}
             } catch (IOException ex) {
             	System.out.println("Cliente con la IP " + socket.getInetAddress().getHostName() + " desconectado.");
-            	scoreBoard.playerDisconected(this.currentPlayer);
+            	//scoreBoard.playerDisconected(this.currentPlayer);
                 connected = false; 
                 try {
                 	dataInputStream.close();
@@ -70,7 +76,9 @@ public class ClientConnection extends Thread implements Observer {
     public void update(Observable o, Object object) {
         try {
         	GameMap map = (GameMap) object;
-        	MapMessage mapMessage = new MapMessage(map.generateEntityModelList(), map.generatePlayersModelList());
+        	MapMessage mapMessage = new MapMessage(
+        			ParserHelper.getInstance().entitiesToEntitiesDto(map.getObjects(), scoreBoard),
+        			ParserHelper.getInstance().playersToPlayersDto(map.getPlayers(), scoreBoard));
         	dataOutputStream.writeUTF(gson.toJson(mapMessage));
         } catch (IOException ex) {
         	System.out.println("Error al enviar mensaje al cliente (" + ex.getMessage() + ").");

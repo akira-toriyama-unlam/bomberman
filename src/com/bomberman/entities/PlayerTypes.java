@@ -1,4 +1,4 @@
-package com.bomberman.services;
+package com.bomberman.entities;
 
 public enum PlayerTypes {
 	GREEN,

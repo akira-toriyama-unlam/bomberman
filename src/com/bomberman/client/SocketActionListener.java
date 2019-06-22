@@ -1,4 +1,4 @@
-package com.bomberman.graphics;
+package com.bomberman.client;
 
 import com.bomberman.services.MapMessage;
 

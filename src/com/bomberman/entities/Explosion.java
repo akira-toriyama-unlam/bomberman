@@ -4,15 +4,17 @@ import java.awt.Image;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.bomberman.dto.BombDto;
+import com.bomberman.dto.ExplosionDto;
 import com.bomberman.graphics.Sprite;
-import com.bomberman.multiplayer.GameActionPerformed;
+import com.bomberman.server.GameActionPerformed;
 
 public class Explosion extends Entity {
 
 	private ExplosionDirection direction;
 	
 	public Explosion(double x, double y, ExplosionDirection direction) {
-		super(x, y, null);
+		super(x, y);
 		this.direction = direction;
 		chooseSprite();
 	}
@@ -22,7 +24,7 @@ public class Explosion extends Entity {
 		 timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				animate();
+				incrementAnimateCount();
 				switch(direction) {
 					case RIGHT:
 						sprite = movingSprite(Sprite.explosion_horizontal, Sprite.explosion_horizontal1, Sprite.explosion_horizontal2);
@@ -56,7 +58,7 @@ public class Explosion extends Entity {
 	}
 	
 	private Image movingSprite(Image normal, Image x1, Image x2) {
-		int calc = animate % 3;
+		int calc = animateCount % 3;
 		
 		if(calc == 1) {
 			return normal;
@@ -118,6 +120,8 @@ public class Explosion extends Entity {
 		}
 	}
 	
-	
+	public ExplosionDto toDto() {
+		return new ExplosionDto((int) x, (int) y, direction, animateCount);
+	}
 	
 }

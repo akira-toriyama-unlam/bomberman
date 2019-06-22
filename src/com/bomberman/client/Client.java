@@ -1,11 +1,12 @@
-package com.bomberman.services;
+package com.bomberman.client;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import com.bomberman.graphics.SocketActionListener;
+import com.bomberman.services.DirectionMessage;
+import com.bomberman.services.MapMessage;
 import com.google.gson.Gson;
 
 
@@ -47,7 +48,7 @@ public class Client {
 		    		while(conected) {
 		    			System.out.println("Thread Running");
 		    			String message = dataInputStream.readUTF();
-						reciveMessage(message);
+		    			receiveMessage(message);
 		    		}
 				} catch (IOException e) {
 					conected = false;
@@ -67,11 +68,11 @@ public class Client {
 		}
 	}
 	
-	private void reciveMessage(String mapMessage) {
+	private void receiveMessage(String mapMessage) {
 		System.out.println("Mensage recibido en el cliente");
 		MapMessage mapMessageObject = gson.fromJson(mapMessage, MapMessage.class);
 
 		listener.messageReceived(mapMessageObject);
 	}
-
+	
 }

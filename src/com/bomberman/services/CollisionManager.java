@@ -1,9 +1,16 @@
-package com.bomberman.entities;
+package com.bomberman.services;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.bomberman.entities.Bomb;
+import com.bomberman.entities.Entity;
+import com.bomberman.entities.ExplosionDirection;
+import com.bomberman.entities.GameMap;
+import com.bomberman.entities.Player;
+import com.bomberman.entities.Tile;
 
 public class CollisionManager {
 	
@@ -33,7 +40,7 @@ public class CollisionManager {
 	}
 	
 	private List<Entity> getPlayersAtSite(List<Player> players, Bomb b) {
-		return players.stream().filter(p -> b.x == p.x && b.y == p.y).collect(Collectors.toList());
+		return players.stream().filter(p -> b.getX() == p.getX() && b.getY() == p.getY()).collect(Collectors.toList());
 	}
 	
 	private Entity getEntityToDestroyAtRight(List<? extends Entity> entities, Bomb bomb, boolean arePlayers) {

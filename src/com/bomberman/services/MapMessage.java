@@ -3,29 +3,32 @@ package com.bomberman.services;
 import java.io.Serializable;
 import java.util.List;
 
+import com.bomberman.dto.EntityDto;
+import com.bomberman.dto.PlayerDto;
+
 public class MapMessage implements Serializable {
 	
-	private List<EntityModel> objects;
-	private List<PlayerModel> players;
+	private List<EntityDto> entities;
+	private List<PlayerDto> players;
 	
-	public MapMessage(List<EntityModel> objects, List<PlayerModel> players) {
-		this.objects = objects;
+	public MapMessage(List<EntityDto> entities, List<PlayerDto> players) {
+		this.entities = entities;
 		this.players = players;
 	}
 	
-	public List<EntityModel> getObjects() {
-		return objects;
+	public List<EntityDto> getEntities() {
+		return entities;
 	}
 
-	public void setObjects(List<EntityModel> objects) {
-		this.objects = objects;
+	public void setEntities(List<EntityDto> entities) {
+		this.entities = entities;
 	}
 
-	public List<PlayerModel> getPlayers() {
+	public List<PlayerDto> getPlayers() {
 		return players;
 	}
 
-	public void setPlayers(List<PlayerModel> players) {
+	public void setPlayers(List<PlayerDto> players) {
 		this.players = players;
 	}
 

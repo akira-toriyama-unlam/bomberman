@@ -1,4 +1,4 @@
-package com.bomberman.multiplayer;
+package com.bomberman.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
