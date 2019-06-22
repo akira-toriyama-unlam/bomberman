@@ -26,11 +26,12 @@ public class JGraphicWindow extends JFrame implements SocketActionListener {
 	public static final int HEIGHT = 620;
 	private JGraphicPanel contentPane;
 	private boolean stopKeyEvents = false;
+
     private Client client;
     private Timer timer;
     private GameMap map;
     private boolean repaintOn = false;
-    
+
 	public static void main(String[] args) {
 		new JGraphicWindow().setVisible(true);
 	}
@@ -78,7 +79,6 @@ public class JGraphicWindow extends JFrame implements SocketActionListener {
 					e.printStackTrace();
 				}
 			}
-			
 		});
 	}
 	
@@ -96,12 +96,12 @@ public class JGraphicWindow extends JFrame implements SocketActionListener {
 	
 	public void drawEndGame(Graphics g) {
 		g.setColor(Color.black);
-		g.fillRect(0, 0, WIDTH, HEIGHT);
-		
+		g.fillRect(0, 0, WIDTH, HEIGHT);	
 		Font font = new Font("Arial", Font.PLAIN, 50);
 		g.setFont(font);
 		g.setColor(Color.white);
 		drawCenteredString("GAME OVER", g);
+		cancelTimer();
 	}
 	
 	public void drawCenteredString(String s, Graphics g) {
@@ -134,7 +134,6 @@ public class JGraphicWindow extends JFrame implements SocketActionListener {
 			client.sendMessage(new DirectionMessage(null));
 			break;
 		default:
-			// do nothing
 			break;
 		}
 	}
@@ -146,7 +145,7 @@ public class JGraphicWindow extends JFrame implements SocketActionListener {
 	@Override
 	public void messageReceived(MapMessage mapMessage) {
 		if(this.map == null) {
-			this.map = new GameMap();
+			this.map = new GameMap(null);
 		}
 		
 		List<Entity> objects = this.map.generateObjectsFromModel(mapMessage.getObjects());

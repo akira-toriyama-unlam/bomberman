@@ -6,8 +6,8 @@ import java.net.Socket;
 
 public class MainServer {
 	
-	private static final int maxConcurrentConnecetions = 4;
-	private static final int port = 1236;
+	private static final int MAX_CONCURRENT_CONNECTIONS = 4;
+	private static final int PORT = 1236;
 	
 	private static ServerSocket server;
 	private static Socket socket;
@@ -19,7 +19,7 @@ public class MainServer {
         scoreBoard = new ScoreBoard();
 	        
 		 try {
-			server = new ServerSocket(port, maxConcurrentConnecetions);
+			server = new ServerSocket(PORT, MAX_CONCURRENT_CONNECTIONS);
 			
             while (true) {
             	System.out.println("Servidor a la espera de conexiones.");

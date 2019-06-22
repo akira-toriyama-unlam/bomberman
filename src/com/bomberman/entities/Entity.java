@@ -1,17 +1,36 @@
-package com.bomberman.entities;
-
+package com.bomberman.entities;import java.awt.Image;
 import java.io.Serializable;
+
+import com.bomberman.multiplayer.GameActionPerformed;
 
 public abstract class Entity implements Serializable {
 
 	protected double x;
 	protected double y;
-	protected InteractionListener interactionListener;
-
-	public Entity(double x, double y, InteractionListener map) {
+	protected boolean moving = false; 
+	protected GameActionPerformed gameActionPerformedListener;
+	public Image sprite;
+	public boolean destroyed;
+	protected int animate = 0;
+	protected final int MAX_ANIMATE = 7500; //save the animation status and dont let this get too big
+	
+	public void animate() {
+		if(animate < MAX_ANIMATE) animate++; else animate = 0; //reset animation
+	}
+	
+	public Entity(double x, double y, GameActionPerformed gameActionPerformedListener) {
 		this.x = x;
 		this.y = y;
-		this.interactionListener = map;
+		this.gameActionPerformedListener = gameActionPerformedListener;
+		this.destroyed = false;
+	}
+
+	public boolean isMoving() {
+		return moving;
+	}
+
+	public void setMoving(boolean moving) {
+		this.moving = moving;
 	}
 
 	public double getY() {
@@ -22,12 +41,62 @@ public abstract class Entity implements Serializable {
 		return this.x;
 	}
 	
-	public void setY(double y) {
+	public void setY(double y) {	
 		this.y = y;
+	}
+
+	public Image getSprite() {
+		return sprite;
+	}
+
+	public void setSprite(Image sprite) {
+		this.sprite = sprite;
+	}
+
+
+	public boolean isDestroyed() {
+		return destroyed;
+	}
+
+
+	public void setDestroyed(boolean destroyed) {
+		this.destroyed = destroyed;
 	}
 	
 	public void setX(double x) {
 		this.x = x;
 	}
-
+	
+	public boolean canBeOverpassed() {
+		return this instanceof Player;
+	}
+	
+	public boolean isDestructible() {
+		return this instanceof Destructible;
+	}
+	
+	public boolean isNotDestructible() {
+		return !(this instanceof Destructible);
+	}
+	
+	public boolean isBomb() {
+		return this instanceof Bomb;
+	}
+	
+	public boolean isExplosion() {
+		return this instanceof Explosion;
+	}
+	
+	public boolean isTile() {
+		return this instanceof Tile;
+	}
+	
+	public boolean isDestructibleTile() {
+		return this instanceof DestructibleTile;
+	}
+	
+	public boolean isPlayer() {
+		return this instanceof Player;
+	}
+	
 }
