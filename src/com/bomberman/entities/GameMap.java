@@ -50,7 +50,7 @@ public class GameMap implements InteractionListener {
 
 	public boolean addObject(Entity obj) {
 		Entity entity = getAtPosition(obj.getX(), obj.getY());
-		if(entity == null) {
+ 		if(entity == null) {
 			this.objects.add(obj);
 			return true;
 		}
@@ -78,7 +78,7 @@ public class GameMap implements InteractionListener {
 	}
 	 
 	public Entity getAtPosition(double x, double y) {
-		return this.objects.stream().filter(o -> !o.isDestroyed() && o.x == x && o.y == y).findFirst().orElse(null);
+		return this.getObjectsNotDestroyed().stream().filter(o -> o.getX() == x && o.getY() == y).findFirst().orElse(null);
 	}
 	
 	@Override
@@ -102,8 +102,16 @@ public class GameMap implements InteractionListener {
 	}
 	
 	@Override
-	public boolean placeBomb(Bomb bomb) {
-		return addObject(bomb);
+	public boolean placeBomb(double x, double y, InteractionListener map, Player player) {
+		Entity entity = getAtPosition(x, y);
+		
+ 		if(entity == null) {
+			addObject(new Bomb((int)x, (int)y, map, player));
+			return true;
+		}
+		return false;
+		
+		
 	}
 
 	private boolean crashWithLimits(double x, double y, Direction direction) {

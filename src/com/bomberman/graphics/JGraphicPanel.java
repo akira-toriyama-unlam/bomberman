@@ -81,7 +81,6 @@ public class JGraphicPanel extends JPanel {
 			}
 		}
 
-		
 		if(!map.getPlayersNotDestroyed().isEmpty()) {
 			Iterator<Player> iterPlayer = map.getPlayersNotDestroyed().iterator();
 			while (iterPlayer.hasNext()) {

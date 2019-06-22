@@ -59,8 +59,8 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 
 	public void placeBomb(InteractionListener map) {
 		if (this.bombsCount > 0) {
-			Bomb bomb = new Bomb(generateFixedX(), generateFixedY(), map, this);
-			boolean placed = map.placeBomb(bomb);
+//			Bomb bomb = new Bomb(generateFixedX(), generateFixedY(), map, this);
+			boolean placed = map.placeBomb(generateFixedX(), generateFixedY(), map, this);
 			if(placed) {
 				bombsCount--;
 			}
