@@ -46,7 +46,6 @@ public class Client {
 			public void run(){
 		    	try {
 		    		while(conected) {
-		    			System.out.println("Thread Running");
 		    			String message = dataInputStream.readUTF();
 		    			receiveMessage(message);
 		    		}
@@ -69,9 +68,7 @@ public class Client {
 	}
 	
 	private void receiveMessage(String mapMessage) {
-		System.out.println("Mensage recibido en el cliente");
 		MapMessage mapMessageObject = gson.fromJson(mapMessage, MapMessage.class);
-
 		listener.messageReceived(mapMessageObject);
 	}
 	

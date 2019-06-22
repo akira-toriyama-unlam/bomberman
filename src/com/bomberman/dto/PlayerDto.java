@@ -3,6 +3,7 @@ package com.bomberman.dto;
 import java.awt.Image;
 
 import com.bomberman.entities.Player;
+import com.bomberman.graphics.PlayerSpriteManager;
 import com.bomberman.graphics.Sprite;
 
 public class PlayerDto {
@@ -59,28 +60,28 @@ public class PlayerDto {
 		switch(this.movementStatusDto.getDirection()) {
 		case UP:
 			if(this.movementStatusDto.isMoving()) {
-				return Sprite.movingSprite(Sprite.player_blue_up, Sprite.player_blue_up_1, Sprite.player_blue_up_2, 
-						this.movementStatusDto.getAnimateCount(), 5);
+				return Sprite.movingSprite(PlayerSpriteManager.getInstance(id).getPlayerSpriteUp(0), PlayerSpriteManager.getInstance(id).getPlayerSpriteUp(1),
+						PlayerSpriteManager.getInstance(id).getPlayerSpriteUp(2), this.movementStatusDto.getAnimateCount(), 5);
 			}
-			return Sprite.player_blue_up;
+			return PlayerSpriteManager.getInstance(id).getPlayerSpriteUp(0);
 		case RIGHT:
 			if(this.movementStatusDto.isMoving()) {
-				return Sprite.movingSprite(Sprite.player_blue_right, Sprite.player_blue_right_1, Sprite.player_blue_right_2, 
-						this.movementStatusDto.getAnimateCount(), 5);
+				return Sprite.movingSprite(PlayerSpriteManager.getInstance(id).getPlayerSpriteRight(0), PlayerSpriteManager.getInstance(id).getPlayerSpriteRight(1),
+						PlayerSpriteManager.getInstance(id).getPlayerSpriteRight(0), this.movementStatusDto.getAnimateCount(), 5);
 			}
-			return Sprite.player_blue_right;
+			return PlayerSpriteManager.getInstance(id).getPlayerSpriteRight(0);
 		case DOWN:
 			if(this.movementStatusDto.isMoving()) {
-				return Sprite.movingSprite(Sprite.player_blue_down, Sprite.player_blue_down_1, Sprite.player_blue_down_2, 
-						this.movementStatusDto.getAnimateCount(), 5);
+				return Sprite.movingSprite(PlayerSpriteManager.getInstance(id).getPlayerSpriteDown(0), PlayerSpriteManager.getInstance(id).getPlayerSpriteDown(1),
+						PlayerSpriteManager.getInstance(id).getPlayerSpriteDown(2), this.movementStatusDto.getAnimateCount(), 5);
 			}
-			return Sprite.player_blue_down;
+			return PlayerSpriteManager.getInstance(id).getPlayerSpriteDown(0);
 		case LEFT:
 			if(this.movementStatusDto.isMoving()) {
-				return Sprite.movingSprite(Sprite.player_blue_left, Sprite.player_blue_left_1, Sprite.player_blue_left_2, 
-						this.movementStatusDto.getAnimateCount(), 5);
+				return Sprite.movingSprite(PlayerSpriteManager.getInstance(id).getPlayerSpriteLeft(0), PlayerSpriteManager.getInstance(id).getPlayerSpriteLeft(1),
+						PlayerSpriteManager.getInstance(id).getPlayerSpriteLeft(2), this.movementStatusDto.getAnimateCount(), 5);
 			}
-			return Sprite.player_blue_left;
+			return PlayerSpriteManager.getInstance(id).getPlayerSpriteLeft(0);
 		default:
 			return null;
 		}

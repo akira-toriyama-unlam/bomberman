@@ -55,7 +55,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		Player player = null;
 		switch(playersCount) {
 		case 0:
-			player = new Player(40, 40, 1);
+			player = new Player(40, 40, 3);
 			this.map.addPlayer(player);
 			break;
 		case 1:

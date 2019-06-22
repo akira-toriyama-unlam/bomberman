@@ -8,16 +8,15 @@ public class Sprite {
 	
 	private static final int TILE_PIXELS = 16;
 	
-	
 	public static Image brick = SPRITE_SHEET.image.getSubimage(7 * TILE_PIXELS, 0, 16, 16);
 	public static Image wall = SPRITE_SHEET.image.getSubimage(5 * TILE_PIXELS, 0, 16, 16);
-	
 	
 	/*
 	|--------------------------------------------------------------------------
 	| Player Sprites
 	|--------------------------------------------------------------------------
 	 */
+	
 	public static Image player_blue_up = SPRITE_SHEET.image.getSubimage(0, 0, 12, 16);
 	public static Image player_blue_down = SPRITE_SHEET.image.getSubimage(2 * TILE_PIXELS, 0, 12, 15);
 	public static Image player_blue_left = SPRITE_SHEET.image.getSubimage(3 * TILE_PIXELS, 0, 10, 15);
@@ -60,12 +59,54 @@ public class Sprite {
 	public static Image player_green_dead2 = SPRITE_SHEET.image.getSubimage(5 * TILE_PIXELS, 14 * TILE_PIXELS, 13, 15);
 	public static Image player_green_dead3 = SPRITE_SHEET.image.getSubimage(6 * TILE_PIXELS, 14 * TILE_PIXELS, 16, 16);
 	
+	public static Image player_violet_up = SPRITE_SHEET.image.getSubimage(0, 15 * TILE_PIXELS, 12, 16);
+	public static Image player_violet_down = SPRITE_SHEET.image.getSubimage(2 * TILE_PIXELS, 15 * TILE_PIXELS, 12, 15);
+	public static Image player_violet_left = SPRITE_SHEET.image.getSubimage(3 * TILE_PIXELS, 15 * TILE_PIXELS, 10, 15);
+	public static Image player_violet_right = SPRITE_SHEET.image.getSubimage(1 * TILE_PIXELS, 15 * TILE_PIXELS, 10, 16);
+	
+	public static Image player_violet_up_1 = SPRITE_SHEET.image.getSubimage(0 * TILE_PIXELS, 16 * TILE_PIXELS, 12, 16);
+	public static Image player_violet_up_2 = SPRITE_SHEET.image.getSubimage(0 * TILE_PIXELS, 17 * TILE_PIXELS, 12, 15);
+	
+	public static Image player_violet_down_1 = SPRITE_SHEET.image.getSubimage(2 * TILE_PIXELS, 16 * TILE_PIXELS, 12, 15);
+	public static Image player_violet_down_2 = SPRITE_SHEET.image.getSubimage(2 * TILE_PIXELS, 17 * TILE_PIXELS, 12, 16);
+	
+	public static Image player_violet_left_1 = SPRITE_SHEET.image.getSubimage(3 * TILE_PIXELS, 16 * TILE_PIXELS, 11, 16);
+	public static Image player_violet_left_2 = SPRITE_SHEET.image.getSubimage(3 * TILE_PIXELS, 17 * TILE_PIXELS, 12 ,16);
+	
+	public static Image player_violet_right_1 = SPRITE_SHEET.image.getSubimage(1 * TILE_PIXELS, 16 * TILE_PIXELS, 11, 16);
+	public static Image player_violet_right_2 = SPRITE_SHEET.image.getSubimage(1 * TILE_PIXELS, 17 * TILE_PIXELS, 12, 16);
+	
+	public static Image player_violet_dead1 = SPRITE_SHEET.image.getSubimage(4  * TILE_PIXELS, 17 * TILE_PIXELS, 14, 16);
+	public static Image player_violet_dead2 = SPRITE_SHEET.image.getSubimage(5 * TILE_PIXELS, 17 * TILE_PIXELS, 13, 15);
+	public static Image player_violet_dead3 = SPRITE_SHEET.image.getSubimage(6 * TILE_PIXELS, 17 * TILE_PIXELS, 16, 16);
+	
+	public static Image player_yellow_up = SPRITE_SHEET.image.getSubimage(0, 18 * TILE_PIXELS, 12, 16);
+	public static Image player_yellow_down = SPRITE_SHEET.image.getSubimage(2 * TILE_PIXELS, 18 * TILE_PIXELS, 12, 15);
+	public static Image player_yellow_left = SPRITE_SHEET.image.getSubimage(3 * TILE_PIXELS, 18 * TILE_PIXELS, 10, 15);
+	public static Image player_yellow_right = SPRITE_SHEET.image.getSubimage(1 * TILE_PIXELS, 18 * TILE_PIXELS, 10, 16);
+	
+	public static Image player_yellow_up_1 = SPRITE_SHEET.image.getSubimage(0 * TILE_PIXELS, 19 * TILE_PIXELS, 12, 16);
+	public static Image player_yellow_up_2 = SPRITE_SHEET.image.getSubimage(0 * TILE_PIXELS, 20 * TILE_PIXELS, 12, 15);
+	
+	public static Image player_yellow_down_1 = SPRITE_SHEET.image.getSubimage(2 * TILE_PIXELS, 19 * TILE_PIXELS, 12, 15);
+	public static Image player_yellow_down_2 = SPRITE_SHEET.image.getSubimage(2 * TILE_PIXELS, 20 * TILE_PIXELS, 12, 16);
+	
+	public static Image player_yellow_left_1 = SPRITE_SHEET.image.getSubimage(3 * TILE_PIXELS, 19 * TILE_PIXELS, 11, 16);
+	public static Image player_yellow_left_2 = SPRITE_SHEET.image.getSubimage(3 * TILE_PIXELS, 20 * TILE_PIXELS, 12 ,16);
+	
+	public static Image player_yellow_right_1 = SPRITE_SHEET.image.getSubimage(1 * TILE_PIXELS, 19 * TILE_PIXELS, 11, 16);
+	public static Image player_yellow_right_2 = SPRITE_SHEET.image.getSubimage(1 * TILE_PIXELS, 20 * TILE_PIXELS, 12, 16);
+	
+	public static Image player_yellow_dead1 = SPRITE_SHEET.image.getSubimage(4  * TILE_PIXELS, 20 * TILE_PIXELS, 14, 16);
+	public static Image player_yellow_dead2 = SPRITE_SHEET.image.getSubimage(5 * TILE_PIXELS, 20 * TILE_PIXELS, 13, 15);
+	public static Image player_yellow_dead3 = SPRITE_SHEET.image.getSubimage(6 * TILE_PIXELS, 20 * TILE_PIXELS, 16, 16);
 	
 	/*
 	|--------------------------------------------------------------------------
 	| Brick Explosion
 	|--------------------------------------------------------------------------
 	 */
+	
 	public static Image brick_exploded = SPRITE_SHEET.image.getSubimage(7 * TILE_PIXELS, 1 * TILE_PIXELS, 16, 16);
 	public static Image brick_exploded1 = SPRITE_SHEET.image.getSubimage(7 * TILE_PIXELS, 2 * TILE_PIXELS, 16, 16);
 	public static Image brick_exploded2 = SPRITE_SHEET.image.getSubimage(7 * TILE_PIXELS, 3 * TILE_PIXELS, 16, 16);
@@ -75,6 +116,7 @@ public class Sprite {
 	| Bomb Sprites
 	|--------------------------------------------------------------------------
 	 */
+	
 	public static Image bomb = SPRITE_SHEET.image.getSubimage(0, 3 * TILE_PIXELS, 16, 16);
 	public static Image bomb_1 = SPRITE_SHEET.image.getSubimage(1 * TILE_PIXELS, 3 * TILE_PIXELS, 16, 16);
 	public static Image bomb_2 = SPRITE_SHEET.image.getSubimage(2 * TILE_PIXELS, 3 * TILE_PIXELS, 16, 16);
