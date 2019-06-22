@@ -61,7 +61,7 @@ public class JGraphicPanel extends JPanel {
 		case BOMB:
 			return new BombDto(entity.getX(), entity.getY(), 1, entity.getAnimateCount(), entity.isDestroyed());
 		case DESTRUCTIBLE_TILE:
-			return new DestructibleTileDto(entity.getX(), entity.getY());
+			return new DestructibleTileDto(entity.getX(), entity.getY(), entity.getAnimateCount());
 		case TILE:
 			return new TileDto(entity.getX(), entity.getY());
 		case EXPLOSION:

@@ -30,7 +30,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		this.map = new GameMap(this);
 		this.generateBaseMap();
 		
-		//initializeReSend();
+		initializeReSend();
 	}
 	
 	private void initializeReSend() {
@@ -135,6 +135,8 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		
 		addExplosionsToMap(bomb);
 		
+		this.map.getObjects().stream().filter(o -> o.isExplosion()).forEach(o -> entitiesToRemove.add((Explosion) o));
+		
 		// destroy players in range
 		entitiesToRemove.forEach(e -> {
 			if(e.isPlayer())
@@ -156,7 +158,6 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
  		 		
  		//remove entities after animation
  		this.removeEntitiesAfterAnimation(this.map.getObjects(), entitiesToRemove);
- 		this.actionPerformed();
 	}
 	
 
@@ -239,7 +240,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		 timer.schedule(new TimerTask() {
 			@Override
 			public void run() {
-				sourceEntities.removeAll(entitiesToRemove);			
+				sourceEntities.removeAll(entitiesToRemove);
 			}
 		}, 300);
 	}

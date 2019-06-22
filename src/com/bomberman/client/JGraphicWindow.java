@@ -7,7 +7,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.JFrame;
 
@@ -35,10 +34,8 @@ public class JGraphicWindow extends JFrame implements SocketActionListener {
 	public JGraphicWindow() {
 		this.client = new Client(this);
 		this.initializeGraphicWindow();
-		//this.initializeRepaint();
 		this.intializeKeyboardListeners();
 	}
-	
 	
 	private void initializeGraphicWindow() {
 		setResizable(false);		
@@ -48,19 +45,6 @@ public class JGraphicWindow extends JFrame implements SocketActionListener {
 		setBackground(Color.WHITE);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
-	
-	private void initializeRepaint() {
-		contentPane = new JGraphicPanel(this);
-		setContentPane(contentPane);
-		
-		this.timer = new Timer();
-		this.timer.scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {	
-				repaint();
-			}
-		}, 200, 1);
 	}
 	
 	private void intializeKeyboardListeners() {
@@ -157,11 +141,13 @@ public class JGraphicWindow extends JFrame implements SocketActionListener {
 		this.map.setPlayers(mapMessage.getPlayers());
 		
 		if (!this.repaintOn) {
-			this.initializeRepaint();
+			//this.initializeRepaint();
+			contentPane = new JGraphicPanel(this);
+			setContentPane(contentPane);
 			this.repaintOn = true;
 			revalidate();
 		}
 		
-		//repaint();
+		repaint();
 	}
 }

@@ -4,7 +4,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.bomberman.dto.DestructibleTileDto;
-import com.bomberman.graphics.Sprite;
 
 public class DestructibleTile extends Tile implements Destructible {
 
@@ -20,7 +19,6 @@ public class DestructibleTile extends Tile implements Destructible {
 			@Override
 			public void run() {
 				incrementAnimateCount();
-				sprite = Sprite.movingSprite(Sprite.brick_exploded, Sprite.brick_exploded1, Sprite.brick_exploded2, animateCount);
 				counter++;
 				
 		       if (counter == 3){
@@ -31,7 +29,7 @@ public class DestructibleTile extends Tile implements Destructible {
 	}
 	
 	public DestructibleTileDto toDestructibleTileDto() {
-		return new DestructibleTileDto((int) x, (int) y);
+		return new DestructibleTileDto((int) x, (int) y, this.animateCount);
 	}
 
 }
