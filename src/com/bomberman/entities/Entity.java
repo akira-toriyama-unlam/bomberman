@@ -14,6 +14,7 @@ public abstract class Entity {
 	public boolean destroyed;
 	protected int animate = 0;
 	protected final int MAX_ANIMATE = 7500; //save the animation status and dont let this get too big
+	public boolean painted;
 	
 	public void animate() {
 		if(animate < MAX_ANIMATE) animate++; else animate = 0; //reset animation
@@ -25,7 +26,18 @@ public abstract class Entity {
 		this.y = y;
 		this.interactionListener = map;
 		this.destroyed = false;
+		this.painted = false;
 	}
+
+	public boolean isPainted() {
+		return painted;
+	}
+
+
+	public void setPainted(boolean painted) {
+		this.painted = painted;
+	}
+
 
 	public boolean isMoving() {
 		return moving;

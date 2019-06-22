@@ -22,6 +22,7 @@ public class Explosion extends Entity {
 			@Override
 			public void run() {
 				animate();
+				setPainted(true);
 				switch(direction) {
 					case RIGHT:
 						sprite = movingSprite(Sprite.explosion_horizontal, Sprite.explosion_horizontal1, Sprite.explosion_horizontal2);
@@ -52,6 +53,7 @@ public class Explosion extends Entity {
 				}
 			}
 		}, 0, 200);	
+		 
 	}
 	
 	private Image movingSprite(Image normal, Image x1, Image x2) {

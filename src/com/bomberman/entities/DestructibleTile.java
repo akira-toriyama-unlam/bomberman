@@ -15,6 +15,8 @@ public class DestructibleTile extends Tile implements Destructible {
 
 	@Override
 	public void destroy() {
+//		this.setDestroyed(true);
+		this.setPainted(true);
 		Timer timer = new Timer();
 		 timer.schedule(new TimerTask() {
 			int counter = 0;

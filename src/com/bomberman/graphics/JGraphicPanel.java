@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -52,19 +53,54 @@ public class JGraphicPanel extends JPanel {
 		
 		g.setColor(new Color(204,204,204));
 		
-		Iterator<Entity> iter = map.getObjects().iterator();
-
+		Iterator<Entity> iter = map.getObjectsNotDestroyed().iterator();
+		
+		
 		while (iter.hasNext()) {
-		    Entity entity = iter.next();
-		    g.drawImage(entity.getSprite(), (int) entity.getX(), (int) entity.getY(), 40, 40, null);
+			try {
+				Entity entity = iter.next();
+			    g.drawImage(entity.getSprite(), (int) entity.getX(), (int) entity.getY(), 40, 40, null);
+			    if(entity.isPainted()) {
+			    	Thread thread = new Thread() {
+			    		public void run() {
+			    			try {
+								Thread.sleep(300);
+								entity.setDestroyed(true);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+			    			
+			    		}
+			    	};
+			    thread.start();
+			    }
+			}catch (ConcurrentModificationException | NullPointerException  e){
+				e.printStackTrace();
+				continue;
+			}
 		}
 
 		
-		if(!map.getPlayers().isEmpty()) {
-			Iterator<Player> iterPlayer = map.getPlayers().iterator();
+		if(!map.getPlayersNotDestroyed().isEmpty()) {
+			Iterator<Player> iterPlayer = map.getPlayersNotDestroyed().iterator();
 			while (iterPlayer.hasNext()) {
 				Player player = iterPlayer.next();
 				g.drawImage(player.getSprite(), (int) player.getX(), (int) player.getY(), 40, 40, null);
+				if(player.isPainted()) {
+					Thread thread = new Thread() {
+			    		public void run() {
+			    			try {
+								Thread.sleep(300);
+			    				player.setDestroyed(true);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}		
+			    		}
+			    	};
+			    thread.start();
+				}
 			}
 		} else {
 			frame.setStopKeyEvents(true);

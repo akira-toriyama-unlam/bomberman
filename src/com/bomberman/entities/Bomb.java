@@ -16,6 +16,7 @@ public class Bomb extends Entity implements Destructible {
 	public static final int TIME_TO_EXPLOIT = 3000;
 	private Set<ExplosionDirection> explosionDirections;
 	private Timer timerInstace;
+	private Timer spriteTimer;
 
 	private ExplosionListener listener;
 
@@ -69,22 +70,25 @@ public class Bomb extends Entity implements Destructible {
 	
 	@Override
 	public void destroy() {
-		destroyed = true;
+//		destroyed = true;
+		this.setPainted(true);
+		listener.update();
 		interactionListener.bombExploded(this);
-		listener.update();		
+
 	}
 	
 	public void cancelTimer() {
 		this.timerInstace.cancel();
+		// this.spriteTimer.cancel();
 	}
 	
 	public void chooseSprite() {
-		Timer timer = new Timer();
-		 timer.schedule(new TimerTask() {
+		this.spriteTimer = new Timer();
+		this.spriteTimer.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				animate();
-				if(destroyed) {
+				if(painted) {
 					sprite = movingSprite(Sprite.bomb_exploded, Sprite.bomb_exploded1, Sprite.bomb_exploded2);
 				} else {
 					sprite = movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2);

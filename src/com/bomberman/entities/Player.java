@@ -75,21 +75,22 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 	@Override
 	public void destroy() {
 		this.alive = false;
-		
-			Timer timer = new Timer();
-			 timer.schedule(new TimerTask() {
-				int counter = 0;
-				@Override
-				public void run() {
-					animate();
-					sprite = movingSprite(Sprite.player_dead1, Sprite.player_dead2, Sprite.player_dead3);
-					counter++;
-					
-			       if (counter == 3){
-			         timer.cancel();
-			       }
-				}
-			}, 0, 100);	
+//		this.setDestroyed(true);
+		this.setPainted(true);
+		Timer timer = new Timer();
+		 timer.schedule(new TimerTask() {
+			int counter = 0;
+			@Override
+			public void run() {
+				animate();
+				sprite = movingSprite(Sprite.player_dead1, Sprite.player_dead2, Sprite.player_dead3);
+				counter++;
+				
+		       if (counter == 3){
+		         timer.cancel();
+		       }
+			}
+		}, 0, 100);	
 		}
 
 	public boolean isAlive() {
