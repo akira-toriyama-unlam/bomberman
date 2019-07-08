@@ -45,13 +45,40 @@ public class JGraphicPanel extends JPanel {
 			while (itEntity.hasNext()) {				
 			    EntityDto entity = itEntity.next();
 			    g.drawImage(getEntityByType(entity).getSprite(), entity.getX(), entity.getY(), 40, 40, null);
+			    
+			    Thread thread = new Thread() {
+		    		public void run() {
+		    			try {
+							Thread.sleep(300);
+							entity.setDestroyed(true);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		    		}
+		    	};
+		    	thread.start();
 			}
 			
-			Iterator<PlayerDto> itPlayer = map.getPlayers().iterator();
+			Iterator<PlayerDto> itPlayer = map.getPlayersNotDestroyed().iterator();
 			while(itPlayer.hasNext()) {
 				PlayerDto player = itPlayer.next();
-				player.chooseSprite();
+				//player.chooseSprite();
 				g.drawImage(player.chooseSprite(), (int) player.getX(), (int) player.getY(), 40, 40, null);
+				if(player.isPainted()) {
+					Thread thread = new Thread() {
+			    		public void run() {
+			    			try {
+								Thread.sleep(300);
+			    				// player.setDestroyed(true);  // TODO : MARCE DIJO QUE ES NECESARIO
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}		
+			    		}
+			    	};
+			    	thread.start();
+				}
 			}
 		}
 	}
@@ -59,13 +86,13 @@ public class JGraphicPanel extends JPanel {
 	private EntityDto getEntityByType(EntityDto entity) {
 		switch (entity.getEntityType()) {
 		case BOMB:
-			return new BombDto(entity.getX(), entity.getY(), 1, entity.getAnimateCount(), entity.isDestroyed());
+			return new BombDto(entity.getX(), entity.getY(), 1, entity.getAnimateCount(), entity.isDestroyed(), entity.isPainted());
 		case DESTRUCTIBLE_TILE:
-			return new DestructibleTileDto(entity.getX(), entity.getY(), entity.getAnimateCount());
+			return new DestructibleTileDto(entity.getX(), entity.getY(), entity.getAnimateCount(), entity.isPainted());
 		case TILE:
-			return new TileDto(entity.getX(), entity.getY());
+			return new TileDto(entity.getX(), entity.getY(), entity.isPainted());
 		case EXPLOSION:
-			return new ExplosionDto(entity.getX(), entity.getY(), entity.getExplosionDirection(), entity.getAnimateCount());
+			return new ExplosionDto(entity.getX(), entity.getY(), entity.getExplosionDirection(), entity.getAnimateCount(), entity.isPainted());
 		default:
 			return entity;
 		}

@@ -13,6 +13,7 @@ public abstract class Entity implements Serializable {
 	public boolean destroyed;
 	protected int animateCount = 0;
 	protected final int MAX_ANIMATE = 7500; //save the animation status and dont let this get too big
+	public boolean painted;
 	
 	public void incrementAnimateCount() {
 		if(animateCount < MAX_ANIMATE) animateCount++; else animateCount = 0; //reset animation
@@ -23,8 +24,18 @@ public abstract class Entity implements Serializable {
 		this.y = y;
 		//this.gameActionPerformedListener = gameActionPerformedListener;
 		this.destroyed = false;
+		this.painted = false;
 	}
-	
+
+	public boolean isPainted() {
+		return painted;
+	}
+
+
+	public void setPainted(boolean painted) {
+		this.painted = painted;
+	}
+
 	public double getY() {
 		return this.y;
 	}

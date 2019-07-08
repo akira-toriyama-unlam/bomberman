@@ -53,7 +53,7 @@ public class CollisionManager {
 	}
 	
 	private Entity getEntityAtRightInRange(List<? extends Entity> entities, Bomb bomb, int range) {
-		return entities.stream().filter(o -> o.getY() == bomb.getY() && between(o.getX(), bomb.getX() + GameMap.BOMB_ERROR, 
+		return entities.stream().filter(o -> !o.isDestroyed() && o.getY() == bomb.getY() && between(o.getX(), bomb.getX() + GameMap.BOMB_ERROR, 
 				bomb.getX() + (Tile.SIZE * range))).findFirst().orElse(null);
 	} 
 	
@@ -67,7 +67,7 @@ public class CollisionManager {
 	}
 	
 	private Entity getEntityAtLeftInRange(List<? extends Entity> entities, Bomb bomb, int range) {
-		return entities.stream().filter(o -> o.getY() == bomb.getY() 
+		return entities.stream().filter(o -> !o.isDestroyed() && o.getY() == bomb.getY() 
 				&& between(o.getX(), bomb.getX() - (Tile.SIZE * range), bomb.getX() - GameMap.BOMB_ERROR)).findFirst().orElse(null);
 	}
 	
@@ -81,7 +81,7 @@ public class CollisionManager {
 	}
 	
 	private Entity getEntityAtUpInRange(List<? extends Entity> entities, Bomb bomb, int range) {
-		return entities.stream().filter(o -> o.getX() == bomb.getX() 
+		return entities.stream().filter(o -> !o.isDestroyed() && o.getX() == bomb.getX() 
 				&& between(o.getY(), bomb.getY() - (Tile.SIZE * range), bomb.getY() - GameMap.BOMB_ERROR)).findFirst().orElse(null);
 	}
 	
@@ -95,7 +95,7 @@ public class CollisionManager {
 	}
 	
 	private Entity getEntityAtBottomInRange(List<? extends Entity> entities, Bomb bomb, int range) {
-		return entities.stream().filter(o -> o.getX() == bomb.getX() 
+		return entities.stream().filter(o -> !o.isDestroyed() && o.getX() == bomb.getX() 
 				&& between(o.getY(), bomb.getY() + GameMap.BOMB_ERROR, bomb.getY() + (Tile.SIZE * range))).findFirst().orElse(null);
 	}
 	

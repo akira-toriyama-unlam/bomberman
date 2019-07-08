@@ -13,6 +13,8 @@ public class DestructibleTile extends Tile implements Destructible {
 
 	@Override
 	public void destroy() {
+//		this.setDestroyed(true);
+		this.setPainted(true);
 		Timer timer = new Timer();
 		 timer.schedule(new TimerTask() {
 			int counter = 0;
@@ -29,7 +31,7 @@ public class DestructibleTile extends Tile implements Destructible {
 	}
 	
 	public DestructibleTileDto toDestructibleTileDto() {
-		return new DestructibleTileDto((int) x, (int) y, this.animateCount);
+		return new DestructibleTileDto((int) x, (int) y, this.animateCount, painted);
 	}
 
 }

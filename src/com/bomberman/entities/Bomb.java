@@ -19,6 +19,7 @@ public class Bomb extends Entity implements Destructible {
 	private int id;
 	private GameActionPerformed gameActionPerformedListener;
 	// private ExplosionListener listener;
+	private Timer spriteTimer;
 
 	public Bomb(int x, int y, GameActionPerformed gameActionPerformedListener /*, ExplosionListener listener*/, int id) {
 		super(x, y);
@@ -53,13 +54,14 @@ public class Bomb extends Entity implements Destructible {
 	
 	@Override
 	public void destroy() {
-		destroyed = true;
+		// destroyed = true;
+		this.setPainted(true);
 		this.gameActionPerformedListener.explodeBomb(this);
 		// listener.update();		
 	}
 	
 	public BombDto toDto() {
-		return new BombDto((int) x, (int) y, id, animateCount, destroyed);
+		return new BombDto((int) x, (int) y, id, animateCount, destroyed, painted);
 	}
 	
 	public void addExplotionDirection(Entity range1, Entity range2, ExplosionDirection max, ExplosionDirection min) {
@@ -78,6 +80,7 @@ public class Bomb extends Entity implements Destructible {
 	
 	public void cancelTimer() {
 		this.timerInstace.cancel();
+		// this.spriteTimer.cancel();
 	}
 	
 	public void setId(int id) {
@@ -89,8 +92,8 @@ public class Bomb extends Entity implements Destructible {
 	}
 
 	public void chooseSprite() {
-		Timer timer = new Timer();
-		 timer.schedule(new TimerTask() {
+		this.spriteTimer = new Timer();
+		this.spriteTimer.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				incrementAnimateCount();

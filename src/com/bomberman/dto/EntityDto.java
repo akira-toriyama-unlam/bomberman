@@ -14,6 +14,13 @@ public class EntityDto {
 	protected int animateCount;
 	protected boolean destroyed;
 	protected ExplosionDirection explosionDirection;
+	protected boolean painted;
+	
+	public EntityDto(int x, int y, EntityTypes entityType, boolean painted) {
+		this.x = x;
+		this.y = y;
+		this.entityType = entityType;
+	}
 	
 	public ExplosionDirection getExplosionDirection() {
 		return explosionDirection;
@@ -21,12 +28,6 @@ public class EntityDto {
 
 	public void setExplosionDirection(ExplosionDirection explosionDirection) {
 		this.explosionDirection = explosionDirection;
-	}
-
-	public EntityDto(int x, int y, EntityTypes entityType) {
-		this.x = x;
-		this.y = y;
-		this.entityType = entityType;
 	}
 	
 	public int getX() {
@@ -85,4 +86,7 @@ public class EntityDto {
 		this.destroyed = destroyed;
 	}
 	
+	public boolean isPainted() {
+		return this.painted;
+	}
 }

@@ -68,8 +68,14 @@ public class Client {
 	}
 	
 	private void receiveMessage(String mapMessage) {
-		MapMessage mapMessageObject = gson.fromJson(mapMessage, MapMessage.class);
-		listener.messageReceived(mapMessageObject);
+		try {
+			MapMessage mapMessageObject = gson.fromJson(mapMessage, MapMessage.class);
+			listener.messageReceived(mapMessageObject);	
+		} catch(Exception e) {
+			System.out.println("ale gato");
+		}
+			
+		
 	}
 	
 }

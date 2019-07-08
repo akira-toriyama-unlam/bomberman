@@ -8,8 +8,8 @@ import com.bomberman.graphics.Sprite;
 
 public class DestructibleTileDto extends EntityDto {
 	
-	public DestructibleTileDto(int x, int y, int animateCount) {
-		super(x, y, EntityTypes.DESTRUCTIBLE_TILE);
+	public DestructibleTileDto(int x, int y, int animateCount, boolean painted) {
+		super(x, y, EntityTypes.DESTRUCTIBLE_TILE, painted);
 		this.sprite = Sprite.brick;
 		this.animateCount = animateCount;
 	}

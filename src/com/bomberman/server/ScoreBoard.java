@@ -40,7 +40,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 			public void run() {	
 				actionPerformed();
 			}
-		}, 200, 1);
+		}, 400, 1);
 	}
 	
 	@Override
@@ -125,7 +125,13 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 
 	@Override
 	public boolean placeBomb(Bomb bomb) {
-		return map.addObject(bomb);
+		Entity entity = this.map.getAtPosition(bomb.getX(), bomb.getY());
+		
+ 		if(entity == null) {
+			this.map.addObject(bomb);
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
@@ -147,10 +153,13 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		entitiesToRemove.stream().filter(e -> e.isDestructibleTile()).forEach(t -> ((DestructibleTile) t).destroy());
  		
  		// destroy recursive bombs
- 		entitiesToRemove.stream().filter(o -> o.isBomb() && !o.equals(bomb)).forEach(b -> {
-			Bomb currentBomb = (Bomb) b;
-			currentBomb.cancelTimer();
-			currentBomb.destroy();
+ 		entitiesToRemove.stream().filter(o -> !o.isDestroyed() && o.isBomb() && !o.equals(bomb)).forEach(b -> {
+ 			Bomb currentBomb = (Bomb) b;
+			if(!currentBomb.destroyed) {
+				currentBomb.setPainted(true);
+				currentBomb.cancelTimer();
+				currentBomb.destroy();
+			} 
  		});
  		
  		//remove players after animation
@@ -236,13 +245,19 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 	}
 	
 	private void removeEntitiesAfterAnimation(List<? extends Entity> sourceEntities,List<? extends Entity> entitiesToRemove) {
-		Timer timer = new Timer();
-		 timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				sourceEntities.removeAll(entitiesToRemove);
-			}
-		}, 300);
+	   Thread thread = new Thread() {
+		   public void run() {
+		 	entitiesToRemove.stream().forEach(t -> {
+		 		if(t.isBomb()) {
+		 			((Bomb)t).cancelTimer();
+		 		}
+		 		t.setPainted(true);
+		 		});	
+		 	
+			sourceEntities.removeAll(entitiesToRemove); // Could be a problem
+		   }
+	   };  
+	   thread.start();
 	}
 	
 	private void addTileToMap(int x, int y, boolean destroy) {

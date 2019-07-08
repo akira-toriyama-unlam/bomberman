@@ -12,12 +12,16 @@ public class PlayerDto {
 	private double y;
 	private Integer id;
 	private MovementStatusDto movementStatusDto;
+	private boolean destroyed;
+	private boolean painted;
 
-	public PlayerDto(double x, double y, Integer id, MovementStatusDto movementStatusDto) {
+	public PlayerDto(double x, double y, Integer id, MovementStatusDto movementStatusDto, boolean destroyed, boolean painted) {
 		this.id = id;
 		this.x = x;
 		this.y = y;
 		this.movementStatusDto = movementStatusDto;
+		this.destroyed = destroyed;
+		this.painted = painted;
 	}
 
 	public double getX() {
@@ -42,6 +46,14 @@ public class PlayerDto {
 	
 	public Integer getId() {
 		return this.id;
+	}
+	
+	public boolean isDestroyed() {
+		return this.destroyed;
+	}
+	
+	public boolean isPainted() {
+		return this.painted;
 	}
 	
 	public MovementStatusDto getMovementStatusDto() {

@@ -80,6 +80,7 @@ public class ClientConnection extends Thread implements Observer {
         			ParserHelper.getInstance().entitiesToEntitiesDto(map.getObjects(), scoreBoard),
         			ParserHelper.getInstance().playersToPlayersDto(map.getPlayers(), scoreBoard));
         	dataOutputStream.writeUTF(gson.toJson(mapMessage));
+        	dataOutputStream.flush();
         } catch (IOException ex) {
         	System.out.println("Error al enviar mensaje al cliente (" + ex.getMessage() + ").");
         }

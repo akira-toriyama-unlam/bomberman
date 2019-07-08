@@ -1,10 +1,7 @@
 package com.bomberman.dto;
 
 import java.util.List;
-
-import com.bomberman.entities.Bomb;
-import com.bomberman.entities.DestructibleTile;
-import com.bomberman.entities.Tile;
+import java.util.stream.Collectors;
 
 public class MapDto {
 	
@@ -41,6 +38,14 @@ public class MapDto {
 
 	public EntityDto getAtPosition(double x, double y) {
 		return this.entities.stream().filter(e -> e.getX() == x && e.getY() == y).findFirst().orElse(null);
+	}
+	
+	public List<EntityDto> getObjectsNotDestroyed(){
+		return this.entities.stream().filter(e -> !e.isDestroyed()).collect(Collectors.toList());
+	}
+	
+	public List<PlayerDto> getPlayersNotDestroyed(){
+		return this.players.stream().filter(e -> !e.isDestroyed()).collect(Collectors.toList());
 	}
 
 }

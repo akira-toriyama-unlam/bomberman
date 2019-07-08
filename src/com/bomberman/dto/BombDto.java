@@ -11,13 +11,17 @@ public class BombDto extends EntityDto {
 	
 	private Integer playerId;
 	
-	public BombDto(int x, int y, Integer playerId, int animateCount, boolean destroyed) {
-		super(x, y, EntityTypes.BOMB);
+	public BombDto(int x,
+			int y,
+			Integer playerId,
+			int animateCount,
+			boolean destroyed,
+			boolean painted) {
+		super(x, y, EntityTypes.BOMB, painted);
 		this.x = x;
 		this.y = y;
 		this.playerId = playerId;
 		this.sprite = Sprite.bomb;
-		this.destroyed = false;
 		this.animateCount = animateCount;
 		this.destroyed = destroyed;
 	}
@@ -65,7 +69,7 @@ public class BombDto extends EntityDto {
 	}
 	
 	private void chooseSprite() {
-		if(destroyed) {
+		if(painted) {
 			sprite = Sprite.movingSprite(Sprite.bomb_exploded, Sprite.bomb_exploded1, Sprite.bomb_exploded2, animateCount);
 		} else {
 			sprite = Sprite.movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2, animateCount);
