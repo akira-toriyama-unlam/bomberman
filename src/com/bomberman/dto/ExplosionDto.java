@@ -8,8 +8,8 @@ import com.bomberman.graphics.Sprite;
 
 public class ExplosionDto extends EntityDto {
 
-	public ExplosionDto(int x, int y, ExplosionDirection explosionDirection, int animateCount, boolean painted) {
-		super(x, y, EntityTypes.EXPLOSION, painted);
+	public ExplosionDto(int x, int y, ExplosionDirection explosionDirection, int animateCount, boolean painted, boolean destroyed) {
+		super(x, y, EntityTypes.EXPLOSION, painted, destroyed);
 		this.explosionDirection = explosionDirection;
 		this.animateCount = animateCount;
 		chooseSprite();

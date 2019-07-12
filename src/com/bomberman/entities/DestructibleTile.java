@@ -31,7 +31,7 @@ public class DestructibleTile extends Tile implements Destructible {
 	}
 	
 	public DestructibleTileDto toDestructibleTileDto() {
-		return new DestructibleTileDto((int) x, (int) y, this.animateCount, painted);
+		return new DestructibleTileDto((int) x, (int) y, this.animateCount, painted, destroyed);
 	}
 
 }

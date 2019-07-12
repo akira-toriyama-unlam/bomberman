@@ -16,7 +16,7 @@ public abstract class Entity implements Serializable {
 	public boolean painted;
 	
 	public void incrementAnimateCount() {
-		if(animateCount < MAX_ANIMATE) animateCount++; else animateCount = 0; //reset animation
+			if(animateCount < MAX_ANIMATE) animateCount++; else animateCount = 0; //reset animation
 	}
 	
 	public Entity(double x, double y/*, GameActionPerformed gameActionPerformedListener*/) {

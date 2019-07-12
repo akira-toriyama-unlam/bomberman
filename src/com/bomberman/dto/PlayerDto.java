@@ -52,6 +52,10 @@ public class PlayerDto {
 		return this.destroyed;
 	}
 	
+	public void setDestroyed(boolean destroyed) {
+		this.destroyed = destroyed;
+	}
+	
 	public boolean isPainted() {
 		return this.painted;
 	}

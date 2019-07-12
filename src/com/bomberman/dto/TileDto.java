@@ -6,8 +6,8 @@ import com.bomberman.graphics.Sprite;
 
 public class TileDto extends EntityDto {
 	
-	public TileDto(int x, int y, boolean painted) {
-		super(x, y, EntityTypes.TILE, painted);
+	public TileDto(int x, int y, boolean painted, boolean destroyed) {
+		super(x, y, EntityTypes.TILE, painted, destroyed);
 		this.sprite = Sprite.wall; 
 	}
 	

@@ -2,12 +2,11 @@ package com.bomberman.entities;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.bomberman.server.GameActionPerformed;
 
 public class GameMap {
-	
+
 	public final static int MOVEMENT_ERROR = 2; // This constant is used for fixing the movement into the Jpanel.
 	public final static double BOMB_ERROR = 0.01; // This constant is used for fixing bomb range error.
 
@@ -23,13 +22,13 @@ public class GameMap {
 
 	public boolean addObject(Entity obj) {
 		Entity entity = getAtPosition(obj.getX(), obj.getY());
- 		if(entity == null) {
+		if (entity == null) {
 			this.objects.add(obj);
 			return true;
 		}
 		return false;
 	}
-	
+
 	public void addPlayer(Player player) {
 		this.players.add(player);
 	}
@@ -37,27 +36,19 @@ public class GameMap {
 	public List<Entity> getObjects() {
 		return this.objects;
 	}
-	
-	public List<Entity> getObjectsNotDestroyed(){
-		return this.objects.stream().filter(e -> !e.isDestroyed()).collect(Collectors.toList());
-	}
-	
-	public List<Player> getPlayersNotDestroyed(){
-		return this.players.stream().filter(e -> !e.isDestroyed()).collect(Collectors.toList());
-	}
-	
+
 	public List<Player> getPlayers() {
 		return this.players;
 	}
-	 
+
 	public Entity getAtPosition(double x, double y) {
-		return this.getObjectsNotDestroyed().stream().filter(o -> o.getX() == x && o.getY() == y).findFirst().orElse(null);
+		return this.getObjects().stream().filter(o -> o.getX() == x && o.getY() == y).findFirst().orElse(null);
 	}
-	
+
 	public void setObjects(List<Entity> objects) {
 		this.objects = objects;
 	}
-	
+
 	public void setPlayers(List<Player> players) {
 		this.players = players;
 	}

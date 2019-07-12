@@ -8,16 +8,11 @@ import com.bomberman.entities.Tile;
 import com.bomberman.graphics.Sprite;
 
 public class BombDto extends EntityDto {
-	
+
 	private Integer playerId;
-	
-	public BombDto(int x,
-			int y,
-			Integer playerId,
-			int animateCount,
-			boolean destroyed,
-			boolean painted) {
-		super(x, y, EntityTypes.BOMB, painted);
+
+	public BombDto(int x, int y, Integer playerId, int animateCount, boolean destroyed, boolean painted) {
+		super(x, y, EntityTypes.BOMB, painted, destroyed);
 		this.x = x;
 		this.y = y;
 		this.playerId = playerId;
@@ -25,7 +20,7 @@ public class BombDto extends EntityDto {
 		this.animateCount = animateCount;
 		this.destroyed = destroyed;
 	}
-	
+
 	@Override
 	public int getX() {
 		return x;
@@ -45,19 +40,19 @@ public class BombDto extends EntityDto {
 	public void setY(int y) {
 		this.y = y;
 	}
-	
+
 	public Integer getPlayerId() {
 		return this.playerId;
 	}
-	
+
 	public void setPlayerId(Integer playerId) {
 		this.playerId = playerId;
 	}
-	
+
 	public DestructibleTile toDestructibleTile() {
-		return new DestructibleTile((int) x, (int) y);
+		return new DestructibleTile(x, y);
 	}
-	
+
 	public Tile toTile() {
 		return new Tile(x, y);
 	}
@@ -67,13 +62,14 @@ public class BombDto extends EntityDto {
 		chooseSprite();
 		return sprite;
 	}
-	
+
 	private void chooseSprite() {
-		if(painted) {
-			sprite = Sprite.movingSprite(Sprite.bomb_exploded, Sprite.bomb_exploded1, Sprite.bomb_exploded2, animateCount);
+		if (this.painted) {
+			sprite = Sprite.movingSprite(Sprite.bomb_exploded, Sprite.bomb_exploded1, Sprite.bomb_exploded2,
+					animateCount);
 		} else {
 			sprite = Sprite.movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2, animateCount);
-		}	
+		}
 	}
 
 }

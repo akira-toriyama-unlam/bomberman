@@ -11,7 +11,7 @@ public class Tile extends Entity {
 	}
 	
 	public TileDto toDto() {
-		return new TileDto((int) x, (int) y, painted);
+		return new TileDto((int) x, (int) y, painted, destroyed);
 	}
 	
 }

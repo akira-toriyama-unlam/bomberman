@@ -81,7 +81,7 @@ public class Explosion extends Entity {
 	}
 	
 	public ExplosionDto toDto() {
-		return new ExplosionDto((int) x, (int) y, direction, animateCount, painted);
+		return new ExplosionDto((int) x, (int) y, direction, animateCount, painted, destroyed);
 	}
 	
 }

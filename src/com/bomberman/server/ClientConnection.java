@@ -70,6 +70,7 @@ public class ClientConnection extends Thread implements Observer {
                 }
             }
         }   
+        return;
     }
 
     @Override
