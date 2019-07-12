@@ -5,6 +5,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.util.Timer;
 
@@ -15,11 +16,11 @@ import com.bomberman.entities.Direction;
 import com.bomberman.services.DirectionMessage;
 import com.bomberman.services.MapMessage;
 
-public class JGraphicWindow extends JFrame implements SocketActionListener {
+public class Window extends JFrame implements SocketActionListener {
 
 	public static final int WIDTH = 840;
 	public static final int HEIGHT = 620;
-	private JGraphicPanel contentPane;
+	private Room contentPane;
 	private boolean stopKeyEvents = false;
 
     private Client client;
@@ -28,10 +29,10 @@ public class JGraphicWindow extends JFrame implements SocketActionListener {
     private boolean repaintOn = false;
 
 	public static void main(String[] args) {
-		new JGraphicWindow().setVisible(true);
+		new Window().setVisible(true);
 	}
 	
-	public JGraphicWindow() {
+	public Window() {
 		this.client = new Client(this);
 		this.initializeGraphicWindow();
 		this.intializeKeyboardListeners();
@@ -86,7 +87,7 @@ public class JGraphicWindow extends JFrame implements SocketActionListener {
 		g.setFont(font);
 		g.setColor(Color.white);
 		drawCenteredString("GAME OVER", g);
-		cancelTimer();
+		// cancelTimer();
 	}
 	
 	public void drawCenteredString(String s, Graphics g) {
@@ -142,7 +143,7 @@ public class JGraphicWindow extends JFrame implements SocketActionListener {
 		
 		if (!this.repaintOn) {
 			//this.initializeRepaint();
-			contentPane = new JGraphicPanel(this);
+			contentPane = new Room(this);
 			setContentPane(contentPane);
 			this.repaintOn = true;
 			revalidate();

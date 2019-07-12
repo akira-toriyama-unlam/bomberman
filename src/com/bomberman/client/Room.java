@@ -16,12 +16,12 @@ import com.bomberman.dto.MapDto;
 import com.bomberman.dto.PlayerDto;
 import com.bomberman.dto.TileDto;
 
-public class JGraphicPanel extends JPanel {
+public class Room extends JPanel {
 
-	private JGraphicWindow frame;
+	private Window frame;
 	private Image background;
 
-	public JGraphicPanel(JGraphicWindow frame) {
+	public Room(Window frame) {
 		this.frame = frame;
 		this.background = new ImageIcon("./resources/fondo.png").getImage();
 	}
@@ -34,7 +34,7 @@ public class JGraphicPanel extends JPanel {
 
 		if (map.getPlayers().isEmpty()) {
 			frame.setStopKeyEvents(true);
-			frame.cancelTimer();
+			//frame.cancelTimer();
 			frame.drawEndGame(g);
 		} else {
 			if (this.background != null) {

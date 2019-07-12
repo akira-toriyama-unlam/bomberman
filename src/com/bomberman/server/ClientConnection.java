@@ -68,6 +68,7 @@ public class ClientConnection extends Thread implements Observer {
                 } catch (IOException ex2) {
                 	System.out.println("Error al cerrar los stream de entrada y salida :" + ex2.getMessage());
                 }
+                return;
             }
         }   
         return;
@@ -83,7 +84,7 @@ public class ClientConnection extends Thread implements Observer {
         	dataOutputStream.writeUTF(gson.toJson(mapMessage));
         	dataOutputStream.flush();
         } catch (IOException ex) {
-        	System.out.println("Error al enviar mensaje al cliente (" + ex.getMessage() + ").");
+        	//System.out.println("Error al enviar mensaje al cliente (" + ex.getMessage() + ").");
         }
     }
 }

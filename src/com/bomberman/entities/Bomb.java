@@ -59,10 +59,10 @@ public class Bomb extends Entity implements Destructible {
 
 	@Override
 	public void destroy() {
-		// destroyed = true;
+		if(this.destroyed) return;
+		// this.setDestroyed(true);
 		this.setPainted(true);
 		this.gameActionPerformedListener.explodeBomb(this);
-		// listener.update();
 	}
 
 	public BombDto toDto() {

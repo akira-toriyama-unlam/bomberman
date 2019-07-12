@@ -73,8 +73,6 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 		if (this.bombsCount > 0) {
 			Bomb bomb = new Bomb(generateFixedX(), generateFixedY(), actionPerformedListener, this.getId());
 			boolean placed = actionPerformedListener.placeBomb(bomb);
-//			Bomb bomb = new Bomb(generateFixedX(), generateFixedY(), map, this);
-//			boolean placed = map.placeBomb(generateFixedX(), generateFixedY(), map, this);
 			if(placed) {
 				bombsCount--;
 			}
@@ -83,7 +81,7 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 
 	@Override
 	public void destroy() {
-//		this.setDestroyed(true);
+		// this.setDestroyed(true);
 		this.setPainted(true);  // TODO: A VER SI ES ENCESARIO EN EL DTO
 		Timer timer = new Timer();
 		 timer.schedule(new TimerTask() {

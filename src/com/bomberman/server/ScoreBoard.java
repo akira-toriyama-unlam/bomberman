@@ -6,7 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.stream.Collectors;
 
-import com.bomberman.client.JGraphicWindow;
+import com.bomberman.client.Window;
 import com.bomberman.entities.Bomb;
 import com.bomberman.entities.Destructible;
 import com.bomberman.entities.DestructibleTile;
@@ -25,6 +25,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 	private GameMap map;
 	private final static int MOVEMENT_ERROR = 2;
 	private Timer timer;
+	public boolean test = false;
 
 	public ScoreBoard() {
 		this.map = new GameMap(this);
@@ -45,10 +46,14 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 
 	@Override
 	public void actionPerformed() {
-		this.map.setObjects(map.getObjects().stream().filter(e -> !e.isDestroyed()).collect(Collectors.toList()));
-		this.map.setPlayers(map.getPlayers().stream().filter(e -> !e.isDestroyed()).collect(Collectors.toList()));
-		this.setChanged();
-		this.notifyObservers(map);
+		if(!test) {
+			test = true;
+			this.map.setObjects(map.getObjects().stream().filter(e -> !e.isDestroyed()).collect(Collectors.toList()));
+			this.map.setPlayers(map.getPlayers().stream().filter(e -> !e.isDestroyed()).collect(Collectors.toList()));
+			this.setChanged();
+			this.notifyObservers(map);
+			test = false;
+		}
 	}
 
 	@Override
@@ -82,6 +87,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 	public void movementMessageReceived(Player player, DirectionMessage message) {
 		Direction direction = message.getDirection();
 		Player currentPlayer = this.map.getPlayers().stream().filter(p -> p.equals(player)).findFirst().orElse(null);
+		if(currentPlayer == null) return;
 		if (this.canMove(player.getX(), player.getY(), direction)) {
 			switch (direction) {
 			case UP:
@@ -102,27 +108,30 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		}
 
 		currentPlayer.animate(direction);
-		// this.actionPerformed();
+		//this.actionPerformed();
 	}
 
 	@Override
 	public void stopMovementMessageReceived(Player player) {
 		Player currentPlayer = this.map.getPlayers().stream().filter(p -> p.equals(player)).findFirst().orElse(null);
-		currentPlayer.setMoving(false);
-		// this.actionPerformed();
+		if(currentPlayer != null) {
+			currentPlayer.setMoving(false);	
+		}
+		
+		//this.actionPerformed();
 	}
 
 	@Override
 	public void bombMessageReceived(Player player, DirectionMessage message) {
 		Player current = this.map.getPlayers().stream().filter(p -> p.equals(player)).findFirst().orElse(null);
 		current.placeBomb(this);
-		// this.actionPerformed();
+		//this.actionPerformed();
 	}
 
 	@Override
 	public void playerDisconected(Player player) {
 		this.map.getPlayers().remove(player);
-		// this.actionPerformed();
+		//this.actionPerformed();
 	}
 
 	@Override
@@ -158,14 +167,15 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		entitiesToRemove.stream().filter(e -> e.isDestructibleTile()).forEach(t -> ((DestructibleTile) t).destroy());
 
 		// destroy recursive bombs
-		entitiesToRemove.stream().filter(o -> !o.isDestroyed() && o.isBomb() && !o.equals(bomb)).forEach(b -> {
+		entitiesToRemove.stream().filter(o -> !o.isDestroyed() && !o.isPainted() && o.isBomb() && !o.equals(bomb)).forEach(b -> {
 			Bomb currentBomb = (Bomb) b;
-			if (!currentBomb.destroyed) {
-				currentBomb.setPainted(true);
-				currentBomb.cancelTimer();
-				currentBomb.destroy();
-			}
+			currentBomb.setPainted(true);
+			currentBomb.cancelTimer();
+			currentBomb.destroy();
 		});
+		// destroy tiles in range
+		entitiesToRemove.stream().filter(e -> e.isDestructibleTile()).forEach(t -> ((DestructibleTile) t).destroy());
+
 
 		// remove players after animation
 		this.removeEntitiesAfterAnimation(this.map.getPlayers(),
@@ -189,13 +199,13 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 	private boolean crashWithLimits(double x, double y, Direction direction) {
 		switch (direction) {
 		case RIGHT:
-			return (x + Player.MOVEMENT_UNIT) > (JGraphicWindow.WIDTH - Player.HEIGHT - Tile.SIZE);
+			return (x + Player.MOVEMENT_UNIT) > (Window.WIDTH - Player.HEIGHT - Tile.SIZE);
 		case LEFT:
 			return (x - Player.MOVEMENT_UNIT - Tile.SIZE) < 0;
 		case UP:
 			return (y - Player.MOVEMENT_UNIT - Tile.SIZE) < 0;
 		case DOWN:
-			return (y + Player.MOVEMENT_UNIT) > (JGraphicWindow.HEIGHT - Player.HEIGHT - Tile.SIZE);
+			return (y + Player.MOVEMENT_UNIT) > (Window.HEIGHT - Player.HEIGHT - Tile.SIZE);
 		default:
 			return false;
 		}
@@ -256,11 +266,10 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 			public void run() {
 				entitiesToRemove.stream().forEach(t -> {
 					if (t.isBomb()) {
-						System.out.println("Soy una bombita loquita");
 						((Bomb) t).cancelTimer();
 					}
-					System.out.println("RemoveEntitiesAfterAnimation: Set painted after this line");
 					t.setPainted(true);
+					actionPerformed();
 				});
 				try {
 					Thread.sleep(200);
@@ -270,6 +279,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 							e.setDestroyed(true);
 						}
 					}
+					actionPerformed();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
