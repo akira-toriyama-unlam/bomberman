@@ -1,35 +1,39 @@
-package com.bomberman.multiplayer;
+package com.bomberman.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-
 public class MainServer {
 	
+	private static final int MAX_CONCURRENT_CONNECTIONS = 4;
+	private static final int PORT = 1236;
+	
+	private static ServerSocket server;
+	private static Socket socket;
+	private static ScoreBoard scoreBoard;
+	
 	public static void main(String[] args) throws Exception {
-		int puerto = 1236;
-        int maximoConexiones = 4; 
-        ServerSocket servidor = null; 
-        Socket socket = null;
-        Messages mensajes = new Messages();
+        server = null; 
+        socket = null;
+        scoreBoard = new ScoreBoard();
 	        
 		 try {
-            servidor = new ServerSocket(puerto, maximoConexiones);
-	            
+			server = new ServerSocket(PORT, MAX_CONCURRENT_CONNECTIONS);
+			
             while (true) {
             	System.out.println("Servidor a la espera de conexiones.");
-                socket = servidor.accept(); 
+                socket = server.accept(); 
                 
                 System.out.println("Cliente con la IP " + socket.getInetAddress().getHostName() + " conectado.");
-                ClientConnection cc = new ClientConnection(socket, mensajes);
+                ClientConnection cc = new ClientConnection(socket, scoreBoard);
                 cc.start();
                 
             }
         } catch (IOException ex) {
         	System.out.println("Error: " + ex.getMessage());
         } finally {
-        	servidor.close();
+        	server.close();
 		}
 	}
 
