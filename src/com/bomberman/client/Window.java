@@ -5,11 +5,11 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.util.Timer;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import com.bomberman.dto.MapDto;
 import com.bomberman.entities.Direction;
@@ -20,7 +20,7 @@ public class Window extends JFrame implements SocketActionListener {
 
 	public static final int WIDTH = 840;
 	public static final int HEIGHT = 620;
-	private Room contentPane;
+	private JPanel contentPane;
 	private boolean stopKeyEvents = false;
 
     private Client client;
@@ -36,6 +36,8 @@ public class Window extends JFrame implements SocketActionListener {
 		this.client = new Client(this);
 		this.initializeGraphicWindow();
 		this.intializeKeyboardListeners();
+		contentPane = new Login(this);
+		setContentPane(contentPane);
 	}
 	
 	private void initializeGraphicWindow() {
@@ -143,8 +145,8 @@ public class Window extends JFrame implements SocketActionListener {
 		
 		if (!this.repaintOn) {
 			//this.initializeRepaint();
-			contentPane = new Room(this);
-			setContentPane(contentPane);
+			//contentPane = new Room(this);
+			//setContentPane(contentPane);
 			this.repaintOn = true;
 			revalidate();
 		}
