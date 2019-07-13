@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import com.bomberman.dto.MapDto;
 import com.bomberman.entities.Direction;
 import com.bomberman.extras.Cheat;
+import com.bomberman.extras.MessageNumber;
 import com.bomberman.extras.Sound;
 import com.bomberman.extras.Toast;
 import com.bomberman.services.DirectionMessage;
@@ -205,9 +206,10 @@ public class Window extends JFrame implements SocketActionListener {
 		this.map.setEntites(mapMessage.getEntities());
 		this.map.setPlayers(mapMessage.getPlayers());
 		
-		if(mapMessage.getMessageNumber() != null) {
+		MessageNumber messageNumber = mapMessage.getMessageNumber();
+		if(messageNumber != null) {
 		if(this.toast instanceof Toast && this.toast.isFinish()) {
-	        this.toast = new Toast(mapMessage.getMessageNumber(), WIDTH/2, HEIGHT/2, this,client); 
+	        this.toast = new Toast(messageNumber.getMessageNumber(), messageNumber.getX(), messageNumber.getY(), this,client); 
 	        toast.showtoast(); 
 	        
 		}

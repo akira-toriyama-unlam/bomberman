@@ -13,6 +13,7 @@ import com.bomberman.dto.EntityDto;
 import com.bomberman.entities.Direction;
 import com.bomberman.entities.GameMap;
 import com.bomberman.entities.Player;
+import com.bomberman.extras.MessageNumber;
 import com.bomberman.services.DirectionMessage;
 import com.bomberman.services.MapMessage;
 import com.google.gson.Gson;
@@ -107,6 +108,7 @@ public class ClientConnection extends Thread implements Observer {
     }
     
     public boolean selectMessage(String message, Player currentPlayer) {
+    	MessageNumber messageNumber;
     	switch(message) {
     		case "binladen":
     			currentPlayer.setBombsCount(5);
@@ -118,19 +120,24 @@ public class ClientConnection extends Thread implements Observer {
     			infinityWar = true;
     			break;
     		case "1":
-    			scoreBoard.messageNumberReceived("Te voy a ganar!");
+    			messageNumber = new MessageNumber("Te voy a ganar!", (int) this.currentPlayer.getX(), (int) this.currentPlayer.getY());
+    			scoreBoard.messageNumberReceived(messageNumber);
     			break;
     		case "2":
-    			scoreBoard.messageNumberReceived("Has fallado!");
+    			messageNumber = new MessageNumber("Has fallado!", (int) this.currentPlayer.getX(), (int) this.currentPlayer.getY());
+    			scoreBoard.messageNumberReceived(messageNumber);
     			break;
     		case "3":
-    			scoreBoard.messageNumberReceived("Que te pasa, estas nervioso?");
+    			messageNumber = new MessageNumber("Que te pasa, estas nervioso?", (int) this.currentPlayer.getX(), (int) this.currentPlayer.getY());
+    			scoreBoard.messageNumberReceived(messageNumber);
     			break;
     		case "4":
-    			scoreBoard.messageNumberReceived("Jugas como codeas!");
+    			messageNumber = new MessageNumber("Jugas como codeas!", (int) this.currentPlayer.getX(), (int) this.currentPlayer.getY());
+    			scoreBoard.messageNumberReceived(messageNumber);
     			break;
     		case "finish":
-    			scoreBoard.messageNumberReceived(null);
+    			messageNumber = null;
+    			scoreBoard.messageNumberReceived(messageNumber);
     			break;
     		default:
     			return false;

@@ -72,9 +72,9 @@ public class Toast extends JFrame {
 	     }; 
 	
 	     w.add(p); 
-	     w.setLocation(x, y); 
+	     w.setLocation(x + 200, y + 100); 
 	    
-	     w.setSize(500, 100); 
+	     w.setSize(600, 100); 
 	 } 
 	
 	 public synchronized void showtoast() 
@@ -82,7 +82,7 @@ public class Toast extends JFrame {
 	     try { 
 	         w.setOpacity(1); 
 	         w.setVisible(true);
-			 w.setLocationRelativeTo(parent);
+//			 w.setLocationRelativeTo(parent);
 	         Timer timer = new Timer();
 			 timer.schedule(new TimerTask() {
 				@Override

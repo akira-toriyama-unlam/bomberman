@@ -17,6 +17,7 @@ import com.bomberman.entities.ExplosionDirection;
 import com.bomberman.entities.GameMap;
 import com.bomberman.entities.Player;
 import com.bomberman.entities.Tile;
+import com.bomberman.extras.MessageNumber;
 import com.bomberman.services.CollisionManager;
 import com.bomberman.services.DirectionMessage;
 
@@ -129,7 +130,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 	}
 	
 	@Override
-	public void messageNumberReceived(String messageNumber) {
+	public void messageNumberReceived(MessageNumber messageNumber) {
 		this.map.setMessageNumber(messageNumber);
 		//this.actionPerformed();
 	}

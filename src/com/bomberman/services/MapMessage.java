@@ -5,13 +5,15 @@ import java.util.List;
 
 import com.bomberman.dto.EntityDto;
 import com.bomberman.dto.PlayerDto;
+import com.bomberman.extras.MessageNumber;
 
 public class MapMessage implements Serializable {
 	
 	private List<EntityDto> entities;
 	private List<PlayerDto> players;
-	private String messageNumber;
-	public MapMessage(List<EntityDto> entities, List<PlayerDto> players, String messageNumber) {
+	private MessageNumber messageNumber;
+	
+	public MapMessage(List<EntityDto> entities, List<PlayerDto> players, MessageNumber messageNumber) {
 		this.entities = entities;
 		this.players = players;
 		this.messageNumber = messageNumber;
@@ -33,12 +35,10 @@ public class MapMessage implements Serializable {
 		this.players = players;
 	}
 	
-	public String getMessageNumber() {
+	public MessageNumber getMessageNumber() {
 		return this.messageNumber;
 	}
 	
-	public void setMessageNumber(String messageNumber) {
-		this.messageNumber = messageNumber;
-	}
+	
 
 }
