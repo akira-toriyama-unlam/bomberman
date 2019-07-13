@@ -19,7 +19,7 @@ public class Explosion extends Entity {
 		chooseSprite();
 	}
 	
-	public void chooseSprite() {
+	public synchronized void chooseSprite() {
 		Timer timer = new Timer();
 		 timer.schedule(new TimerTask() {
 			@Override

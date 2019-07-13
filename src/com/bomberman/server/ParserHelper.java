@@ -24,7 +24,7 @@ public class ParserHelper {
 		return instance;
 	}
 
-	public List<EntityDto> entitiesToEntitiesDto(List<Entity> entities, GameActionPerformed scoreBoard) {
+	public synchronized List<EntityDto> entitiesToEntitiesDto(List<Entity> entities, GameActionPerformed scoreBoard) {
 		
 		List<EntityDto> listDto = new ArrayList<>();
 		for(Entity e : entities) {

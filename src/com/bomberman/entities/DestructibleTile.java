@@ -12,7 +12,7 @@ public class DestructibleTile extends Tile implements Destructible {
 	}
 
 	@Override
-	public void destroy() {
+	public synchronized void destroy() {
 //		this.setDestroyed(true);
 		this.setPainted(true);
 		Timer timer = new Timer();
