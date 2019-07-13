@@ -12,7 +12,7 @@ import com.bomberman.services.DirectionMessage;
 public interface GameActionPerformed {
 	
 	void actionPerformed();
-	Player newPlayer();
+	void setPlayerInitialPosition(Player player);
 	void movementMessageReceived(Player player, DirectionMessage message);
 	void stopMovementMessageReceived(Player player);
 	void bombMessageReceived(Player player, DirectionMessage message);

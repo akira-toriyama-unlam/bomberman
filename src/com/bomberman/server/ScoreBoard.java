@@ -23,19 +23,29 @@ import com.bomberman.services.DirectionMessage;
 
 public class ScoreBoard extends Observable implements GameActionPerformed {
 
+	private String name;
 	private GameMap map;
 	private final static int MOVEMENT_ERROR = 2;
 	private Timer timer;
-	public boolean test = false;
-
-	public ScoreBoard() {
+    private boolean test = false;
+    
+	public ScoreBoard(String name) {
 		this.map = new GameMap(this);
+		this.name = name;
 		this.generateBaseMap();
 
 		initializeReSend();
 	}
 
-	private synchronized void initializeReSend() {
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	private synchronized  void initializeReSend() {
 		this.timer = new Timer();
 		this.timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -55,40 +65,42 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 			this.notifyObservers(map);
 			test = false;
 		}
+
 	}
 
 	@Override
-	public Player newPlayer() {
+	public void setPlayerInitialPosition(Player player) {
+
 		int playersCount = this.map.getPlayers().size();
-		Player player = null;
+
 		switch (playersCount) {
 		case 0:
-			player = new Player(40, 40, 1);
-			this.map.addPlayer(player);
+			player.setX(40);
+			player.setY(40);
 			break;
 		case 1:
-			player = new Player(760, 40, 2);
-			this.map.addPlayer(player);
+			player.setX(760);
+			player.setY(40);
 			break;
 		case 2:
-			player = new Player(40, 520, 3);
-			this.map.addPlayer(player);
+			player.setX(40);
+			player.setY(520);
 			break;
 		case 3:
-			player = new Player(760, 520, 4);
-			this.map.addPlayer(player);
+			player.setX(760);
+			player.setY(520);
 			break;
-
 		}
-
-		return player;
+		this.map.addPlayer(player);
 	}
 
 	@Override
 	public void movementMessageReceived(Player player, DirectionMessage message) {
 		Direction direction = message.getDirection();
 		Player currentPlayer = this.map.getPlayers().stream().filter(p -> p.equals(player)).findFirst().orElse(null);
-		if(currentPlayer == null) return;
+		if (currentPlayer == null) {
+			return;
+		}
 		if (this.canMove(player.getX(), player.getY(), direction)) {
 			switch (direction) {
 			case UP:
@@ -109,24 +121,24 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		}
 
 		currentPlayer.animate(direction);
-		//this.actionPerformed();
+		// this.actionPerformed();
 	}
 
 	@Override
 	public void stopMovementMessageReceived(Player player) {
 		Player currentPlayer = this.map.getPlayers().stream().filter(p -> p.equals(player)).findFirst().orElse(null);
-		if(currentPlayer != null) {
-			currentPlayer.setMoving(false);	
+		if (currentPlayer != null) {
+			currentPlayer.setMoving(false);
 		}
-		
-		//this.actionPerformed();
+
+		// this.actionPerformed();
 	}
 
 	@Override
 	public void bombMessageReceived(Player player, DirectionMessage message) {
 		Player current = this.map.getPlayers().stream().filter(p -> p.equals(player)).findFirst().orElse(null);
 		current.placeBomb(this);
-		//this.actionPerformed();
+		// this.actionPerformed();
 	}
 	
 	@Override
@@ -138,7 +150,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 	@Override
 	public void playerDisconected(Player player) {
 		this.map.getPlayers().remove(player);
-		//this.actionPerformed();
+		// this.actionPerformed();
 	}
 
 	@Override
@@ -179,11 +191,10 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 			currentBomb.setPainted(true);
 			currentBomb.cancelTimer();
 			currentBomb.destroy();
-			
 		});
+		
 		// destroy tiles in range
 		entitiesToRemove.stream().filter(e -> e.isDestructibleTile()).forEach(t -> ((DestructibleTile) t).destroy());
-
 
 		// remove players after animation
 		this.removeEntitiesAfterAnimation(this.map.getPlayers(),
