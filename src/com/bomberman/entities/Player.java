@@ -6,6 +6,7 @@ import java.util.TimerTask;
 import com.bomberman.dto.MovementStatusDto;
 import com.bomberman.dto.PlayerDto;
 import com.bomberman.server.GameActionPerformed;
+import com.bomberman.services.Base64Util;
 
 public class Player extends Entity implements ExplosionListener, Destructible {
 
@@ -20,6 +21,12 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 	private String name;
 	private String password;
 	private Direction currentDirection;
+
+	public Player(String name, String password) {
+		super(0, 0);
+		this.name = name;
+		this.password = Base64Util.getPasswordBase64(password);
+	}
 
 	public Player(double x, double y, int id, String name, String password) {
 		super(x, y);
