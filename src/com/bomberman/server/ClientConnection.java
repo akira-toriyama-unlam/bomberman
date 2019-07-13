@@ -101,7 +101,6 @@ public class ClientConnection extends Thread implements Observer {
         			ParserHelper.getInstance().playersToPlayersDto(map.getPlayers(), scoreBoard), map.getMessageNumber());
         	dataOutputStream.writeUTF(gson.toJson(mapMessage));
         	dataOutputStream.flush();
-//        	map.setMessageNumber(null);
         } catch (IOException | ConcurrentModificationException ex) {
         	// ÃŸSystem.out.println("Error al enviar mensaje al cliente (" + ex.getMessage() + ").");
         }
@@ -125,10 +124,10 @@ public class ClientConnection extends Thread implements Observer {
     			scoreBoard.messageNumberReceived("Has fallado!");
     			break;
     		case "3":
-    			scoreBoard.messageNumberReceived("Qué te pasa, estas nervioso?");
+    			scoreBoard.messageNumberReceived("Que te pasa, estas nervioso?");
     			break;
     		case "4":
-    			scoreBoard.messageNumberReceived("Jugás como codeás!");
+    			scoreBoard.messageNumberReceived("Jugas como codeas!");
     			break;
     		case "finish":
     			scoreBoard.messageNumberReceived(null);

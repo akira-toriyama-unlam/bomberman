@@ -206,7 +206,6 @@ public class Window extends JFrame implements SocketActionListener {
 		this.map.setPlayers(mapMessage.getPlayers());
 		
 		if(mapMessage.getMessageNumber() != null) {
-//		System.out.println(mapMessage.getMessageNumber());
 		if(this.toast instanceof Toast && this.toast.isFinish()) {
 	        this.toast = new Toast(mapMessage.getMessageNumber(), WIDTH/2, HEIGHT/2, this,client); 
 	        toast.showtoast(); 
