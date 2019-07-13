@@ -42,6 +42,8 @@ public class Window extends JFrame implements SocketActionListener {
     private boolean repaintOn = false;
     private Sound playSound = new Sound("music/play.wav",true);
     private Cheat cheat;
+    private Toast toast  = new Toast(); 
+;
 
 	public static void main(String[] args) {
 		new Window().setVisible(true);
@@ -177,10 +179,32 @@ public class Window extends JFrame implements SocketActionListener {
 			client.sendMessage(new DirectionMessage(Direction.BOMB));
 			break;
 		case KeyEvent.VK_1:	
-			// create a toast message 
-	        Toast t = new Toast("Vas a perderrrrrrr! \u032e\u0624\u0639", WIDTH/2, HEIGHT/2, this); 
-	        // call the method 
-	        t.showtoast(); 
+			// create a toast message
+			if(this.toast instanceof Toast && this.toast.isFinish()) {
+		        this.toast = new Toast("Te voy a ganar!", WIDTH/2, HEIGHT/2, this); 
+		        toast.showtoast(); 
+			}
+			break;
+		case KeyEvent.VK_2:	
+			// create a toast message
+			if(this.toast instanceof Toast && this.toast.isFinish()) {
+		        this.toast = new Toast("Has fallado!", WIDTH/2, HEIGHT/2, this); 
+		        toast.showtoast(); 
+			}
+			break;
+		case KeyEvent.VK_3:	
+			// create a toast message
+			if(this.toast instanceof Toast && this.toast.isFinish()) {
+		        this.toast = new Toast("Qué te pasa, estas nervioso?", WIDTH/2, HEIGHT/2, this); 
+		        toast.showtoast(); 
+			}
+			break;
+		case KeyEvent.VK_4:	
+			// create a toast message
+			if(this.toast instanceof Toast && this.toast.isFinish()) {
+		        this.toast = new Toast("Jugás como codeás!", WIDTH/2, HEIGHT/2, this); 
+		        toast.showtoast(); 
+			}
 			break;
 		default:
 			break;

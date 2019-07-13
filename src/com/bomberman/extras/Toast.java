@@ -9,17 +9,28 @@ import javax.swing.*;
 
 public class Toast extends JFrame { 
 
-	 //String of toast 
+	 public boolean isFinish() {
+		return finish;
+	}
+
+	//String of toast 
 	 String s; 
 	
 	 // JWindow 
 	 JWindow w; 
 	 
 	 Window parent;
+	 private boolean finish;
+	 
+
+	public Toast() {
+		 finish = true;
+	 }
 	
 	 public Toast(String s, int x, int y, Window window) 
 	 { 
-	     w = new JWindow(); 
+	     w = new JWindow();
+	     finish = false;
 	     parent = window;
 	     // make the background transparent 
 	     w.setBackground(new Color(0, 0, 0, 0)); 
@@ -30,31 +41,27 @@ public class Toast extends JFrame {
 	         public void paintComponent(Graphics g) 
 	         { 
 	            
-	             Graphics2D g2 = (Graphics2D) g;
-	             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-	                 RenderingHints.VALUE_ANTIALIAS_ON);
-
-	             int wid = g.getFontMetrics().stringWidth(s) * 2; 
+	             int wid = g.getFontMetrics().stringWidth(s); 
 	             int hei = g.getFontMetrics().getHeight(); 
 	             // draw the boundary of the toast and fill it 
-	             g2.setColor(Color.black); 
-	             g2.fillRect(10, 10, wid + 30, hei + 10); 
-	             g2.setColor(Color.black); 
-	             g2.drawRect(10, 10, wid + 30, hei + 10); 
+	             g.setColor(Color.black); 
+	             g.fillRect(10, 10, wid + 30, hei + 10); 
+	             g.setColor(Color.black); 
+	             g.drawRect(10, 10, wid + 30, hei + 10); 
 	
 	             // set the color of text 
-	             Font font = new Font("Lucida Sans Regular", Font.PLAIN, 20);
+	             Font font = new Font("Lucida Sans Regular", Font.PLAIN, 13);
 
 	             g.setFont(font);
 	             g.setColor(new Color(255, 255, 255, 240));
-	             g.drawString(s, 3, 27); 
+	             g.drawString(s, 25, 27); 
 	             int t = 250; 
 	
 	             // draw the shadow of the toast 
 	             for (int i = 0; i < 4; i++) { 
 	                 t -= 60; 
-	                 g2.setColor(new Color(0, 0, 0, t)); 
-	                 g2.drawRect(10 - i, 10 - i, wid + 30 + i * 2, 
+	                 g.setColor(new Color(0, 0, 0, t)); 
+	                 g.drawRect(10 - i, 10 - i, wid + 30 + i * 2, 
 	                            hei + 10 + i * 2); 
 	             } 
 	         } 
@@ -83,6 +90,7 @@ public class Toast extends JFrame {
 			
 			         // set the visibility to false 
 			         w.setVisible(false);
+			         finish = true;
 				}
 			}, 2000); 
 	     } 
