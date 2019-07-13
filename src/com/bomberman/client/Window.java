@@ -5,23 +5,14 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
-import com.bomberman.dto.EntityDto;
 import com.bomberman.dto.MapDto;
-import com.bomberman.dto.PlayerDto;
-import com.bomberman.entities.DestructibleTile;
 import com.bomberman.entities.Direction;
-import com.bomberman.entities.Player;
-import com.bomberman.extras.Cheat;
 import com.bomberman.extras.Cheat;
 import com.bomberman.extras.Sound;
 import com.bomberman.extras.Toast;
