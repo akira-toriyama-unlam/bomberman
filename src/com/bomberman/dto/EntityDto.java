@@ -4,6 +4,7 @@ import java.awt.Image;
 
 import com.bomberman.entities.EntityTypes;
 import com.bomberman.entities.ExplosionDirection;
+import com.bomberman.entities.Player;
 
 public class EntityDto {
 
@@ -90,5 +91,10 @@ public class EntityDto {
 
 	public boolean isPainted() {
 		return this.painted;
+	}
+
+
+	public void setPainted(boolean painted) {
+		this.painted = painted;
 	}
 }

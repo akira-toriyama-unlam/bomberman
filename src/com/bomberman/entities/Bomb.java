@@ -6,6 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.bomberman.dto.BombDto;
+import com.bomberman.extras.Sound;
 import com.bomberman.graphics.Sprite;
 import com.bomberman.server.GameActionPerformed;
 
@@ -20,7 +21,8 @@ public class Bomb extends Entity implements Destructible {
 	private GameActionPerformed gameActionPerformedListener;
 	// private ExplosionListener listener;
 	private Timer spriteTimer;
-
+	private Player player;
+	
 	public Bomb(int x, int y, GameActionPerformed gameActionPerformedListener /* , ExplosionListener listener */,
 			int id) {
 		super(x, y);
@@ -38,7 +40,13 @@ public class Bomb extends Entity implements Destructible {
 			}
 		}, TIME_TO_EXPLOIT);
 	}
-
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+	
+	public Player getPlayer() {
+		return this.player;
+	}
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -60,9 +68,10 @@ public class Bomb extends Entity implements Destructible {
 	@Override
 	public void destroy() {
 		if(this.destroyed) return;
-		// this.setDestroyed(true);
 		this.setPainted(true);
+		new Sound("music/bomb.wav", false).play();
 		this.gameActionPerformedListener.explodeBomb(this);
+		this.getPlayer().update();
 	}
 
 	public BombDto toDto() {
@@ -96,7 +105,7 @@ public class Bomb extends Entity implements Destructible {
 		return this.id;
 	}
 
-	public void animate() {
+	public synchronized void animate() {
 		this.spriteTimer = new Timer();
 		this.spriteTimer.schedule(new TimerTask() {
 			@Override

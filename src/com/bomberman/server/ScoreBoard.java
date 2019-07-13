@@ -34,7 +34,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		initializeReSend();
 	}
 
-	private void initializeReSend() {
+	private synchronized void initializeReSend() {
 		this.timer = new Timer();
 		this.timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -127,6 +127,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		current.placeBomb(this);
 		//this.actionPerformed();
 	}
+	
 
 	@Override
 	public void playerDisconected(Player player) {
@@ -172,6 +173,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 			currentBomb.setPainted(true);
 			currentBomb.cancelTimer();
 			currentBomb.destroy();
+			
 		});
 		// destroy tiles in range
 		entitiesToRemove.stream().filter(e -> e.isDestructibleTile()).forEach(t -> ((DestructibleTile) t).destroy());
@@ -183,6 +185,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 
 		// remove entities after animation
 		this.removeEntitiesAfterAnimation(this.map.getObjects(), entitiesToRemove);
+		
 	}
 
 	@Override
@@ -259,28 +262,33 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		return false;
 	}
 
-	private void removeEntitiesAfterAnimation(List<? extends Entity> sourceEntities,
+	private synchronized void removeEntitiesAfterAnimation(List<? extends Entity> sourceEntities,
 			List<? extends Entity> entitiesToRemove) {
 		Thread thread = new Thread() {
 			@Override
-			public void run() {
+			public synchronized void run() {
 				entitiesToRemove.stream().forEach(t -> {
 					if (t.isBomb()) {
 						((Bomb) t).cancelTimer();
 					}
-					t.setPainted(true);
+					if((t.isPlayer() && !((Player) t).getIndestructible()) || !t.isPlayer()) {
+						t.setPainted(true);
+					}
 					actionPerformed();
 				});
 				try {
 					Thread.sleep(200);
-					// sourceEntities.removeAll(entitiesToRemove); // Could be a problem
 					for (Entity e : sourceEntities) {
-						if (entitiesToRemove.contains(e)) {
+						if (entitiesToRemove.contains(e)){
+							if(e.isPlayer() && ((Player) e).getIndestructible()) continue;
 							e.setDestroyed(true);
 						}
+							
 					}
+						
 					actionPerformed();
-				} catch (InterruptedException e) {
+				}
+					 catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}

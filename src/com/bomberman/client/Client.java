@@ -38,7 +38,7 @@ public class Client {
 		}
 	}
 
-	private void startReadingThread() {
+	private synchronized void startReadingThread() {
 		Thread thread = new Thread() {
 			boolean conected = true;
 
@@ -65,10 +65,17 @@ public class Client {
 			System.out.println("Error al intentar enviar un mensaje: " + e.getMessage());
 		}
 	}
+	
+	public void sendMessage(String message) {
+		try {
+			dataOutputStream.writeUTF(message);
+		} catch (IOException e) {
+			System.out.println("Error al intentar enviar un mensaje: " + e.getMessage());
+		}
+	}
 
 	private void receiveMessage(String mapMessage) {
 		MapMessage mapMessageObject = gson.fromJson(mapMessage, MapMessage.class);
 		listener.messageReceived(mapMessageObject);
 	}
-
 }

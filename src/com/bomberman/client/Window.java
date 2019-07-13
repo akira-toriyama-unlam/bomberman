@@ -7,12 +7,22 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFrame;
 
+import com.bomberman.dto.EntityDto;
 import com.bomberman.dto.MapDto;
+import com.bomberman.dto.PlayerDto;
+import com.bomberman.entities.DestructibleTile;
 import com.bomberman.entities.Direction;
+import com.bomberman.entities.Player;
+import com.bomberman.extras.Cheat;
+import com.bomberman.extras.Cheat;
+import com.bomberman.extras.Sound;
 import com.bomberman.services.DirectionMessage;
 import com.bomberman.services.MapMessage;
 
@@ -27,15 +37,56 @@ public class Window extends JFrame implements SocketActionListener {
     private Timer timer;
     private MapDto map;
     private boolean repaintOn = false;
+    private Sound playSound = new Sound("music/play.wav",true);
+    private Cheat cheat;
 
 	public static void main(String[] args) {
 		new Window().setVisible(true);
 	}
 	
 	public Window() {
+		this.cheat = new Cheat(this);
+		
 		this.client = new Client(this);
 		this.initializeGraphicWindow();
 		this.intializeKeyboardListeners();
+        this.playSound.play();
+
+	}
+	
+	public void changeSound() {
+		this.playSound.stop();
+		this.playSound = new Sound("music/play_villero.wav",false);
+		this.playSound.play();
+		this.playSound = new Sound("music/play.wav",true);
+		this.playSound.play();
+	}
+	
+	public void stopMusic() {
+		this.playSound.stop();
+	}
+	
+	public void addBombs() {
+		client.sendMessage("binladen");
+	}
+	
+	public synchronized void changeImage() {
+		Room.changeBackground = true;
+		Timer timer = new Timer();
+		 timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				Room.changeBackground = false;
+			}
+		}, 5000);	
+	}
+	
+	public void modeGod() {
+		client.sendMessage("god");
+	}
+	
+	public void infinityWar() {
+		client.sendMessage("thanos");
 	}
 	
 	private void initializeGraphicWindow() {
@@ -48,11 +99,13 @@ public class Window extends JFrame implements SocketActionListener {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
+
 	private void intializeKeyboardListeners() {
 		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 				try {
+					cheat.cheat(arg0);				
 					if(!stopKeyEvents) {
 						setMovimiento(arg0);
 					}
@@ -87,6 +140,7 @@ public class Window extends JFrame implements SocketActionListener {
 		g.setFont(font);
 		g.setColor(Color.white);
 		drawCenteredString("GAME OVER", g);
+		
 		// cancelTimer();
 	}
 	
