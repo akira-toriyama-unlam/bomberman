@@ -1,11 +1,11 @@
 package com.bomberman.client;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.util.Timer;
 
@@ -23,23 +23,23 @@ public class Window extends JFrame implements SocketActionListener {
 	private Room contentPane;
 	private boolean stopKeyEvents = false;
 
-    private Client client;
-    private Timer timer;
-    private MapDto map;
-    private boolean repaintOn = false;
+	private Client client;
+	private Timer timer;
+	private MapDto map;
+	private boolean repaintOn = false;
 
 	public static void main(String[] args) {
 		new Window().setVisible(true);
 	}
-	
+
 	public Window() {
 		this.client = new Client(this);
 		this.initializeGraphicWindow();
 		this.intializeKeyboardListeners();
 	}
-	
+
 	private void initializeGraphicWindow() {
-		setResizable(false);		
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, WIDTH, HEIGHT);
 		setTitle("Bomberman");
@@ -47,27 +47,27 @@ public class Window extends JFrame implements SocketActionListener {
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-	
+
 	private void intializeKeyboardListeners() {
 		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 				try {
-					if(!stopKeyEvents) {
+					if (!stopKeyEvents) {
 						setMovimiento(arg0);
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
-			
+
 			@Override
 			public void keyReleased(KeyEvent e) {
 				stopMovimiento(e);
 			}
 		});
 	}
-	
+
 	public boolean isStopKeyEvents() {
 		return stopKeyEvents;
 	}
@@ -79,26 +79,26 @@ public class Window extends JFrame implements SocketActionListener {
 	public void cancelTimer() {
 		this.timer.cancel();
 	}
-	
+
 	public void drawEndGame(Graphics g) {
 		g.setColor(Color.black);
-		g.fillRect(0, 0, WIDTH, HEIGHT);	
+		g.fillRect(0, 0, WIDTH, HEIGHT);
 		Font font = new Font("Arial", Font.PLAIN, 50);
 		g.setFont(font);
 		g.setColor(Color.white);
 		drawCenteredString("GAME OVER", g);
 		// cancelTimer();
 	}
-	
+
 	public void drawCenteredString(String s, Graphics g) {
-	    FontMetrics fm = g.getFontMetrics();
-	    int x = (WIDTH - fm.stringWidth(s)) / 2;
-	    int y = (fm.getAscent() + (HEIGHT - (fm.getAscent() + fm.getDescent())) / 2);
-	    g.drawString(s, x, y);
-	 }
-	
+		FontMetrics fm = g.getFontMetrics();
+		int x = (WIDTH - fm.stringWidth(s)) / 2;
+		int y = (fm.getAscent() + (HEIGHT - (fm.getAscent() + fm.getDescent())) / 2);
+		g.drawString(s, x, y);
+	}
+
 	private void setMovimiento(KeyEvent event) throws IOException {
-		switch(event.getKeyCode()) {
+		switch (event.getKeyCode()) {
 		case KeyEvent.VK_LEFT:
 		case KeyEvent.VK_A:
 			client.sendMessage(new DirectionMessage(Direction.LEFT));
@@ -116,39 +116,39 @@ public class Window extends JFrame implements SocketActionListener {
 			client.sendMessage(new DirectionMessage(Direction.DOWN));
 			break;
 		case KeyEvent.VK_SPACE:
-		case KeyEvent.VK_X:	
+		case KeyEvent.VK_X:
 			client.sendMessage(new DirectionMessage(Direction.BOMB));
 			break;
 		default:
 			break;
 		}
 	}
-	
+
 	private void stopMovimiento(KeyEvent event) {
 		client.sendMessage(new DirectionMessage(null));
 	}
-	
+
 	public MapDto getMap() {
 		return this.map;
 	}
 
 	@Override
 	public void messageReceived(MapMessage mapMessage) {
-		if(this.map == null) {
+		if (this.map == null) {
 			this.map = new MapDto();
 		}
-		
+
 		this.map.setEntites(mapMessage.getEntities());
 		this.map.setPlayers(mapMessage.getPlayers());
-		
+
 		if (!this.repaintOn) {
-			//this.initializeRepaint();
+			// this.initializeRepaint();
 			contentPane = new Room(this);
 			setContentPane(contentPane);
 			this.repaintOn = true;
 			revalidate();
 		}
-		
+
 		repaint();
 	}
 }
