@@ -137,6 +137,10 @@ public class Window extends JFrame implements SocketActionListener {
 	public void sendCreateRoomIntent(GameModel gameModel) {
 		client.sendMessage(gameModel);
 	}
+	
+	public void sendJoinRoomIntent(GameModel gameModel) {
+		client.sendMessage(gameModel);
+	}
 
 	private void stopMovimiento(KeyEvent event) {
 		client.sendMessage(new DirectionMessage(null));

@@ -26,6 +26,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 	private GameMap map;
 	private final static int MOVEMENT_ERROR = 2;
 	private Timer timer;
+	public boolean test = false;
 
 	public ScoreBoard(String name) {
 		this.map = new GameMap(this);
@@ -55,10 +56,14 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 
 	@Override
 	public void actionPerformed() {
-		this.map.setObjects(map.getObjects().stream().filter(e -> !e.isDestroyed()).collect(Collectors.toList()));
-		this.map.setPlayers(map.getPlayers().stream().filter(e -> !e.isDestroyed()).collect(Collectors.toList()));
-		this.setChanged();
-		this.notifyObservers(map);
+		if(!test) {
+			test = true;
+			this.map.setObjects(map.getObjects().stream().filter(e -> !e.isDestroyed()).collect(Collectors.toList()));
+			this.map.setPlayers(map.getPlayers().stream().filter(e -> !e.isDestroyed()).collect(Collectors.toList()));
+			this.setChanged();
+			this.notifyObservers(map);
+			test = false;
+		}
 	}
 
 	@Override
@@ -132,6 +137,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		Player current = this.map.getPlayers().stream().filter(p -> p.equals(player)).findFirst().orElse(null);
 		current.placeBomb(this);
 		// this.actionPerformed();
+		System.out.println("asd");
 	}
 
 	@Override

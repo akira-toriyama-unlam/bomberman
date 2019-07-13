@@ -97,6 +97,7 @@ public class ClientConnection extends Thread implements Observer {
 		} else {
 			ScoreBoard scoreBoard = new ScoreBoard(gameModelMessage.getName());
 			setScoreboard(scoreBoard);
+			MainServer.rooms.add(scoreBoard);
 		}
 		this.scoreBoard.setPlayerInitialPosition(currentPlayer);
 	}
@@ -135,7 +136,7 @@ public class ClientConnection extends Thread implements Observer {
 		List<ScoreBoard> scoreBoards = MainServer.rooms;
 		List<GameModel> list = new ArrayList<>();
 
-		if (scoreBoards.isEmpty()) {
+		if (!scoreBoards.isEmpty()) {
 			scoreBoards.stream().forEach(s -> {
 				list.add(new GameModel(s.getName()));
 			});

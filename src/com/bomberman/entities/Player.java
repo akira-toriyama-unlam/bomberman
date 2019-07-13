@@ -23,6 +23,8 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 
 	public Player() {
 		super(0, 0);
+		this.bombsCount = Player.CONCURRENT_BOMBS;
+		this.currentDirection = Direction.DOWN;
 	}
 
 	public Player(String name, String password) {
