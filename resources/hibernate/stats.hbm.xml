@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.bomberman.entities.Stats" table="Stats">
+		<id name="id" type="int">
+ 			<column name="Id"  unique="true"/>
+            <generator class="increment"/>
+		</id>
+		<property column="PlayerId" name="playerId" type="int" />
+		<property column="Datetime" name="datetime" type="long" />
+		<property column="Score" name="score" type="int" />
+	</class>
+</hibernate-mapping>

@@ -14,6 +14,8 @@ public class PlayerDto {
 	private MovementStatusDto movementStatusDto;
 	private boolean destroyed;
 	private boolean painted;
+	private String name;
+	private String password;
 
 	public PlayerDto(double x, double y, Integer id, MovementStatusDto movementStatusDto, boolean destroyed,
 			boolean painted) {
@@ -69,8 +71,24 @@ public class PlayerDto {
 		this.movementStatusDto = movementStatusDto;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
 	public Player toPlayer() {
-		return new Player(x, y, id);
+		return new Player(name, password);
 	}
 
 	public Image chooseSprite() {
