@@ -4,16 +4,20 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
 
+import com.bomberman.dto.EntityDto;
 import com.bomberman.client.GameModel;
 import com.bomberman.entities.Direction;
 import com.bomberman.entities.GameMap;
 import com.bomberman.entities.Player;
+import com.bomberman.extras.MessageNumber;
 import com.bomberman.services.DirectionMessage;
 import com.bomberman.services.LoginService;
 import com.bomberman.services.MapMessage;
@@ -23,12 +27,15 @@ import com.google.gson.JsonParser;
 
 public class ClientConnection extends Thread implements Observer {
 	private Gson gson;
+
 	private Socket socket;
 	private DataInputStream dataInputStream;
 	private DataOutputStream dataOutputStream;
 	private GameActionPerformed scoreBoard;
 	private Player currentPlayer;
 
+	   private boolean infinityWar = false;
+	    private String messageNumber = null; 
 	public ClientConnection(Socket socket) {
 		this.gson = new Gson();
 		this.socket = socket;
@@ -51,9 +58,11 @@ public class ClientConnection extends Thread implements Observer {
 
 		while (connected) {
 			try {
+				
 				receivedMessage = dataInputStream.readUTF();
-				this.extractAndPeformActionFromJson(receivedMessage);
-
+				if(!selectMessage(receivedMessage, this.currentPlayer)) {
+					this.extractAndPeformActionFromJson(receivedMessage);
+				}
 			} catch (IOException ex) {
 				System.out.println("Cliente con la IP " + socket.getInetAddress().getHostName() + " desconectado.");
 				// scoreBoard.playerDisconected(this.currentPlayer);
@@ -155,37 +164,62 @@ public class ClientConnection extends Thread implements Observer {
 	public void update(Observable o, Object object) {
 		try {
 			GameMap map = (GameMap) object;
+	       	if(infinityWar) {
+        		map.getObjects().forEach(t -> {
+        			if(!t.isBomb()) {
+	        			t.setPainted(true);
+	        			t.setDestroyed(true);
+        			}
+        		});
+        	}
+	       	
 			MapMessage mapMessage = new MapMessage(
 					ParserHelper.getInstance().entitiesToEntitiesDto(map.getObjects(), scoreBoard),
-					ParserHelper.getInstance().playersToPlayersDto(map.getPlayers(), scoreBoard));
+					ParserHelper.getInstance().playersToPlayersDto(map.getPlayers(), scoreBoard),map.getMessageNumber());
 			dataOutputStream.writeUTF(gson.toJson(mapMessage));
 			dataOutputStream.flush();
-		} catch (IOException ex) {
+		} catch (IOException | ConcurrentModificationException ex) {
 			System.out.println("Error al enviar mensaje al cliente (" + ex.getMessage() + ").");
 		}
 	}
+	
+	public boolean selectMessage(String message, Player currentPlayer) {
+    	MessageNumber messageNumber;
+    	switch(message) {
+    		case "binladen":
+    			currentPlayer.setBombsCount(5);
+    			break;
+    		case "god":
+    			currentPlayer.setIndestructible(true);
+    			break;
+    		case "thanos":
+    			infinityWar = true;
+    			break;
+    		case "1":
+    			messageNumber = new MessageNumber("Te voy a ganar!", (int) this.currentPlayer.getX(), (int) this.currentPlayer.getY());
+    			scoreBoard.messageNumberReceived(messageNumber);
+    			break;
+    		case "2":
+    			messageNumber = new MessageNumber("Has fallado!", (int) this.currentPlayer.getX(), (int) this.currentPlayer.getY());
+    			scoreBoard.messageNumberReceived(messageNumber);
+    			break;
+    		case "3":
+    			messageNumber = new MessageNumber("Que te pasa, estas nervioso?", (int) this.currentPlayer.getX(), (int) this.currentPlayer.getY());
+    			scoreBoard.messageNumberReceived(messageNumber);
+    			break;
+    		case "4":
+    			messageNumber = new MessageNumber("Jugas como codeas!", (int) this.currentPlayer.getX(), (int) this.currentPlayer.getY());
+    			scoreBoard.messageNumberReceived(messageNumber);
+    			break;
+    		case "finish":
+    			messageNumber = null;
+    			scoreBoard.messageNumberReceived(messageNumber);
+    			break;
+    		default:
+    			return false;
+    	}
+    	
+    	return true;
+    }
 }
 
-class User {
-	int id;
-	String name;
-	String password;
-
-	public User(int id, String name, String password) {
-		this.id = id;
-		this.name = name;
-		this.password = password;
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public String getPassword() {
-		return this.getPassword();
-	}
-}

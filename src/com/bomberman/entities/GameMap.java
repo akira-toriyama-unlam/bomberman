@@ -3,6 +3,7 @@ package com.bomberman.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bomberman.extras.MessageNumber;
 import com.bomberman.server.GameActionPerformed;
 
 public class GameMap {
@@ -13,7 +14,8 @@ public class GameMap {
 	protected List<Entity> objects;
 	protected List<Player> players;
 	private GameActionPerformed gameActionPerformedListener;
-
+	private MessageNumber messageNumber;
+	
 	public GameMap(GameActionPerformed gameActionPerformedListener) {
 		this.gameActionPerformedListener = gameActionPerformedListener;
 		this.objects = new ArrayList<>();
@@ -52,4 +54,15 @@ public class GameMap {
 	public void setPlayers(List<Player> players) {
 		this.players = players;
 	}
+	
+	public void setMessageNumber(MessageNumber messageNumber) {
+		this.messageNumber =  messageNumber;
+		
+	}
+	
+	public MessageNumber getMessageNumber() {
+		return this.messageNumber;
+		
+	}
+
 }

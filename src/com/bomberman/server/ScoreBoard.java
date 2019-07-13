@@ -17,6 +17,7 @@ import com.bomberman.entities.ExplosionDirection;
 import com.bomberman.entities.GameMap;
 import com.bomberman.entities.Player;
 import com.bomberman.entities.Tile;
+import com.bomberman.extras.MessageNumber;
 import com.bomberman.services.CollisionManager;
 import com.bomberman.services.DirectionMessage;
 
@@ -26,8 +27,8 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 	private GameMap map;
 	private final static int MOVEMENT_ERROR = 2;
 	private Timer timer;
-	public boolean test = false;
-
+    private boolean test = false;
+    
 	public ScoreBoard(String name) {
 		this.map = new GameMap(this);
 		this.name = name;
@@ -44,7 +45,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		this.name = name;
 	}
 
-	private void initializeReSend() {
+	private synchronized  void initializeReSend() {
 		this.timer = new Timer();
 		this.timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -55,7 +56,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 	}
 
 	@Override
-	public void actionPerformed() {
+	public  void actionPerformed() {
 		if(!test) {
 			test = true;
 			this.map.setObjects(map.getObjects().stream().filter(e -> !e.isDestroyed()).collect(Collectors.toList()));
@@ -64,6 +65,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 			this.notifyObservers(map);
 			test = false;
 		}
+
 	}
 
 	@Override
@@ -137,7 +139,12 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		Player current = this.map.getPlayers().stream().filter(p -> p.equals(player)).findFirst().orElse(null);
 		current.placeBomb(this);
 		// this.actionPerformed();
-		System.out.println("asd");
+	}
+	
+	@Override
+	public void messageNumberReceived(MessageNumber messageNumber) {
+		this.map.setMessageNumber(messageNumber);
+		//this.actionPerformed();
 	}
 
 	@Override
@@ -179,13 +186,13 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		entitiesToRemove.stream().filter(e -> e.isDestructibleTile()).forEach(t -> ((DestructibleTile) t).destroy());
 
 		// destroy recursive bombs
-		entitiesToRemove.stream().filter(o -> !o.isDestroyed() && !o.isPainted() && o.isBomb() && !o.equals(bomb))
-				.forEach(b -> {
-					Bomb currentBomb = (Bomb) b;
-					currentBomb.setPainted(true);
-					currentBomb.cancelTimer();
-					currentBomb.destroy();
-				});
+		entitiesToRemove.stream().filter(o -> !o.isDestroyed() && !o.isPainted() && o.isBomb() && !o.equals(bomb)).forEach(b -> {
+			Bomb currentBomb = (Bomb) b;
+			currentBomb.setPainted(true);
+			currentBomb.cancelTimer();
+			currentBomb.destroy();
+		});
+		
 		// destroy tiles in range
 		entitiesToRemove.stream().filter(e -> e.isDestructibleTile()).forEach(t -> ((DestructibleTile) t).destroy());
 
@@ -195,6 +202,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 
 		// remove entities after animation
 		this.removeEntitiesAfterAnimation(this.map.getObjects(), entitiesToRemove);
+		
 	}
 
 	@Override
@@ -271,28 +279,33 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		return false;
 	}
 
-	private void removeEntitiesAfterAnimation(List<? extends Entity> sourceEntities,
+	private synchronized void removeEntitiesAfterAnimation(List<? extends Entity> sourceEntities,
 			List<? extends Entity> entitiesToRemove) {
 		Thread thread = new Thread() {
 			@Override
-			public void run() {
+			public synchronized void run() {
 				entitiesToRemove.stream().forEach(t -> {
 					if (t.isBomb()) {
 						((Bomb) t).cancelTimer();
 					}
-					t.setPainted(true);
+					if((t.isPlayer() && !((Player) t).getIndestructible()) || !t.isPlayer()) {
+						t.setPainted(true);
+					}
 					actionPerformed();
 				});
 				try {
 					Thread.sleep(200);
-					// sourceEntities.removeAll(entitiesToRemove); // Could be a problem
 					for (Entity e : sourceEntities) {
-						if (entitiesToRemove.contains(e)) {
+						if (entitiesToRemove.contains(e)){
+							if(e.isPlayer() && ((Player) e).getIndestructible()) continue;
 							e.setDestroyed(true);
 						}
+							
 					}
+						
 					actionPerformed();
-				} catch (InterruptedException e) {
+				}
+					 catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
@@ -353,5 +366,6 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		}
 
 	}
-
+	
+	
 }

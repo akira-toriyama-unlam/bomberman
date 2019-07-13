@@ -19,19 +19,25 @@ import com.bomberman.dto.TileDto;
 public class Room extends JPanel {
 
 	private Window frame;
-	private Image background;
-
+	private  Image background;
+	static boolean changeBackground = false;
 	public Room(Window frame) {
 		this.frame = frame;
-		this.background = new ImageIcon("./resources/fondo.png").getImage();
+		this.setBackground("./resources/fondo.png");
 	}
-
+	
+	
+	public void setBackground(String path) {
+		this.background = new ImageIcon(path).getImage();
+	}
+	
 	@Override
-	public void paintComponent(Graphics g) {
+	public  void paintComponent(Graphics g) {
 		MapDto map = this.frame.getMap();
 		int width = this.getSize().width;
 		int height = this.getSize().height;
-
+		if(changeBackground) this.setBackground("./resources/lukitas.png");
+		else this.setBackground("./resources/fondo.png");
 		if (map.getPlayers().isEmpty()) {
 			frame.setStopKeyEvents(true);
 			frame.drawEndGame(g);

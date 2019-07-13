@@ -8,12 +8,17 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import com.bomberman.dto.MapDto;
 import com.bomberman.entities.Direction;
+import com.bomberman.extras.Cheat;
+import com.bomberman.extras.MessageNumber;
+import com.bomberman.extras.Sound;
+import com.bomberman.extras.Toast;
 import com.bomberman.server.LoginMessage;
 import com.bomberman.server.RoomsDto;
 import com.bomberman.services.DirectionMessage;
@@ -26,11 +31,13 @@ public class Window extends JFrame implements SocketActionListener {
 	private JPanel contentPane;
 	private boolean stopKeyEvents = false;
 
-	private Client client;
-	private Timer timer;
-	private MapDto map;
-	private boolean repaintOn = false;
-
+    private Client client;
+    private Timer timer;
+    private MapDto map;
+    private boolean repaintOn = false;
+    private Sound playSound = new Sound("music/play.wav",true);
+    private Cheat cheat;
+    private Toast toast  = new Toast(); 
 	protected List<GameModel> rooms;
 
 	public static void main(String[] args) {
@@ -38,11 +45,50 @@ public class Window extends JFrame implements SocketActionListener {
 	}
 
 	public Window() {
+		this.cheat = new Cheat(this);
+		
 		this.client = new Client(this);
 		this.initializeGraphicWindow();
 		this.intializeKeyboardListeners();
 		contentPane = new Login(this);
 		setContentPane(contentPane);
+        this.playSound.play();
+
+	}
+	
+	public void changeSound() {
+		this.playSound.stop();
+		this.playSound = new Sound("music/play_villero.wav",false);
+		this.playSound.play();
+		this.playSound = new Sound("music/play.wav",true);
+		this.playSound.play();
+	}
+	
+	public void stopMusic() {
+		this.playSound.stop();
+	}
+	
+	public void addBombs() {
+		client.sendMessage("binladen");
+	}
+	
+	public synchronized void changeImage() {
+		Room.changeBackground = true;
+		Timer timer = new Timer();
+		 timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				Room.changeBackground = false;
+			}
+		}, 5000);	
+	}
+	
+	public void modeGod() {
+		client.sendMessage("god");
+	}
+	
+	public void infinityWar() {
+		client.sendMessage("thanos");
 	}
 
 	private void initializeGraphicWindow() {
@@ -60,7 +106,8 @@ public class Window extends JFrame implements SocketActionListener {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 				try {
-					if (!stopKeyEvents) {
+					cheat.cheat(arg0);				
+					if(!stopKeyEvents) {
 						setMovimiento(arg0);
 					}
 				} catch (IOException e) {
@@ -125,6 +172,18 @@ public class Window extends JFrame implements SocketActionListener {
 		case KeyEvent.VK_X:
 			client.sendMessage(new DirectionMessage(Direction.BOMB));
 			break;
+		case KeyEvent.VK_1:	
+			client.sendMessage("1");
+			break;
+		case KeyEvent.VK_2:	
+			client.sendMessage("2");
+			break;
+		case KeyEvent.VK_3:	
+			client.sendMessage("3");
+			break;
+		case KeyEvent.VK_4:	
+			client.sendMessage("4");
+			break;
 		default:
 			break;
 		}
@@ -150,14 +209,25 @@ public class Window extends JFrame implements SocketActionListener {
 		return this.map;
 	}
 
+
+	
 	@Override
 	public void mapMessageReceived(MapMessage mapMessage) {
 		if (this.map == null) {
 			this.map = new MapDto();
 		}
-
+		
 		this.map.setEntites(mapMessage.getEntities());
 		this.map.setPlayers(mapMessage.getPlayers());
+		
+		MessageNumber messageNumber = mapMessage.getMessageNumber();
+		if(messageNumber != null) {
+			if(this.toast instanceof Toast && this.toast.isFinish()) {
+		        this.toast = new Toast(messageNumber.getMessageNumber(), messageNumber.getX(), messageNumber.getY(), this,client); 
+		        toast.showtoast(); 
+		        
+			}
+		}
 
 		if (!this.repaintOn) {
 			// this.initializeRepaint();
