@@ -45,7 +45,7 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 	}
 
 	@Override
-	public void actionPerformed() {
+	public  void actionPerformed() {
 		if(!test) {
 			test = true;
 			this.map.setObjects(map.getObjects().stream().filter(e -> !e.isDestroyed()).collect(Collectors.toList()));

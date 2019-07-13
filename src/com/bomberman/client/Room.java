@@ -32,7 +32,7 @@ public class Room extends JPanel {
 	}
 	
 	@Override
-	public void paintComponent(Graphics g) {
+	public  void paintComponent(Graphics g) {
 		MapDto map = this.frame.getMap();
 		int width = this.getSize().width;
 		int height = this.getSize().height;

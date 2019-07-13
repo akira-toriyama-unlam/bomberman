@@ -13,6 +13,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import com.bomberman.dto.EntityDto;
 import com.bomberman.dto.MapDto;
@@ -23,8 +24,10 @@ import com.bomberman.entities.Player;
 import com.bomberman.extras.Cheat;
 import com.bomberman.extras.Cheat;
 import com.bomberman.extras.Sound;
+import com.bomberman.extras.Toast;
 import com.bomberman.services.DirectionMessage;
 import com.bomberman.services.MapMessage;
+import com.vdurmont.emoji.EmojiParser;
 
 public class Window extends JFrame implements SocketActionListener {
 
@@ -172,6 +175,12 @@ public class Window extends JFrame implements SocketActionListener {
 		case KeyEvent.VK_SPACE:
 		case KeyEvent.VK_X:	
 			client.sendMessage(new DirectionMessage(Direction.BOMB));
+			break;
+		case KeyEvent.VK_1:	
+			// create a toast message 
+	        Toast t = new Toast("Vas a perderrrrrrr! \u032e\u0624\u0639", WIDTH/2, HEIGHT/2, this); 
+	        // call the method 
+	        t.showtoast(); 
 			break;
 		default:
 			break;

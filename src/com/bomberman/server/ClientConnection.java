@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
@@ -87,7 +88,7 @@ public class ClientConnection extends Thread implements Observer {
     }
 
     @Override
-    public void update(Observable o, Object object) {
+    public  void update(Observable o, Object object) {
         try {
         	GameMap map = (GameMap) object;
         	if(infinityWar) {
@@ -103,8 +104,8 @@ public class ClientConnection extends Thread implements Observer {
         			ParserHelper.getInstance().playersToPlayersDto(map.getPlayers(), scoreBoard));
         	dataOutputStream.writeUTF(gson.toJson(mapMessage));
         	dataOutputStream.flush();
-        } catch (IOException ex) {
-        	System.out.println("Error al enviar mensaje al cliente (" + ex.getMessage() + ").");
+        } catch (IOException | ConcurrentModificationException ex) {
+        	// ßSystem.out.println("Error al enviar mensaje al cliente (" + ex.getMessage() + ").");
         }
     }
 }

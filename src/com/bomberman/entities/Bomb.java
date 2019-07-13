@@ -66,7 +66,7 @@ public class Bomb extends Entity implements Destructible {
 	}
 
 	@Override
-	public void destroy() {
+	public synchronized  void destroy() {
 		if(this.destroyed) return;
 		this.setPainted(true);
 		new Sound("music/bomb.wav", false).play();
