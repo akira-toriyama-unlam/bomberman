@@ -27,7 +27,6 @@ import com.bomberman.extras.Sound;
 import com.bomberman.extras.Toast;
 import com.bomberman.services.DirectionMessage;
 import com.bomberman.services.MapMessage;
-import com.vdurmont.emoji.EmojiParser;
 
 public class Window extends JFrame implements SocketActionListener {
 
@@ -179,32 +178,16 @@ public class Window extends JFrame implements SocketActionListener {
 			client.sendMessage(new DirectionMessage(Direction.BOMB));
 			break;
 		case KeyEvent.VK_1:	
-			// create a toast message
-			if(this.toast instanceof Toast && this.toast.isFinish()) {
-		        this.toast = new Toast("Te voy a ganar!", WIDTH/2, HEIGHT/2, this); 
-		        toast.showtoast(); 
-			}
+			client.sendMessage("1");
 			break;
 		case KeyEvent.VK_2:	
-			// create a toast message
-			if(this.toast instanceof Toast && this.toast.isFinish()) {
-		        this.toast = new Toast("Has fallado!", WIDTH/2, HEIGHT/2, this); 
-		        toast.showtoast(); 
-			}
+			client.sendMessage("2");
 			break;
 		case KeyEvent.VK_3:	
-			// create a toast message
-			if(this.toast instanceof Toast && this.toast.isFinish()) {
-		        this.toast = new Toast("Qué te pasa, estas nervioso?", WIDTH/2, HEIGHT/2, this); 
-		        toast.showtoast(); 
-			}
+			client.sendMessage("3");
 			break;
 		case KeyEvent.VK_4:	
-			// create a toast message
-			if(this.toast instanceof Toast && this.toast.isFinish()) {
-		        this.toast = new Toast("Jugás como codeás!", WIDTH/2, HEIGHT/2, this); 
-		        toast.showtoast(); 
-			}
+			client.sendMessage("4");
 			break;
 		default:
 			break;
@@ -219,14 +202,26 @@ public class Window extends JFrame implements SocketActionListener {
 		return this.map;
 	}
 
+
+	
 	@Override
 	public void messageReceived(MapMessage mapMessage) {
 		if(this.map == null) {
 			this.map = new MapDto();
 		}
 		
+		
 		this.map.setEntites(mapMessage.getEntities());
 		this.map.setPlayers(mapMessage.getPlayers());
+		
+		if(mapMessage.getMessageNumber() != null) {
+//		System.out.println(mapMessage.getMessageNumber());
+		if(this.toast instanceof Toast && this.toast.isFinish()) {
+	        this.toast = new Toast(mapMessage.getMessageNumber(), WIDTH/2, HEIGHT/2, this,client); 
+	        toast.showtoast(); 
+	        
+		}
+	}
 		
 		if (!this.repaintOn) {
 			//this.initializeRepaint();
@@ -235,6 +230,9 @@ public class Window extends JFrame implements SocketActionListener {
 			this.repaintOn = true;
 			revalidate();
 		}
+		
+		
+
 		
 		repaint();
 	}

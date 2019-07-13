@@ -128,6 +128,11 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		//this.actionPerformed();
 	}
 	
+	@Override
+	public void messageNumberReceived(String messageNumber) {
+		this.map.setMessageNumber(messageNumber);
+		//this.actionPerformed();
+	}
 
 	@Override
 	public void playerDisconected(Player player) {
@@ -349,5 +354,6 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 		}
 
 	}
-
+	
+	
 }

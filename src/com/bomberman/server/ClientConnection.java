@@ -25,6 +25,7 @@ public class ClientConnection extends Thread implements Observer {
     private GameActionPerformed scoreBoard;
     private Player currentPlayer;
     private boolean infinityWar = false;
+    private String messageNumber = null; 
     
     public ClientConnection (Socket socket, GameActionPerformed scoreBoard) {
     	this.gson = new Gson();
@@ -51,27 +52,23 @@ public class ClientConnection extends Thread implements Observer {
         while (connected) {
             try {
             	receivedMessage = dataInputStream.readUTF();
-            	if(receivedMessage.equals("binladen")) {
-            		this.currentPlayer.setBombsCount(5);
-            	}else if(receivedMessage.equals("god")){
-            		this.currentPlayer.setIndestructible(true);
-            	}else if(receivedMessage.equals("thanos")) {
-            		this.infinityWar = true;
-            	}else {
-        	DirectionMessage message = gson.fromJson(receivedMessage, DirectionMessage.class);
-        	Direction direction = message.getDirection();
-        	if(direction != null) {
-        		if(Direction.BOMB.equals(direction)) {
-        			scoreBoard.bombMessageReceived(this.currentPlayer, message);
-        			
-        		} else {
+            	
+            	if(!selectMessage(receivedMessage, this.currentPlayer)) {
+            		
+            		DirectionMessage message = gson.fromJson(receivedMessage, DirectionMessage.class);
+            		Direction direction = message.getDirection();
+            		if(direction != null) {
+            			if(Direction.BOMB.equals(direction)) {
+            				scoreBoard.bombMessageReceived(this.currentPlayer, message);
+            			} else {
         			scoreBoard.movementMessageReceived(this.currentPlayer, message);	
-        		}
-        	} else {
-        		scoreBoard.stopMovementMessageReceived(this.currentPlayer);
-        		}	
-            }
-	        } catch (IOException ex) {
+            			}
+            		} else {
+            			scoreBoard.stopMovementMessageReceived(this.currentPlayer);
+            		}	
+            	}
+            	
+            	} catch (IOException ex) {
 	        	System.out.println("Cliente con la IP " + socket.getInetAddress().getHostName() + " desconectado.");
 	        	//scoreBoard.playerDisconected(this.currentPlayer);
 	            connected = false; 
@@ -86,7 +83,7 @@ public class ClientConnection extends Thread implements Observer {
 	    }   
 	    return;
     }
-
+   
     @Override
     public  void update(Observable o, Object object) {
         try {
@@ -101,11 +98,45 @@ public class ClientConnection extends Thread implements Observer {
         	}
         	MapMessage mapMessage = new MapMessage(
         			ParserHelper.getInstance().entitiesToEntitiesDto(map.getObjects(), scoreBoard),
-        			ParserHelper.getInstance().playersToPlayersDto(map.getPlayers(), scoreBoard));
+        			ParserHelper.getInstance().playersToPlayersDto(map.getPlayers(), scoreBoard), map.getMessageNumber());
         	dataOutputStream.writeUTF(gson.toJson(mapMessage));
         	dataOutputStream.flush();
+//        	map.setMessageNumber(null);
         } catch (IOException | ConcurrentModificationException ex) {
         	// ÃŸSystem.out.println("Error al enviar mensaje al cliente (" + ex.getMessage() + ").");
         }
+    }
+    
+    public boolean selectMessage(String message, Player currentPlayer) {
+    	switch(message) {
+    		case "binladen":
+    			currentPlayer.setBombsCount(5);
+    			break;
+    		case "god":
+    			currentPlayer.setIndestructible(true);
+    			break;
+    		case "thanos":
+    			infinityWar = true;
+    			break;
+    		case "1":
+    			scoreBoard.messageNumberReceived("Te voy a ganar!");
+    			break;
+    		case "2":
+    			scoreBoard.messageNumberReceived("Has fallado!");
+    			break;
+    		case "3":
+    			scoreBoard.messageNumberReceived("Qué te pasa, estas nervioso?");
+    			break;
+    		case "4":
+    			scoreBoard.messageNumberReceived("Jugás como codeás!");
+    			break;
+    		case "finish":
+    			scoreBoard.messageNumberReceived(null);
+    			break;
+    		default:
+    			return false;
+    	}
+    	
+    	return true;
     }
 }

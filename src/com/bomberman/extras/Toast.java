@@ -5,10 +5,12 @@ import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.*; 
+import javax.swing.*;
+
+import com.bomberman.client.Client; 
 
 public class Toast extends JFrame { 
-
+	Client client;
 	 public boolean isFinish() {
 		return finish;
 	}
@@ -27,8 +29,10 @@ public class Toast extends JFrame {
 		 finish = true;
 	 }
 	
-	 public Toast(String s, int x, int y, Window window) 
+	 public Toast(String s, int x, int y, Window window, Client client) 
 	 { 
+		 this.client = client;
+		 
 	     w = new JWindow();
 	     finish = false;
 	     parent = window;
@@ -91,6 +95,7 @@ public class Toast extends JFrame {
 			         // set the visibility to false 
 			         w.setVisible(false);
 			         finish = true;
+			         client.sendMessage("finish");
 				}
 			}, 2000); 
 	     } 

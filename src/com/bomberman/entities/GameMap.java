@@ -13,11 +13,12 @@ public class GameMap {
 	protected List<Entity> objects;
 	protected List<Player> players;
 	private GameActionPerformed gameActionPerformedListener;
-
+	private String messageNumber;
 	public GameMap(GameActionPerformed gameActionPerformedListener) {
 		this.gameActionPerformedListener = gameActionPerformedListener;
 		this.objects = new ArrayList<>();
 		this.players = new ArrayList<>();
+		this.messageNumber = null;
 	}
 
 	public boolean addObject(Entity obj) {
@@ -51,5 +52,13 @@ public class GameMap {
 
 	public void setPlayers(List<Player> players) {
 		this.players = players;
+	}
+	
+	public String getMessageNumber() {
+		return this.messageNumber;
+	}
+	
+	public void setMessageNumber(String messageNumber) {
+		this.messageNumber = messageNumber;
 	}
 }

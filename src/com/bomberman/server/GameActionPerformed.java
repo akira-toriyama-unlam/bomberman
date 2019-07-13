@@ -15,6 +15,7 @@ public interface GameActionPerformed {
 	void movementMessageReceived(Player player, DirectionMessage message);
 	void stopMovementMessageReceived(Player player);
 	void bombMessageReceived(Player player, DirectionMessage message);
+	void messageNumberReceived(String messageNumber);
 	void playerDisconected(Player player);
 	boolean placeBomb(Bomb bomb);
 	void explodeBomb(Bomb bomb);
