@@ -5,9 +5,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import com.bomberman.server.RoomsDto;
 import com.bomberman.services.DirectionMessage;
 import com.bomberman.services.MapMessage;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class Client {
 	private static final int port = 1236;
@@ -58,17 +61,33 @@ public class Client {
 		thread.start();
 	}
 
-	public void sendMessage(DirectionMessage message) {
+	public void sendMessage(Object message) {
 		try {
-			dataOutputStream.writeUTF(gson.toJson(message));
+			if (message instanceof DirectionMessage) {
+				dataOutputStream.writeUTF(gson.toJson(message));
+			} else if (message instanceof GameModel) {
+				System.out.println("Send GameModel message en Client");
+				dataOutputStream.writeUTF(gson.toJson(message));
+			} else {
+				System.out.println("Send login message en Client");
+				dataOutputStream.writeUTF(gson.toJson(message));
+			}
+
 		} catch (IOException e) {
 			System.out.println("Error al intentar enviar un mensaje: " + e.getMessage());
 		}
 	}
 
-	private void receiveMessage(String mapMessage) {
-		MapMessage mapMessageObject = gson.fromJson(mapMessage, MapMessage.class);
-		listener.messageReceived(mapMessageObject);
+	private void receiveMessage(String json) {
+		Gson gson = new Gson();
+		JsonObject e = new JsonParser().parse(json).getAsJsonObject();
+		if (e.get("entities") != null) {
+			MapMessage mapMessageObject = gson.fromJson(json, MapMessage.class);
+			listener.mapMessageReceived(mapMessageObject);
+		} else {
+			RoomsDto loginMessage = gson.fromJson(json, RoomsDto.class);
+			listener.loginMessageReceived(loginMessage);
+		}
 	}
 
 }

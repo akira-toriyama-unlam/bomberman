@@ -18,10 +18,8 @@ public class PlayerDto {
 	private String password;
 
 	public PlayerDto(double x, double y, Integer id, MovementStatusDto movementStatusDto, boolean destroyed,
-			boolean painted, String name, String password) {
+			boolean painted) {
 		this.id = id;
-		this.name = name;
-		this.password = password;
 		this.x = x;
 		this.y = y;
 		this.movementStatusDto = movementStatusDto;
@@ -90,7 +88,7 @@ public class PlayerDto {
 	}
 
 	public Player toPlayer() {
-		return new Player(x, y, id, name, password);
+		return new Player(name, password);
 	}
 
 	public Image chooseSprite() {

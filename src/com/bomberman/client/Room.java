@@ -34,7 +34,6 @@ public class Room extends JPanel {
 
 		if (map.getPlayers().isEmpty()) {
 			frame.setStopKeyEvents(true);
-			// frame.cancelTimer();
 			frame.drawEndGame(g);
 		} else {
 			if (frame.isStopKeyEvents()) {

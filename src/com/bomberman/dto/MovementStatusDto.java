@@ -9,7 +9,12 @@ public class MovementStatusDto {
 	private int animateCount;
 	
 	public MovementStatusDto(Direction direction, boolean moving, int animateCount) {
-		this.direction = direction;
+		if(direction != null ) {
+			this.direction = direction;	
+		} else {
+			this.direction = Direction.RIGHT;
+		}
+		
 		this.moving = moving;
 		this.animateCount = animateCount;
 	}

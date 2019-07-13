@@ -56,7 +56,7 @@ public class ParserHelper {
 	public List<Player> dtosToPlayers(List<PlayerDto> dtos, GameActionPerformed scoreBoard) {
 		List<Player> players = new ArrayList<>();
 		for (PlayerDto p : dtos) {
-			players.add(new Player(p.getX(), p.getY(), p.getId(), p.getName(), p.getPassword()));
+			players.add(new Player(p.getName(), p.getPassword()));
 		}
 		return players;
 	}

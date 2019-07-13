@@ -16,17 +16,12 @@ public class GameModelRenderer extends JLabel implements ListCellRenderer<GameMo
 	 
     @Override
     public Component getListCellRendererComponent(JList<? extends GameModel> list, GameModel gameModel, int index,
-        boolean isSelected, boolean cellHasFocus) {
-    	
-    	String resource = gameModel.hasPassword() ? "key" : "empty";
-                  
-    	ImageIcon imageIcon = new ImageIcon("./resources/" + resource + ".png"); 
+        boolean isSelected, boolean cellHasFocus) {                  
+    	ImageIcon imageIcon = new ImageIcon("./resources/key.png"); 
         Image image = imageIcon.getImage(); // transform it 
         Image newimg = image.getScaledInstance(20, 20,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
         imageIcon = new ImageIcon(newimg);  // transform it back
-        setIcon(imageIcon);
-        
-        //ImageIcon imageIcon = new ImageIcon("./resources/" + code + ".png"); 
+        setIcon(imageIcon);        
         setText(gameModel.getName());
         
         if (isSelected) {

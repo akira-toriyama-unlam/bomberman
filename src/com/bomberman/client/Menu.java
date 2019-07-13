@@ -18,8 +18,8 @@ import java.awt.event.ActionEvent;
 public class Menu extends JPanel {
 	
 	private Window frame;
-	GameModel week[]= { new GameModel("Juego uno", true), new GameModel("Juego dos", false), new GameModel("Juego tres", false),
-			new GameModel("Juego cuatro", true), new GameModel("Juego cinco", false), new GameModel("Juego seis", false)};
+	GameModel week[]= { new GameModel("Juego uno"), new GameModel("Juego dos"), new GameModel("Juego tres"),
+			new GameModel("Juego cuatro"), new GameModel("Juego cinco"), new GameModel("Juego seis")};
 	private JList currentGames;
 		
 	public Menu(Window frame) {
@@ -36,8 +36,7 @@ public class Menu extends JPanel {
 		btnNewButton.setBounds(73, 213, 117, 29);
 		add(btnNewButton);
 		
-
-		currentGames = new JList(week);
+		currentGames = new JList(frame.rooms.toArray());
 		currentGames.setCellRenderer(new GameModelRenderer());
 		currentGames.setBounds(347, 213, 432, 125);
 		currentGames.setBorder(new EmptyBorder(5,5, 5, 5));
@@ -80,9 +79,11 @@ public class Menu extends JPanel {
 		JPanel myPanel = new JPanel();
 		myPanel.add(new JLabel("Room's name:"));
 		myPanel.add(name);
-		myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+	/*
+			myPanel.add(Box.createHorizontalStrut(15)); // a spacer
 		myPanel.add(new JLabel("Password:"));
-		myPanel.add(password);
+		myPanel.add(password)
+		*/;
 		
 		int result = JOptionPane.showOptionDialog(
 				null,
@@ -95,9 +96,7 @@ public class Menu extends JPanel {
 		        "default");
 		
 		
-		if (result == JOptionPane.OK_OPTION) {
-		   System.out.println("x value: " + name.getText());
-		   System.out.println("y value: " + password.getText());
+		if (result == JOptionPane.OK_OPTION) {			frame.sendCreateRoomIntent(new GameModel(name.getText()));;
 		}
 
 	}

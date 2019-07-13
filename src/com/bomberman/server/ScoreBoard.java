@@ -2,18 +2,11 @@ package com.bomberman.server;
 
 import java.util.List;
 import java.util.Observable;
-import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.stream.Collectors;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-
 import com.bomberman.client.Window;
-import com.bomberman.database.HibernateConfiguration;
 import com.bomberman.entities.Bomb;
 import com.bomberman.entities.Destructible;
 import com.bomberman.entities.DestructibleTile;
@@ -29,17 +22,25 @@ import com.bomberman.services.DirectionMessage;
 
 public class ScoreBoard extends Observable implements GameActionPerformed {
 
+	private String name;
 	private GameMap map;
 	private final static int MOVEMENT_ERROR = 2;
 	private Timer timer;
 
-	public ScoreBoard() {
+	public ScoreBoard(String name) {
 		this.map = new GameMap(this);
+		this.name = name;
 		this.generateBaseMap();
 
 		initializeReSend();
+	}
 
-		HibernateConfiguration.createSessionFactory();
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	private void initializeReSend() {
@@ -61,46 +62,29 @@ public class ScoreBoard extends Observable implements GameActionPerformed {
 	}
 
 	@Override
-	public Player newPlayer() {
+	public void setPlayerInitialPosition(Player player) {
 
-		Optional<Player> player = getNewPlayer();
-
-		if (player.isPresent()) {
-			SessionFactory factory = HibernateConfiguration.getSessionFactory();
-			Session session = factory.openSession();
-			Transaction tx = session.beginTransaction();
-
-			try {
-				// session.save(player.get())
-				// tx.commit();
-			} catch (HibernateException e) {
-				if (tx != null) {
-					tx.rollback();
-				}
-				e.printStackTrace();
-			} finally {
-				session.close();
-			}
-		}
-
-		return player.get();
-	}
-
-	private Optional<Player> getNewPlayer() {
 		int playersCount = this.map.getPlayers().size();
 
 		switch (playersCount) {
 		case 0:
-			return Optional.of(new Player(40, 40, 0, "uno", "uno"));
+			player.setX(40);
+			player.setY(40);
+			break;
 		case 1:
-			return Optional.of(new Player(760, 40, 2, "dos", "dos"));
+			player.setX(760);
+			player.setY(40);
+			break;
 		case 2:
-			return Optional.of(new Player(40, 520, 3, "tres", "tres"));
+			player.setX(40);
+			player.setY(520);
+			break;
 		case 3:
-			return Optional.of(new Player(760, 520, 4, "cuatro", "cuatro"));
-		default:
-			return Optional.ofNullable(null);
+			player.setX(760);
+			player.setY(520);
+			break;
 		}
+		this.map.addPlayer(player);
 	}
 
 	@Override

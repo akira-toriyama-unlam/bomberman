@@ -1,12 +1,12 @@
 package com.bomberman.client;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.List;
 import java.util.Timer;
 
 import javax.swing.JFrame;
@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 
 import com.bomberman.dto.MapDto;
 import com.bomberman.entities.Direction;
+import com.bomberman.server.LoginMessage;
+import com.bomberman.server.RoomsDto;
 import com.bomberman.services.DirectionMessage;
 import com.bomberman.services.MapMessage;
 
@@ -28,6 +30,8 @@ public class Window extends JFrame implements SocketActionListener {
 	private Timer timer;
 	private MapDto map;
 	private boolean repaintOn = false;
+
+	protected List<GameModel> rooms;
 
 	public static void main(String[] args) {
 		new Window().setVisible(true);
@@ -84,13 +88,12 @@ public class Window extends JFrame implements SocketActionListener {
 	}
 
 	public void drawEndGame(Graphics g) {
-		g.setColor(Color.black);
-		g.fillRect(0, 0, WIDTH, HEIGHT);
-		Font font = new Font("Arial", Font.PLAIN, 50);
-		g.setFont(font);
-		g.setColor(Color.white);
-		drawCenteredString("GAME OVER", g);
-		// cancelTimer();
+		/*
+		 * g.setColor(Color.black); g.fillRect(0, 0, WIDTH, HEIGHT); Font font = new
+		 * Font("Arial", Font.PLAIN, 50); g.setFont(font); g.setColor(Color.white);
+		 * drawCenteredString("GAME OVER", g); // cancelTimer();
+		 * 
+		 */
 	}
 
 	public void drawCenteredString(String s, Graphics g) {
@@ -127,6 +130,14 @@ public class Window extends JFrame implements SocketActionListener {
 		}
 	}
 
+	public void sendLoginIntent(LoginMessage loginMessage) {
+		client.sendMessage(loginMessage);
+	}
+
+	public void sendCreateRoomIntent(GameModel gameModel) {
+		client.sendMessage(gameModel);
+	}
+
 	private void stopMovimiento(KeyEvent event) {
 		client.sendMessage(new DirectionMessage(null));
 	}
@@ -136,7 +147,7 @@ public class Window extends JFrame implements SocketActionListener {
 	}
 
 	@Override
-	public void messageReceived(MapMessage mapMessage) {
+	public void mapMessageReceived(MapMessage mapMessage) {
 		if (this.map == null) {
 			this.map = new MapDto();
 		}
@@ -146,12 +157,22 @@ public class Window extends JFrame implements SocketActionListener {
 
 		if (!this.repaintOn) {
 			// this.initializeRepaint();
-			// contentPane = new Room(this);
-			// setContentPane(contentPane);
+			contentPane = new Room(this);
+			setContentPane(contentPane);
 			this.repaintOn = true;
 			revalidate();
 		}
 
 		repaint();
+	}
+
+	@Override
+	public void loginMessageReceived(RoomsDto message) {
+		if (message != null) {
+			this.rooms = message.getRooms();
+			contentPane = new Menu(this);
+			setContentPane(contentPane);
+			revalidate();
+		}
 	}
 }

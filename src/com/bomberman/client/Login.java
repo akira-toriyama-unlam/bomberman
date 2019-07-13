@@ -14,13 +14,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-
-import com.bomberman.database.HibernateConfiguration;
-import com.bomberman.entities.Player;
+import com.bomberman.server.AuthTypes;
+import com.bomberman.server.LoginMessage;
 
 public class Login extends JPanel {
 
@@ -52,8 +47,8 @@ public class Login extends JPanel {
 	}
 
 	private void showLogin() {
-		JTextField user = new JTextField(5);
-		JTextField password = new JTextField(5);
+		JTextField user = new JTextField(10);
+		JTextField password = new JTextField(10);
 
 		JPanel myPanel = new JPanel();
 		myPanel.add(new JLabel("Username:"));
@@ -67,8 +62,7 @@ public class Login extends JPanel {
 				new String[] { "Login", "Register" }, "default");
 
 		if (result == JOptionPane.OK_OPTION) {
-			System.out.println("x value: " + user.getText());
-			System.out.println("y value: " + password.getText());
+			frame.sendLoginIntent(new LoginMessage(AuthTypes.LOGIN, user.getText(), password.getText(), false));
 		} else {
 			this.showRegister();
 		}
@@ -88,23 +82,7 @@ public class Login extends JPanel {
 				JOptionPane.INFORMATION_MESSAGE, null, new String[] { "Register" }, "default");
 
 		if (result == JOptionPane.OK_OPTION) {
-			SessionFactory factory = HibernateConfiguration.getSessionFactory();
-			Session session = factory.openSession();
-			Transaction tx = session.beginTransaction();
-
-			try {
-				Player player = new Player(user.getText(), password.getText());
-				session.save(player);
-				tx.commit();
-			} catch (HibernateException e) {
-				if (tx != null) {
-					tx.rollback();
-				}
-				e.printStackTrace();
-			} finally {
-				session.close();
-			}
-
+			frame.sendLoginIntent(new LoginMessage(AuthTypes.REGISTER, user.getText(), password.getText(), false));
 		} else {
 			// Close
 		}
