@@ -12,6 +12,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import com.bomberman.server.AuthTypes;
@@ -48,7 +49,7 @@ public class Login extends JPanel {
 
 	private void showLogin() {
 		JTextField user = new JTextField(10);
-		JTextField password = new JTextField(10);
+		JTextField password = new JPasswordField(10);
 
 		JPanel myPanel = new JPanel();
 		myPanel.add(new JLabel("Username:"));
@@ -70,7 +71,7 @@ public class Login extends JPanel {
 
 	private void showRegister() {
 		JTextField user = new JTextField(10);
-		JTextField password = new JTextField(10);
+		JTextField password = new JPasswordField(10);
 
 		JPanel myPanel = new JPanel(new GridLayout(2, 1));
 		myPanel.add(new JLabel("Username:"));

@@ -21,10 +21,12 @@ public class Player extends Entity implements ExplosionListener, Destructible {
 	private String name;
 	private String password;
 	private Direction currentDirection;
+	private boolean indestructible = false;
 
-private boolean indestructible = false;
 	public Player() {
 		super(0, 0);
+		this.bombsCount = Player.CONCURRENT_BOMBS;
+		this.currentDirection = Direction.DOWN;
 	}
 
 	public Player(String name, String password) {
@@ -134,7 +136,6 @@ private boolean indestructible = false;
 	}
 	}
 	
-
 	public boolean isMoving() {
 		return moving;
 	}

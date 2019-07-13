@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
+
 import com.bomberman.dto.EntityDto;
 import com.bomberman.client.GameModel;
 import com.bomberman.entities.Direction;
@@ -32,6 +33,7 @@ public class ClientConnection extends Thread implements Observer {
 	private DataOutputStream dataOutputStream;
 	private GameActionPerformed scoreBoard;
 	private Player currentPlayer;
+
 	   private boolean infinityWar = false;
 	    private String messageNumber = null; 
 	public ClientConnection(Socket socket) {
@@ -104,6 +106,7 @@ public class ClientConnection extends Thread implements Observer {
 		} else {
 			ScoreBoard scoreBoard = new ScoreBoard(gameModelMessage.getName());
 			setScoreboard(scoreBoard);
+			MainServer.rooms.add(scoreBoard);
 		}
 		this.scoreBoard.setPlayerInitialPosition(currentPlayer);
 	}
@@ -142,7 +145,7 @@ public class ClientConnection extends Thread implements Observer {
 		List<ScoreBoard> scoreBoards = MainServer.rooms;
 		List<GameModel> list = new ArrayList<>();
 
-		if (scoreBoards.isEmpty()) {
+		if (!scoreBoards.isEmpty()) {
 			scoreBoards.stream().forEach(s -> {
 				list.add(new GameModel(s.getName()));
 			});
@@ -220,28 +223,3 @@ public class ClientConnection extends Thread implements Observer {
     }
 }
 
-class User {
-	int id;
-	String name;
-	String password;
-
-	public User(int id, String name, String password) {
-		this.id = id;
-		this.name = name;
-		this.password = password;
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public String getPassword() {
-		return this.getPassword();
-	}
-	
-	 
-}

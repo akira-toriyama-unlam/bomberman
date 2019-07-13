@@ -18,8 +18,6 @@ import java.awt.event.ActionEvent;
 public class Menu extends JPanel {
 	
 	private Window frame;
-	GameModel week[]= { new GameModel("Juego uno"), new GameModel("Juego dos"), new GameModel("Juego tres"),
-			new GameModel("Juego cuatro"), new GameModel("Juego cinco"), new GameModel("Juego seis")};
 	private JList currentGames;
 		
 	public Menu(Window frame) {
@@ -96,12 +94,14 @@ public class Menu extends JPanel {
 		        "default");
 		
 		
-		if (result == JOptionPane.OK_OPTION) {			frame.sendCreateRoomIntent(new GameModel(name.getText()));;
+		if (result == JOptionPane.OK_OPTION) {
+			frame.sendCreateRoomIntent(new GameModel(name.getText()));;
 		}
 
 	}
 	
 	private void onJoinClick() {
 		GameModel g = (GameModel) currentGames.getSelectedValue();
+		frame.sendJoinRoomIntent(g);
 	}
 }

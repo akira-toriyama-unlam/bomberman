@@ -39,7 +39,6 @@ public class Window extends JFrame implements SocketActionListener {
     private Cheat cheat;
     private Toast toast  = new Toast(); 
 	protected List<GameModel> rooms;
-;
 
 	public static void main(String[] args) {
 		new Window().setVisible(true);
@@ -51,6 +50,8 @@ public class Window extends JFrame implements SocketActionListener {
 		this.client = new Client(this);
 		this.initializeGraphicWindow();
 		this.intializeKeyboardListeners();
+		contentPane = new Login(this);
+		setContentPane(contentPane);
         this.playSound.play();
 
 	}
@@ -88,8 +89,6 @@ public class Window extends JFrame implements SocketActionListener {
 	
 	public void infinityWar() {
 		client.sendMessage("thanos");
-		contentPane = new Login(this);
-		setContentPane(contentPane);
 	}
 
 	private void initializeGraphicWindow() {
@@ -109,7 +108,6 @@ public class Window extends JFrame implements SocketActionListener {
 				try {
 					cheat.cheat(arg0);				
 					if(!stopKeyEvents) {
-
 						setMovimiento(arg0);
 					}
 				} catch (IOException e) {
@@ -198,6 +196,10 @@ public class Window extends JFrame implements SocketActionListener {
 	public void sendCreateRoomIntent(GameModel gameModel) {
 		client.sendMessage(gameModel);
 	}
+	
+	public void sendJoinRoomIntent(GameModel gameModel) {
+		client.sendMessage(gameModel);
+	}
 
 	private void stopMovimiento(KeyEvent event) {
 		client.sendMessage(new DirectionMessage(null));
@@ -215,20 +217,17 @@ public class Window extends JFrame implements SocketActionListener {
 			this.map = new MapDto();
 		}
 		
-		
 		this.map.setEntites(mapMessage.getEntities());
 		this.map.setPlayers(mapMessage.getPlayers());
 		
 		MessageNumber messageNumber = mapMessage.getMessageNumber();
 		if(messageNumber != null) {
-		if(this.toast instanceof Toast && this.toast.isFinish()) {
-	        this.toast = new Toast(messageNumber.getMessageNumber(), messageNumber.getX(), messageNumber.getY(), this,client); 
-	        toast.showtoast(); 
-	        
+			if(this.toast instanceof Toast && this.toast.isFinish()) {
+		        this.toast = new Toast(messageNumber.getMessageNumber(), messageNumber.getX(), messageNumber.getY(), this,client); 
+		        toast.showtoast(); 
+		        
+			}
 		}
-	}
-		
-
 
 		if (!this.repaintOn) {
 			// this.initializeRepaint();
